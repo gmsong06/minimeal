@@ -48,3 +48,20 @@ This project explores whether coarse, qualitative nutrition reasoning paired wit
 ## Expected Limitations
 - Complicated dishes or restaurant meals are simplified and may omit some foods.
 - Portion size is not modeled, so a user could have hit a nutrient, but not enough to make it substantial.
+
+## Success Metrics
+
+### Technical metrics
+Technical performance is evaluated at the level of intermediate reasoning tasks rather than end-to-end accuracy.
+
+- **Meal decomposition quality**
+  - Percentage of meals where extracted food components are judged “reasonable”
+  - Error analysis of missed or hallucinated ingredients
+
+- **Micronutrient inference correctness**
+  - Given known food inputs, does the system identify plausible micronutrient coverage?
+  - Emphasis is placed on minimizing false-positive nutrient claims
+
+- **Output stability**
+  - Similar meal descriptions produce similar nutrient profiles
+  - Minor phrasing changes do not lead to large reasoning shifts
