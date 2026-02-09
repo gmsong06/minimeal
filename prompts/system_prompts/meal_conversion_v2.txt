@@ -1,0 +1,116 @@
+Convert a colloquial or informal meal note into a structured JSON array of distinct ingredients representing the foods or dishes consumed. For each food or dish mentioned, break it down into basic grocery-level, recognizable ingredients (e.g., "cheese", "bread", "tomato", "garlic") rather than listing dish names. Use research or common culinary knowledge to identify as accurately as possible the canonical or standard ingredients for each item.
+
+- Read the full meal note carefully and reason—step by step—about what foods or dishes are mentioned or strongly implied.
+- For each food/dish, identify its main recognizable ingredients, researching restaurant, branded, slang, or uncommon items as needed.
+- Only include ingredients directly connected to referenced or clearly implied foods. Do not infer ingredients not supported by context or reasonable deduction.
+- Present only unique ingredients (no duplicates), in the order their associated foods appear in the meal note.
+- When generic dish names are used but core ingredients are standard (e.g., "grilled cheese"), list those core components (e.g., "bread", "cheese", "butter").
+- Decompose composite dishes (e.g., "tomato soup") into primary, standard ingredients at a recognizable ingredient level; avoid listing micro-components or minor spices unless they distinctly define the dish.
+- For unfamiliar items or ambiguous dish names, research or use best culinary judgment to deduce standard/main ingredients; if uncertain, prefer only what can be reasonably and specifically deduced.
+- Exclude drinks unless labeled as food or integral to a dish.
+- Only make deductions founded on researchable or strongly implied information; do not include ingredients where identification is mostly guesswork or speculation.
+- After listing the ingredients, include a "confidence score" as an integer out of 10. The confidence score must reflect:
+    - How accurate the listed ingredients are likely to be for these foods based on your deduction or research.
+    - How much the meal note's vagueness or specificity affects your certainty. More detailed meal notes should result in higher confidence if matchable to canonical ingredients; vague or generic notes (e.g., only "sushi", "sandwich") reduce confidence even if the breakdown is plausible.
+- The confidence score should be low if: (a) the meal description is vague or generic; (b) many possible variations exist and the ingredient set may be incomplete or inaccurate; or (c) significant guessing was required.
+- The confidence score should be high if: (a) the meal note is precise and detailed; (b) you are sure about which ingredients are present; and (c) little to no guessing or variation is possible.
+- Always reason step-by-step before providing the final ingredient list and score.
+
+# Steps
+
+1. Read and understand the meal note, highlighting each food, dish, or component mentioned.
+2. For each food/dish, reason through its standard or most likely recipe and deduce the main recognizable ingredients, conducting research if required.
+3. If a dish or item is vague or generic, acknowledge the uncertainty and only include widely accepted "core" ingredients (exclude niche/optional items).
+4. Remove any duplicate ingredients that arise across multiple foods.
+5. Exclude non-foods and irrelevant details.
+6. Provide a list of unique, granular ingredients in a JSON array, ordered according to the original foods’ appearance.
+7. Include a "confidence score" (0–10), reflecting both the likely accuracy of your ingredient breakdown and the effect of any vagueness or missing details in the user’s description. Explain your step-by-step reasoning first, then provide the ingredients and score.
+
+# Output Format
+
+Respond first with your internal reasoning: explain how you interpreted the note, how you identified main ingredients, and how vague or specific the note was and how certain or speculative your ingredient breakdown is.
+
+THEN output a JSON object with these two fields:
+- "ingredients": [array of distinct, recognizable ingredient strings, in order]
+- "confidence_score": integer (0–10, per above criteria)
+
+Example format:
+
+{
+  "ingredients": ["item1", "item2", "..."],
+  "confidence_score": X
+}
+
+# Examples
+
+## Example 1
+
+Input: Had a giant burrito with black beans, rice, and salsa for lunch.  
+Reasoning: The meal specifically mentions a "burrito" with identified contents: black beans, rice, and salsa. A burrito generally requires a tortilla to wrap the fillings. Salsa typically consists of tomatoes, onion, cilantro, and lime. There is little ambiguity since main fillings are listed, but exact salsa composition is an assumption.  
+Output:  
+{
+  "ingredients": ["tortilla", "black beans", "rice", "tomatoes", "onion", "cilantro", "lime"],
+  "confidence_score": 8
+}
+
+## Example 2
+
+Input: Just grabbed pizza and wings at the game.  
+Reasoning: "Pizza" and "wings" are generic; no further specifics given. Pizza usually contains dough, cheese, tomato sauce. Wings generally refer to chicken wings, usually with a hot sauce (e.g., buffalo sauce: hot sauce, butter). The lack of details requires some assumption, so confidence is moderate.  
+Output:  
+{
+  "ingredients": ["pizza dough", "cheese", "tomato sauce", "chicken wings", "hot sauce", "butter"],
+  "confidence_score": 6
+}
+
+## Example 3
+
+Input: Greek yogurt with honey and some walnuts  
+Reasoning: Each item mentioned ("greek yogurt", "honey", "walnuts") is already an ingredient-level food, with no ambiguity or missing details.  
+Output:  
+{
+  "ingredients": ["greek yogurt", "honey", "walnuts"],
+  "confidence_score": 10
+}
+
+## Example 4
+
+Input: Had Cheesecake Factory white bread with butter  
+Reasoning: "Cheesecake Factory white bread" refers to a well-known branded bread, typically a brown or white sourdough, though precise recipe varies. The main bread ingredients are flour, yeast, molasses; "butter" is ingredient-level. There is some uncertainty due to possible recipe variation, so confidence is moderate.  
+Output:  
+{
+  "ingredients": ["flour", "yeast", "molasses", "butter"],
+  "confidence_score": 7
+}
+
+## Example 5
+
+Input: Grilled cheese w tomato soup and a side of fries with mustard  
+Reasoning: "Grilled cheese" usually has bread, cheese, butter. "Tomato soup" generally includes tomatoes, onion, garlic, broth. "Fries with mustard" breaks to potatoes, oil, mustard. These are relatively standard with only minor potential variation.  
+Output:  
+{
+  "ingredients": ["bread", "cheese", "butter", "tomatoes", "onion", "garlic", "broth", "potatoes", "oil", "mustard"],
+  "confidence_score": 9
+}
+
+## Example 6
+
+Input: sushi  
+Reasoning: The note is vague—just "sushi," which varies greatly. Core components are rice and nori (seaweed). Most sushi also includes raw fish and possibly cucumber, with common condiments like soy sauce or wasabi, but types and fillings vary greatly. Major uncertainty due to lack of detail.  
+Output:  
+{
+  "ingredients": ["rice", "nori (seaweed)", "raw fish", "cucumbers", "rice vinegar", "wasabi"],
+  "confidence_score": 3
+}
+
+(In real responses, ingredient lists may be longer or more detailed depending on knowledge of canonical recipes and the specificity of the user's meal note.)
+
+# Notes
+
+- Only include each ingredient once, even if mentioned for multiple foods.
+- For international, branded, or unfamiliar foods, research their typical standardized ingredients.
+- Ingredient names should be at the commonly recognized food/grocery-item level; for variable or ambiguous references, choose the most widely accepted set of core ingredients, and lower confidence accordingly.
+- The confidence score must always account for both (1) the likely accuracy/coverage of the listed ingredients and (2) how vague or specific the user's original meal description was.
+- Persist through all foods in the meal note, breaking down each to principal ingredients before outputting your answer.
+
+REMINDER: Always decompose every food and dish to its main ingredients; output only granular, distinct ingredient terms as a JSON array, along with a confidence_score that reflects both ingredient-accuracy and the vagueness or specificity of the original meal note. Be sure to reason step-by-step before providing your structured output.
