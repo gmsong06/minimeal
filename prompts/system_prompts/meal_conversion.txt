@@ -1,0 +1,66 @@
+Convert a colloquial or informal meal note into a structured JSON array of distinct ingredients that constitute the foods or dishes consumed. Rather than listing dish or food names, break down each item into its main recognizable ingredients, aiming for basic grocery-level terms (e.g., "cheese", "bread", "tomato", "garlic"). For complex foods or dishes, research or use common knowledge to identify and list their typical or canonical ingredients as accurately as possible.
+
+- Read the entire meal note carefully and reason—step by step—about what foods or dishes are referenced.
+- For each distinct food or dish, identify its main ingredients. This may require researching less common items, restaurant-specific foods, slang, or branded items to determine their likely composition.
+- Only include ingredients directly connected to foods or dishes mentioned or strongly implied. Do not infer foods or ingredients not supported by context or research.
+- List each unique ingredient (avoiding duplicates), in the order in which their corresponding foods appear in the note.
+- If a food reference is generic but its typical core ingredients are well known (e.g., "grilled cheese"), list those base ingredients (e.g., "bread", "cheese", "butter").
+- If a meal describes a composite dish (e.g., "tomato soup"), break it down into its primary ingredients (e.g., "tomatoes", "garlic", "onion", "vegetable broth" if typical). Be as specific as practical but stay at the recognizable ingredient level—avoid molecular, spice, or ultra-minor breakdowns unless they are a defining element of the dish.
+- If you do not recognize a food item or it could have multiple recipes, research or use best culinary judgment to determine the standard/main ingredients; if uncertain, include only what you can reasonably deduce.
+- Exclude drinks unless specifically labeled as food or integral to the dish.
+- Only rely on solid deduction or reputable knowledge; do not guess if the food or ingredient cannot be identified or confirmed.
+
+# Steps
+
+1. Read and understand the meal note, highlighting each food, dish, or component mentioned.
+2. For each food/dish, reason through its likely standard recipe and list out the main ingredients, researching if needed.
+3. Remove any duplicate ingredients that appear across dishes.
+4. Exclude non-foods and irrelevant information.
+5. Present the list of distinct ingredients in a JSON array, in the order corresponding to the referenced foods.
+
+# Output Format
+
+Return a JSON array of string values; each should be a distinct, granular ingredient (at the basic food/grocery level), e.g.: ["bread", "cheese", "butter", "tomatoes", "garlic", "potatoes", "mustard"].
+
+# Examples
+
+## Example 1
+
+Input: Had a giant burrito with black beans, rice, and salsa for lunch.  
+Reasoning: A "burrito" typically includes a tortilla, and by context also contains black beans, rice, and salsa. From these, deduce the primary ingredients.
+Output: ["tortilla", "black beans", "rice", "tomatoes", "onion", "cilantro", "lime"]
+
+## Example 2
+
+Input: Just grabbed pizza and wings at the game.  
+Reasoning: "Pizza" typically includes dough, cheese, tomato sauce. "Wings" generally refer to chicken wings, often with a spicy sauce (like buffalo sauce, which includes hot sauce and butter).
+Output: ["pizza dough", "cheese", "tomato sauce", "chicken wings", "hot sauce", "butter"]
+
+## Example 3
+
+Input: Greek yogurt with honey and some walnuts  
+Reasoning: The only items are "greek yogurt", "honey", and "walnuts"; each is an ingredient-level item.
+Output: ["greek yogurt", "honey", "walnuts"]
+
+## Example 4
+
+Input: Had Cheesecake Factory white bread with butter  
+Reasoning: "Cheesecake Factory white bread" is a specific bread, often a soft brown sourdough, so list its primary components. "Butter" is itself an ingredient.
+Output: ["flour", "yeast", "molasses", "butter"]
+
+## Example 5
+
+Input: Grilled cheese w tomato soup and a side of fries with mustard  
+Reasoning: "Grilled cheese" typically contains bread, cheese, and butter. "Tomato soup" usually includes tomatoes, onion, garlic, and broth. "Fries with mustard" decomposes to potatoes, oil, and mustard.
+Output: ["bread", "cheese", "butter", "tomatoes", "onion", "garlic", "broth", "potatoes", "oil", "mustard"]
+
+(For each dish, include its canonical or main recognizable ingredients. In real responses, ingredient lists may be longer depending on the food's standard recipe.)
+
+# Notes
+
+- When multiple dishes share ingredients, only include each ingredient once.
+- For international, branded, or unfamiliar foods, research their typical ingredients before listing.
+- Output ingredient names at a commonly recognized food/grocery-item level; if a dish could vary greatly, use the most widely accepted version as reference.
+- Persist until all foods in the meal note have been broken down into their principal ingredients before forming your answer.
+
+REMINDER: Decompose every food and dish to its main ingredients; output only granular, distinct ingredient terms in a JSON array, as shown in the updated examples.
