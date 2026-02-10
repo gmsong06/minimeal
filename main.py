@@ -1,33 +1,120 @@
 from dotenv import load_dotenv
 from openai import OpenAI
-import os
+import json
+import re
+from typing import Any, Dict, List, Optional
 
 load_dotenv()
 
 client = OpenAI()
 
-def ask_llm(user_prompt: str) -> str:
+_REASONING_HEADER_RE = re.compile(
+    r"(?is)\bReasoning\b(?:\s*\(step-by-step\))?\s*:\s*(.*?)(?:\n\s*```|$)"
+)
+
+_FENCED_JSON_RE = re.compile(
+    r"(?is)```(?:json)?\s*({.*?})\s*```"
+)
+
+def _extract_reasoning(text: str) -> str:
+    m = _REASONING_HEADER_RE.search(text)
+    if not m:
+        return ""
+    reasoning = m.group(1).strip()
+    return reasoning
+
+def _extract_json_object(text: str) -> Dict[str, Any]:
+    m = _FENCED_JSON_RE.search(text)
+    if m:
+        return json.loads(m.group(1))
+
+    start = text.find("{")
+    if start == -1:
+        raise ValueError("No JSON object found in the response.")
+
+    depth = 0
+    end: Optional[int] = None
+    for i, ch in enumerate(text[start:], start=start):
+        if ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                end = i + 1
+                break
+
+    if end is None:
+        raise ValueError("Found '{' but could not find a matching '}' for JSON object.")
+
+    candidate = text[start:end]
+    return json.loads(candidate)
+
+def parse_gpt_meal_conversion_response(text: str) -> Dict[str, Any]:
+    """
+    Returns:
+      {
+        "reasoning": str,
+        "ingredients": List[str]
+      }
+    Raises ValueError if ingredients can't be found.
+    """
+    reasoning = _extract_reasoning(text)
+    payload = _extract_json_object(text)
+
+    ingredients = payload.get("ingredients", None)
+    if not isinstance(ingredients, list) or not all(isinstance(x, str) for x in ingredients):
+        raise ValueError("Parsed JSON does not contain a valid 'ingredients' list.")
+
+    return {
+        "reasoning": reasoning,
+        "ingredients": ingredients,
+    }
+
+def get_gpt_meal_conversion(system_prompt: str, user_prompt: str) -> str:
     response = client.responses.create(
         model="gpt-5.2",
-        prompt={
-            "id": "pmpt_6986a5d02164819084be45615e1df3d408d1063967f88be9",
-            "version": "2"
-        },
-        input=user_prompt
+        input=[
+            {
+                "role": "system",
+                "content": system_prompt
+            },
+            {
+                "role": "user",
+                "content": user_prompt
+            }
+        ]
     )
     return response.output_text
 
-def get_prompt(base_prompt_path: str) -> str:
-    # Read the base prompt from the file
-    with open(base_prompt_path, "r", encoding="utf-8") as f:
-        base_prompt = f.read()
+def get_prompt(base_prompt_path: str, examples_path: str) -> str:
+    # Get base prompt
+    with open(base_prompt_path, 'r') as file:
+        base_prompt = file.read()
 
-    # Add in examples
+    # Get examples
+    with open(examples_path, 'r') as file:
+        examples = json.load(file)
 
+    # Add examples to base prompt 
+    base_prompt += "\n\nExamples:\n\n"
+    for example in examples["examples"]:
+        base_prompt += f"Example {example['id']}\n\n"
+        base_prompt += f"Input: {example['input']}\n"
+        base_prompt += f"Reasoning: {example['reasoning']}\n"
+        base_prompt += f"Output: {example['output']}\n\n"
+    
+    return base_prompt
 
 if __name__ == "__main__":
-    # prompt = "broccoli cheddar soup wiht buttr chicken and garlic cheese naan and potato pierogis"
-    # answer = ask_llm(prompt)
-    # print(f"Answer: {answer}")
+    system_prompt = get_prompt(
+        "prompts/system_prompts/meal_conversion_v2.txt",
+        "prompts/few_shot_examples/meal_conversion_examples.json"
+    )
 
-    get_prompt("prompts/system_prompts/meal_conversion_v2.txt")
+    user_prompt = "broccoli cheddar soup with butter chicken and garlic cheese naan and potato pierogis"
+
+    response = get_gpt_meal_conversion(system_prompt, user_prompt)
+    reasoning, ingredients = parse_gpt_meal_conversion_response(response).values()
+
+    print(f"Reasoning:\n{reasoning}\n")
+    print(f"Ingredients:\n{ingredients}\n")
