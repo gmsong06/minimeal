@@ -55,9 +55,11 @@ def parse_gpt_meal_conversion_response(text: str) -> Dict[str, Any]:
       {
         "reasoning": str,
         "ingredients": List[str]
+        "confidence_score": int
       }
     Raises ValueError if ingredients can't be found.
     """
+
     reasoning = _extract_reasoning(text)
     payload = _extract_json_object(text)
 
@@ -68,6 +70,7 @@ def parse_gpt_meal_conversion_response(text: str) -> Dict[str, Any]:
     return {
         "reasoning": reasoning,
         "ingredients": ingredients,
+        "confidence_score": payload.get("confidence_score"),
     }
 
 def get_gpt_meal_conversion(system_prompt: str, user_prompt: str) -> str:
@@ -111,10 +114,11 @@ if __name__ == "__main__":
         "prompts/few_shot_examples/meal_conversion_examples.json"
     )
 
-    user_prompt = "broccoli cheddar soup with butter chicken and garlic cheese naan and potato pierogis"
+    user_prompt = "chickpea stew with tomatoes, onions, garlic, and spices"
 
     response = get_gpt_meal_conversion(system_prompt, user_prompt)
-    reasoning, ingredients = parse_gpt_meal_conversion_response(response).values()
+    reasoning, ingredients, confidence_score = parse_gpt_meal_conversion_response(response).values()
 
     print(f"Reasoning:\n{reasoning}\n")
     print(f"Ingredients:\n{ingredients}\n")
+    print(f"Confidence Score: {confidence_score}\n")
