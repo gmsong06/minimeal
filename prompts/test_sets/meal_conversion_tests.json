@@ -1,0 +1,627 @@
+{
+  "tests": [
+    {
+      "id": "test_1",
+      "input": "Had a giant burrito with black beans, rice, and salsa for lunch.",
+      "reasoning": "The meal specifically mentions a \"burrito\" with identified contents: black beans, rice, and salsa. A burrito generally requires a tortilla to wrap the fillings. Salsa typically consists of tomatoes, onion, cilantro, and lime. There is little ambiguity since main fillings are listed, but exact salsa composition is an assumption.",
+      "output": {
+        "ingredients": [
+          "tortilla",
+          "black beans",
+          "rice",
+          "tomatoes",
+          "onion",
+          "cilantro",
+          "lime"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_2",
+      "input": "Just grabbed pizza and wings at the game.",
+      "reasoning": "\"Pizza\" and \"wings\" are generic; no further specifics given. Pizza usually contains dough, cheese, tomato sauce. Wings generally refer to chicken wings, usually with a hot sauce (e.g., buffalo sauce: hot sauce, butter). The lack of details requires some assumption, so confidence is moderate.",
+      "output": {
+        "ingredients": [
+          "pizza dough",
+          "cheese",
+          "tomato sauce",
+          "chicken wings",
+          "hot sauce",
+          "butter"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_3",
+      "input": "Greek yogurt with honey and some walnuts",
+      "reasoning": "Each item mentioned (\"greek yogurt\", \"honey\", \"walnuts\") is already an ingredient-level food, with no ambiguity or missing details.",
+      "output": {
+        "ingredients": [
+          "greek yogurt",
+          "honey",
+          "walnuts"
+        ],
+        "confidence_score": 10
+      }
+    },
+    {
+      "id": "test_4",
+      "input": "Had Cheesecake Factory white bread with butter",
+      "reasoning": "\"Cheesecake Factory white bread\" refers to a well-known branded bread, typically a brown or white sourdough, though precise recipe varies. The main bread ingredients are flour, yeast, molasses; \"butter\" is ingredient-level. There is some uncertainty due to possible recipe variation, so confidence is moderate.",
+      "output": {
+        "ingredients": [
+          "flour",
+          "yeast",
+          "molasses",
+          "butter"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_5",
+      "input": "Grilled cheese w tomato soup and a side of fries with mustard",
+      "reasoning": "\"Grilled cheese\" usually has bread, cheese, butter. \"Tomato soup\" generally includes tomatoes, onion, garlic, broth. \"Fries with mustard\" breaks to potatoes, oil, mustard. These are relatively standard with only minor potential variation.",
+      "output": {
+        "ingredients": [
+          "bread",
+          "cheese",
+          "butter",
+          "tomatoes",
+          "onion",
+          "garlic",
+          "broth",
+          "potatoes",
+          "oil",
+          "mustard"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_6",
+      "input": "sushi",
+      "reasoning": "The note is vague—just \"sushi,\" which varies greatly. Core components are rice and nori (seaweed). Most sushi also includes raw fish and possibly cucumber, with common condiments like soy sauce or wasabi, but types and fillings vary greatly. Major uncertainty due to lack of detail.",
+      "output": {
+        "ingredients": [
+          "rice",
+          "nori (seaweed)",
+          "raw fish",
+          "cucumbers",
+          "rice vinegar",
+          "wasabi"
+        ],
+        "confidence_score": 3
+      }
+    },
+{
+      "id": "test_7",
+      "input": "Avocado toast with a poached egg and chili flakes.",
+      "reasoning": "Foods mentioned: avocado toast, poached egg, chili flakes. Avocado toast implies toast (bread) topped with avocado. Poached egg contributes egg. Chili flakes are a direct topping. No other ingredients are stated or strongly implied.",
+      "output": {
+        "ingredients": [
+          "bread",
+          "avocado",
+          "egg",
+          "chili flakes"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_8",
+      "input": "Chicken Caesar salad with extra croutons.",
+      "reasoning": "Foods mentioned: chicken Caesar salad, extra croutons. Core salad components are romaine lettuce, chicken, parmesan, and croutons (bread). Caesar dressing is strongly implied and has a fairly canonical base: egg/egg yolk, olive oil, lemon juice, anchovies, garlic, and mustard. Exact proportions vary but these are standard.",
+      "output": {
+        "ingredients": [
+          "romaine lettuce",
+          "chicken",
+          "parmesan cheese",
+          "bread",
+          "egg yolk",
+          "olive oil",
+          "lemon juice",
+          "anchovies",
+          "garlic",
+          "mustard"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_9",
+      "input": "PB&J on wheat.",
+      "reasoning": "Foods mentioned: peanut butter and jelly sandwich on wheat bread. Core ingredients are wheat bread, peanut butter, and jelly/jam. The exact fruit in the jelly is unknown, so keep it generic.",
+      "output": {
+        "ingredients": [
+          "wheat bread",
+          "peanut butter",
+          "jelly"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_10",
+      "input": "Bowl of ramen with pork and a soft-boiled egg.",
+      "reasoning": "Foods mentioned: ramen with pork and soft-boiled egg. Ramen at minimum includes ramen noodles and broth. Toppings specifically listed are pork and egg. Broth seasoning can vary widely, so only include broth as the core component.",
+      "output": {
+        "ingredients": [
+          "ramen noodles",
+          "broth",
+          "pork",
+          "egg"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_11",
+      "input": "Fish tacos with cabbage slaw and crema.",
+      "reasoning": "Foods mentioned: fish tacos, cabbage slaw, crema. Tacos imply tortillas. Fish is the main filling. Slaw here is explicitly cabbage-based; the dressing can vary, but crema suggests a dairy element—most reasonably sour cream/crema. Avoid adding other slaw ingredients not mentioned.",
+      "output": {
+        "ingredients": [
+          "tortillas",
+          "fish",
+          "cabbage",
+          "sour cream"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_12",
+      "input": "Veggie stir-fry with tofu and brown rice.",
+      "reasoning": "Foods mentioned: veggie stir-fry, tofu, brown rice. \"Veggie stir-fry\" is vague (vegetables unspecified), but it clearly implies mixed vegetables cooked with oil and a common sauce like soy sauce; garlic is a very standard stir-fry aromatic. Keep vegetables generic due to lack of detail.",
+      "output": {
+        "ingredients": [
+          "mixed vegetables",
+          "tofu",
+          "brown rice",
+          "vegetable oil",
+          "soy sauce",
+          "garlic"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_13",
+      "input": "Bagel with cream cheese and smoked salmon.",
+      "reasoning": "Foods mentioned: bagel, cream cheese, smoked salmon. These are already ingredient-level items; no need to infer capers/onion/lemon since not stated.",
+      "output": {
+        "ingredients": [
+          "bagel",
+          "cream cheese",
+          "smoked salmon"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_14",
+      "input": "Chili cheese dog.",
+      "reasoning": "Foods mentioned: chili cheese dog. This implies a hot dog sausage in a bun topped with chili and cheese. Chili commonly contains ground beef, beans, tomatoes, and onion; exact spices vary, so omit minor spices.",
+      "output": {
+        "ingredients": [
+          "hot dog bun",
+          "hot dog sausage",
+          "ground beef",
+          "beans",
+          "tomatoes",
+          "onion",
+          "cheese"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_15",
+      "input": "Margherita pizza.",
+      "reasoning": "Foods mentioned: Margherita pizza. Canonical components are pizza dough, tomatoes (sauce/crushed tomatoes), mozzarella, basil, and olive oil. This is relatively standardized compared to other pizza types.",
+      "output": {
+        "ingredients": [
+          "pizza dough",
+          "tomatoes",
+          "mozzarella",
+          "basil",
+          "olive oil"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_16",
+      "input": "Beef pho with basil and bean sprouts.",
+      "reasoning": "Foods mentioned: beef pho, basil, bean sprouts. Pho typically includes rice noodles and a beef-based broth. Common, distinctive aromatics for pho broth include onion, ginger, and star anise (spice is defining here). Then add the explicitly mentioned basil and bean sprouts plus beef.",
+      "output": {
+        "ingredients": [
+          "rice noodles",
+          "beef",
+          "beef broth",
+          "onion",
+          "ginger",
+          "star anise",
+          "basil",
+          "bean sprouts"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_17",
+      "input": "Overnight oats with chia, blueberries, and almond butter.",
+      "reasoning": "Foods mentioned: overnight oats, chia, blueberries, almond butter. Overnight oats strongly implies oats soaked in milk (or a milk-like liquid); milk is the most standard base. Then add chia seeds, blueberries, and almond butter as stated.",
+      "output": {
+        "ingredients": [
+          "oats",
+          "milk",
+          "chia seeds",
+          "blueberries",
+          "almond butter"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_18",
+      "input": "Chicken tikka masala with naan.",
+      "reasoning": "Foods mentioned: chicken tikka masala, naan. Tikka masala commonly includes chicken in a tomato-cream sauce with yogurt-marinated chicken and aromatics like onion, garlic, and ginger; exact spice blend varies, so keep to these core ingredients. Naan is a flatbread; the key grocery-level components are flour and yeast.",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "yogurt",
+          "tomatoes",
+          "cream",
+          "onion",
+          "garlic",
+          "ginger",
+          "flour",
+          "yeast"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_19",
+      "input": "Sausage and pepper pasta.",
+      "reasoning": "Foods mentioned: sausage and pepper pasta. This implies pasta with sausage and (most commonly) bell peppers. Sauce is not specified, so avoid assuming tomato sauce; olive oil and garlic are common, but not guaranteed—keep to the stated core components only.",
+      "output": {
+        "ingredients": [
+          "pasta",
+          "sausage",
+          "bell peppers"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_20",
+      "input": "Loaded baked potato with sour cream, bacon, and chives.",
+      "reasoning": "Foods mentioned: baked potato, sour cream, bacon, chives. These are direct components. Many loaded potatoes also include butter/cheese, but they are not mentioned so exclude them.",
+      "output": {
+        "ingredients": [
+          "potato",
+          "sour cream",
+          "bacon",
+          "chives"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_21",
+      "input": "Pancakes with maple syrup and strawberries.",
+      "reasoning": "Foods mentioned: pancakes, maple syrup, strawberries. Pancakes have a fairly standard batter base of flour, egg, milk, and a leavening agent (commonly baking powder). Then add maple syrup and strawberries as toppings.",
+      "output": {
+        "ingredients": [
+          "flour",
+          "egg",
+          "milk",
+          "baking powder",
+          "maple syrup",
+          "strawberries"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_22",
+      "input": "Turkey club sandwich with lettuce, tomato, and mayo.",
+      "reasoning": "Foods mentioned: turkey club sandwich plus lettuce, tomato, mayo. A club sandwich canonically includes bread, turkey, and bacon (a defining feature). Add the explicitly listed lettuce, tomato, and mayonnaise. Cheese is common but not specified.",
+      "output": {
+        "ingredients": [
+          "bread",
+          "turkey",
+          "bacon",
+          "lettuce",
+          "tomato",
+          "mayonnaise"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_23",
+      "input": "Bibimbap with beef and a fried egg.",
+      "reasoning": "Foods mentioned: bibimbap, beef, fried egg. Bibimbap is a mixed rice bowl; rice is core. It typically includes assorted vegetables and gochujang, often finished with sesame oil. Since vegetables aren’t specified, keep them generic while including the strongly implied gochujang and sesame oil as defining components.",
+      "output": {
+        "ingredients": [
+          "rice",
+          "beef",
+          "egg",
+          "mixed vegetables",
+          "gochujang",
+          "sesame oil"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_24",
+      "input": "Caprese salad.",
+      "reasoning": "Foods mentioned: caprese salad. Canonical ingredients are tomatoes, fresh mozzarella, basil, and olive oil. Balsamic vinegar is common but optional and not inherent, so omit it.",
+      "output": {
+        "ingredients": [
+          "tomatoes",
+          "fresh mozzarella",
+          "basil",
+          "olive oil"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_25",
+      "input": "An apple with cheddar slices.",
+      "reasoning": "Foods mentioned: apple and cheddar slices. Both are already ingredient-level; no additional inference needed.",
+      "output": {
+        "ingredients": [
+          "apple",
+          "cheddar cheese"
+        ],
+        "confidence_score": 10
+      }
+    },
+    {
+      "id": "test_26",
+      "input": "Chocolate chip cookie.",
+      "reasoning": "Foods mentioned: chocolate chip cookie. A standard cookie base includes flour, sugar, butter, and egg, with chocolate chips as the defining add-in. Other items (vanilla, baking soda, salt) can vary, so keep to the main core ingredients.",
+      "output": {
+        "ingredients": [
+          "flour",
+          "sugar",
+          "butter",
+          "egg",
+          "chocolate chips"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_27",
+      "input": "Js inhaled a burger lol",
+      "reasoning": "Food mentioned: a burger. This is vague with lots of variations. Core components that are strongly implied for a basic burger are a bun and a beef patty. Common toppings/condiments (cheese, lettuce, tomato, onion, ketchup) are not stated, so exclude them.",
+      "output": {
+        "ingredients": ["burger bun", "ground beef"],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_28",
+      "input": "Crushed some nuggies and fries",
+      "reasoning": "Foods mentioned: chicken nuggets and fries. Nuggets are typically chicken with a breading; fries are potatoes fried in oil. Sauces not mentioned, so omit.",
+      "output": {
+        "ingredients": ["chicken", "breadcrumbs", "potatoes", "oil"],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_29",
+      "input": "Ate hella mac n cheese",
+      "reasoning": "Food mentioned: macaroni and cheese. Canonical core ingredients are macaroni pasta, cheese, and milk; butter is also a standard base for many mac & cheese preparations. Specific cheese type unknown.",
+      "output": {
+        "ingredients": ["macaroni", "cheese", "milk", "butter"],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_30",
+      "input": "Downed a slice of za",
+      "reasoning": "\"Za\" is slang for pizza; only one slice is mentioned but ingredients are the same. Generic pizza core components: pizza dough, tomato sauce, cheese. Toppings unknown.",
+      "output": {
+        "ingredients": ["pizza dough", "tomato sauce", "cheese"],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_31",
+      "input": "Smashed a burrito bowl w chicken n guac",
+      "reasoning": "Foods mentioned: burrito bowl with chicken and guacamole. A burrito bowl typically has rice and beans as core base items, but they’re not guaranteed. What is strongly implied is that it's a bowl (no tortilla necessarily) with chicken and guacamole (avocado-based). To avoid over-guessing, include chicken and avocado; include rice only if considered essential—here it's not explicitly stated, so omit.",
+      "output": {
+        "ingredients": ["chicken", "avocado"],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_32",
+      "input": "Had a lil charcuterie moment (cheese, crackers, salami)",
+      "reasoning": "Foods explicitly listed: cheese, crackers, salami. These are already ingredient-level/grocery-level items.",
+      "output": {
+        "ingredients": ["cheese", "crackers", "salami"],
+        "confidence_score": 10
+      }
+    },
+    {
+      "id": "test_33",
+      "input": "Kinda demolished some tacos al pastor",
+      "reasoning": "Food mentioned: tacos al pastor. Core components are tortillas and pork. Al pastor is characteristically marinated with achiote and pineapple; onion and cilantro are common toppings but not guaranteed. Include the distinctive, defining items that are strongly associated with al pastor: pork, pineapple, achiote, tortillas.",
+      "output": {
+        "ingredients": ["tortillas", "pork", "pineapple", "achiote paste"],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_34",
+      "input": "Tore up a plate of spaghetti n meatballs",
+      "reasoning": "Foods mentioned: spaghetti and meatballs. Core: spaghetti pasta, tomato sauce, ground beef (meatballs), egg and breadcrumbs are common binders for meatballs. Parmesan is common but not stated.",
+      "output": {
+        "ingredients": ["spaghetti", "tomato sauce", "ground beef", "egg", "breadcrumbs"],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_35",
+      "input": "Just scarfed down a BLT",
+      "reasoning": "Food mentioned: BLT sandwich. Canonical ingredients are bread, bacon, lettuce, tomato, and typically mayonnaise (common/standard for BLTs).",
+      "output": {
+        "ingredients": ["bread", "bacon", "lettuce", "tomato", "mayonnaise"],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_36",
+      "input": "Ate a quesadilla real quick",
+      "reasoning": "Food mentioned: quesadilla. Core components are tortillas and melted cheese. Fillings (chicken, beans, etc.) are not mentioned so exclude.",
+      "output": {
+        "ingredients": ["tortillas", "cheese"],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_37",
+      "input": "Late night: ramen bomb w an egg",
+      "reasoning": "Foods mentioned: ramen (likely instant ramen given the slang) and an egg. Core: ramen noodles and seasoning/broth base; add egg. Specific additions not mentioned.",
+      "output": {
+        "ingredients": ["ramen noodles", "broth", "egg"],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_38",
+      "input": "Went ham on some pancakes n bacon",
+      "reasoning": "Foods mentioned: pancakes and bacon. Pancakes: flour, egg, milk, baking powder (common leavening). Bacon is direct.",
+      "output": {
+        "ingredients": ["flour", "egg", "milk", "baking powder", "bacon"],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_39",
+      "input": "Snacked on hummus w pita",
+      "reasoning": "Foods mentioned: hummus and pita. Hummus has a canonical base: chickpeas, tahini, lemon juice, garlic, olive oil. Pita is a flatbread; include it as an ingredient-level item.",
+      "output": {
+        "ingredients": ["chickpeas", "tahini", "lemon juice", "garlic", "olive oil", "pita bread"],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_40",
+      "input": "Got a big ol shawarma wrap",
+      "reasoning": "Food mentioned: shawarma wrap. Variations are huge (chicken vs beef, sauces, pickles, etc.). Core: flatbread wrap plus a shawarma meat. Since the meat type isn’t specified, use a generic 'shawarma-seasoned meat' is too abstract; better to list 'meat' is too vague. Most commonly it's chicken, but that’s guesswork—so include only flatbread and 'shawarma meat' as the best deducible ingredient label.",
+      "output": {
+        "ingredients": ["flatbread", "shawarma meat"],
+        "confidence_score": 4
+      }
+    },
+    {
+      "id": "test_41",
+      "input": "Ate some tendies w ranch",
+      "reasoning": "Foods mentioned: chicken tenders and ranch. Tenders are chicken with breading; ranch is a creamy dressing commonly based on buttermilk and mayonnaise with herbs. Herbs/spices vary, so keep to the base components.",
+      "output": {
+        "ingredients": ["chicken", "breadcrumbs", "buttermilk", "mayonnaise"],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_42",
+      "input": "Lol I just wolfed down a grilled cheese",
+      "reasoning": "Food mentioned: grilled cheese. This is a fairly standard item. Core ingredients are bread and cheese, usually cooked with butter (or sometimes oil/mayo). Butter is the most canonical cooking fat here.",
+      "output": {
+        "ingredients": ["bread", "cheese", "butter"],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_43",
+      "input": "Shmacked a lil yogurt bowl w granola n berries",
+      "reasoning": "Foods mentioned: yogurt bowl, granola, berries. Yogurt and granola are direct. \"Berries\" is generic, so keep it as a single ingredient category rather than guessing strawberry/blueberry/etc.",
+      "output": {
+        "ingredients": ["yogurt", "granola", "berries"],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_44",
+      "input": "Ran thru some pad thai",
+      "reasoning": "Food mentioned: pad thai. Canonical pad thai commonly includes rice noodles, egg, bean sprouts, peanuts, and a sauce based on fish sauce and tamarind. Protein (shrimp/chicken/tofu) varies and isn’t stated, so omit.",
+      "output": {
+        "ingredients": [
+          "rice noodles",
+          "egg",
+          "bean sprouts",
+          "peanuts",
+          "fish sauce",
+          "tamarind"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_45",
+      "input": "Had some wings n blue cheese dip",
+      "reasoning": "Foods mentioned: wings and blue cheese dip. Wings implies chicken wings; sauce style isn’t specified, so don’t assume buffalo/hot sauce. Blue cheese dip is typically blue cheese plus a creamy base (sour cream and/or mayonnaise); include the most common base components without going into herbs.",
+      "output": {
+        "ingredients": ["chicken wings", "blue cheese", "sour cream", "mayonnaise"],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_46",
+      "input": "Hit the diner and got biscuits n gravy",
+      "reasoning": "Food mentioned: biscuits and gravy (US-style). Biscuits are typically made from flour, butter, and milk (or buttermilk). The gravy is commonly sausage gravy: pork sausage cooked with flour and milk. Seasonings vary, so omit pepper/spices.",
+      "output": {
+        "ingredients": ["flour", "butter", "milk", "pork sausage"],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_47",
+      "input": "Ate a poke bowl thingy",
+      "reasoning": "Food mentioned: poke bowl, but described vaguely. Core poke bowl components are typically rice and raw fish; other add-ins (seaweed, cucumber, soy sauce, avocado) vary widely and aren’t stated, so exclude them.",
+      "output": {
+        "ingredients": ["rice", "raw fish"],
+        "confidence_score": 3
+      }
+    },
+    {
+      "id": "test_48",
+      "input": "Just munched on some trail mix",
+      "reasoning": "Food mentioned: trail mix. This varies a lot, but the most common core components are mixed nuts and dried fruit; chocolate/candy is common but not guaranteed, so omit.",
+      "output": {
+        "ingredients": ["mixed nuts", "dried fruit"],
+        "confidence_score": 4
+      }
+    },
+    {
+      "id": "test_49",
+      "input": "Inhaled a tuna melt",
+      "reasoning": "Food mentioned: tuna melt. This typically includes bread, tuna, and melted cheese; tuna salad commonly includes mayonnaise. Some versions add celery/onion, but that’s not guaranteed, so exclude.",
+      "output": {
+        "ingredients": ["bread", "tuna", "cheese", "mayonnaise"],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_50",
+      "input": "Bodied a bowl of cereal w milk",
+      "reasoning": "Foods mentioned: cereal and milk. The specific cereal type is unknown, so keep it generic as 'breakfast cereal' plus milk.",
+      "output": {
+        "ingredients": ["breakfast cereal", "milk"],
+        "confidence_score": 9
+      }
+    }
+  ]
+}
