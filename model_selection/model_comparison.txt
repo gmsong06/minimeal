@@ -1,0 +1,50 @@
+Model Comparison Results with 200 tests:
+
+Model: gpt-4o
+Average Precision: 0.5679
+Average Recall: 0.6979
+Average F1 Score: 0.6139
+Average Confidence Score Error: 1.4400
+Latency avg (ms): 2504.86
+Latency p50 (ms): 1312.02
+Latency p95 (ms): 6925.21
+Latency p99 (ms): 7452.28
+Latency max (ms): 7885.98
+Avg total tokens: 1385.0
+P95 total tokens: 1411.2
+Avg cost (USD): 0.002886
+P95 cost (USD): 0.003958
+Total cost (USD): 0.577155
+
+Model: gpt-4o-mini
+Average Precision: 0.5099
+Average Recall: 0.6099
+Average F1 Score: 0.5372
+Average Confidence Score Error: 1.4200
+Latency avg (ms): 1350.81
+Latency p50 (ms): 1273.59
+Latency p95 (ms): 2216.74
+Latency p99 (ms): 2892.09
+Latency max (ms): 4502.97
+Avg total tokens: 1380.9
+P95 total tokens: 1401.0
+Avg cost (USD): 0.000154
+P95 cost (USD): 0.000230
+Total cost (USD): 0.030776
+
+Model: gpt-4.1-nano
+Average Precision: 0.5144
+Average Recall: 0.6126
+Average F1 Score: 0.5382
+Average Confidence Score Error: 1.5000
+Latency avg (ms): 957.33
+Latency p50 (ms): 915.38
+Latency p95 (ms): 1515.86
+Latency p99 (ms): 1808.54
+Latency max (ms): 2320.12
+Avg total tokens: 1383.7
+P95 total tokens: 1409.0
+Avg cost (USD): 0.000096
+P95 cost (USD): 0.000159
+Total cost (USD): 0.019127
+
