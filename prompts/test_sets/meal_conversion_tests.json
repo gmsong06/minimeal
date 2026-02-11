@@ -1,14 +1,18 @@
 {
   "tests": [
     {
-      "id": "test_1",
-      "input": "Had a giant burrito with black beans, rice, and salsa for lunch.",
-      "reasoning": "The meal specifically mentions a \"burrito\" with identified contents: black beans, rice, and salsa. A burrito generally requires a tortilla to wrap the fillings. Salsa typically consists of tomatoes, onion, cilantro, and lime. There is little ambiguity since main fillings are listed, but exact salsa composition is an assumption.",
+      "id": "test_001",
+      "input": "Chipotle chicken burrito with black beans, cilantro-lime rice, fajita veggies, and pico",
       "output": {
         "ingredients": [
-          "tortilla",
+          "flour tortilla",
+          "chicken",
           "black beans",
           "rice",
+          "cilantro",
+          "lime",
+          "bell peppers",
+          "onion",
           "tomatoes",
           "onion",
           "cilantro",
@@ -18,108 +22,116 @@
       }
     },
     {
-      "id": "test_2",
-      "input": "Just grabbed pizza and wings at the game.",
-      "reasoning": "\"Pizza\" and \"wings\" are generic; no further specifics given. Pizza usually contains dough, cheese, tomato sauce. Wings generally refer to chicken wings, usually with a hot sauce (e.g., buffalo sauce: hot sauce, butter). The lack of details requires some assumption, so confidence is moderate.",
+      "id": "test_002",
+      "input": "Big Mac meal (Big Mac + fries + Coke)",
       "output": {
         "ingredients": [
-          "pizza dough",
+          "sesame seed bun",
+          "ground beef",
+          "lettuce",
           "cheese",
-          "tomato sauce",
-          "chicken wings",
-          "hot sauce",
-          "butter"
+          "pickles",
+          "onion",
+          "mayonnaise",
+          "ketchup",
+          "potatoes",
+          "oil",
+          "cola"
         ],
-        "confidence_score": 6
+        "confidence_score": 8
       }
     },
     {
-      "id": "test_3",
-      "input": "Greek yogurt with honey and some walnuts",
-      "reasoning": "Each item mentioned (\"greek yogurt\", \"honey\", \"walnuts\") is already an ingredient-level food, with no ambiguity or missing details.",
+      "id": "test_003",
+      "input": "Gyro w/ tzatziki and onions",
       "output": {
         "ingredients": [
-          "greek yogurt",
-          "honey",
-          "walnuts"
-        ],
-        "confidence_score": 10
-      }
-    },
-    {
-      "id": "test_4",
-      "input": "Had Cheesecake Factory white bread with butter",
-      "reasoning": "\"Cheesecake Factory white bread\" refers to a well-known branded bread, typically a brown or white sourdough, though precise recipe varies. The main bread ingredients are flour, yeast, molasses; \"butter\" is ingredient-level. There is some uncertainty due to possible recipe variation, so confidence is moderate.",
-      "output": {
-        "ingredients": [
-          "flour",
-          "yeast",
-          "molasses",
-          "butter"
+          "pita bread",
+          "gyro meat",
+          "yogurt",
+          "cucumber",
+          "garlic",
+          "lemon juice",
+          "onion"
         ],
         "confidence_score": 7
       }
     },
     {
-      "id": "test_5",
-      "input": "Grilled cheese w tomato soup and a side of fries with mustard",
-      "reasoning": "\"Grilled cheese\" usually has bread, cheese, butter. \"Tomato soup\" generally includes tomatoes, onion, garlic, broth. \"Fries with mustard\" breaks to potatoes, oil, mustard. These are relatively standard with only minor potential variation.",
+      "id": "test_004",
+      "input": "BLT + fries + chocolate shake",
       "output": {
         "ingredients": [
           "bread",
-          "cheese",
-          "butter",
-          "tomatoes",
-          "onion",
-          "garlic",
-          "broth",
+          "bacon",
+          "lettuce",
+          "tomato",
+          "mayonnaise",
           "potatoes",
           "oil",
-          "mustard"
+          "milk",
+          "ice cream",
+          "chocolate syrup"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_005",
+      "input": "Had lunch at a diner",
+      "output": {
+        "ingredients": [],
+        "confidence_score": 1
+      }
+    },
+    {
+      "id": "test_006",
+      "input": "Street tacos: carne asada with onion + cilantro",
+      "output": {
+        "ingredients": [
+          "corn tortillas",
+          "beef",
+          "onion",
+          "cilantro"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_007",
+      "input": "Iced coffee with oat milk and vanilla syrup",
+      "output": {
+        "ingredients": [
+          "coffee",
+          "ice",
+          "oat milk",
+          "vanilla syrup"
         ],
         "confidence_score": 9
       }
     },
     {
-      "id": "test_6",
-      "input": "sushi",
-      "reasoning": "The note is vague—just \"sushi,\" which varies greatly. Core components are rice and nori (seaweed). Most sushi also includes raw fish and possibly cucumber, with common condiments like soy sauce or wasabi, but types and fillings vary greatly. Major uncertainty due to lack of detail.",
+      "id": "test_008",
+      "input": "Ate ramen (tonkotsu) with chashu, nori, and soft egg",
       "output": {
         "ingredients": [
-          "rice",
-          "nori (seaweed)",
-          "raw fish",
-          "cucumbers",
-          "rice vinegar",
-          "wasabi"
-        ],
-        "confidence_score": 3
-      }
-    },
-{
-      "id": "test_7",
-      "input": "Avocado toast with a poached egg and chili flakes.",
-      "reasoning": "Foods mentioned: avocado toast, poached egg, chili flakes. Avocado toast implies toast (bread) topped with avocado. Poached egg contributes egg. Chili flakes are a direct topping. No other ingredients are stated or strongly implied.",
-      "output": {
-        "ingredients": [
-          "bread",
-          "avocado",
+          "ramen noodles",
+          "pork broth",
+          "pork",
           "egg",
-          "chili flakes"
+          "nori (seaweed)"
         ],
-        "confidence_score": 9
+        "confidence_score": 7
       }
     },
     {
-      "id": "test_8",
-      "input": "Chicken Caesar salad with extra croutons.",
-      "reasoning": "Foods mentioned: chicken Caesar salad, extra croutons. Core salad components are romaine lettuce, chicken, parmesan, and croutons (bread). Caesar dressing is strongly implied and has a fairly canonical base: egg/egg yolk, olive oil, lemon juice, anchovies, garlic, and mustard. Exact proportions vary but these are standard.",
+      "id": "test_009",
+      "input": "Caesar salad w grilled chicken, extra parm",
       "output": {
         "ingredients": [
           "romaine lettuce",
           "chicken",
           "parmesan cheese",
-          "bread",
           "egg yolk",
           "olive oil",
           "lemon juice",
@@ -131,111 +143,165 @@
       }
     },
     {
-      "id": "test_9",
-      "input": "PB&J on wheat.",
-      "reasoning": "Foods mentioned: peanut butter and jelly sandwich on wheat bread. Core ingredients are wheat bread, peanut butter, and jelly/jam. The exact fruit in the jelly is unknown, so keep it generic.",
+      "id": "test_010",
+      "input": "CFA spicy deluxe w waffle fries",
       "output": {
         "ingredients": [
-          "wheat bread",
-          "peanut butter",
-          "jelly"
+          "bun",
+          "chicken",
+          "breadcrumbs",
+          "lettuce",
+          "tomato",
+          "pickles",
+          "mayonnaise",
+          "potatoes",
+          "oil"
         ],
-        "confidence_score": 9
+        "confidence_score": 6
       }
     },
     {
-      "id": "test_10",
-      "input": "Bowl of ramen with pork and a soft-boiled egg.",
-      "reasoning": "Foods mentioned: ramen with pork and soft-boiled egg. Ramen at minimum includes ramen noodles and broth. Toppings specifically listed are pork and egg. Broth seasoning can vary widely, so only include broth as the core component.",
+      "id": "test_011",
+      "input": "Homemade avocado toast with everything bagel seasoning",
       "output": {
         "ingredients": [
-          "ramen noodles",
-          "broth",
+          "bread",
+          "avocado",
+          "sesame seeds",
+          "poppy seeds",
+          "salt",
+          "garlic",
+          "onion"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_012",
+      "input": "Banh mi with pork, pate, and pickled veg",
+      "output": {
+        "ingredients": [
+          "baguette",
           "pork",
-          "egg"
+          "pate",
+          "carrots",
+          "daikon",
+          "vinegar",
+          "cucumber",
+          "cilantro"
         ],
         "confidence_score": 6
       }
     },
     {
-      "id": "test_11",
-      "input": "Fish tacos with cabbage slaw and crema.",
-      "reasoning": "Foods mentioned: fish tacos, cabbage slaw, crema. Tacos imply tortillas. Fish is the main filling. Slaw here is explicitly cabbage-based; the dressing can vary, but crema suggests a dairy element—most reasonably sour cream/crema. Avoid adding other slaw ingredients not mentioned.",
+      "id": "test_013",
+      "input": "Sushi omakase",
       "output": {
         "ingredients": [
-          "tortillas",
-          "fish",
-          "cabbage",
-          "sour cream"
+          "rice",
+          "rice vinegar",
+          "raw fish",
+          "nori (seaweed)"
         ],
-        "confidence_score": 6
+        "confidence_score": 3
       }
     },
     {
-      "id": "test_12",
-      "input": "Veggie stir-fry with tofu and brown rice.",
-      "reasoning": "Foods mentioned: veggie stir-fry, tofu, brown rice. \"Veggie stir-fry\" is vague (vegetables unspecified), but it clearly implies mixed vegetables cooked with oil and a common sauce like soy sauce; garlic is a very standard stir-fry aromatic. Keep vegetables generic due to lack of detail.",
+      "id": "test_014",
+      "input": "Pad see ew with chicken",
       "output": {
         "ingredients": [
-          "mixed vegetables",
-          "tofu",
-          "brown rice",
-          "vegetable oil",
+          "wide rice noodles",
+          "chicken",
           "soy sauce",
-          "garlic"
+          "egg",
+          "mixed vegetables",
+          "vegetable oil"
         ],
         "confidence_score": 5
       }
     },
     {
-      "id": "test_13",
-      "input": "Bagel with cream cheese and smoked salmon.",
-      "reasoning": "Foods mentioned: bagel, cream cheese, smoked salmon. These are already ingredient-level items; no need to infer capers/onion/lemon since not stated.",
+      "id": "test_015",
+      "input": "Chipotle bowl: steak, pinto beans, brown rice, corn salsa, sour cream",
       "output": {
         "ingredients": [
-          "bagel",
-          "cream cheese",
-          "smoked salmon"
-        ],
-        "confidence_score": 9
-      }
-    },
-    {
-      "id": "test_14",
-      "input": "Chili cheese dog.",
-      "reasoning": "Foods mentioned: chili cheese dog. This implies a hot dog sausage in a bun topped with chili and cheese. Chili commonly contains ground beef, beans, tomatoes, and onion; exact spices vary, so omit minor spices.",
-      "output": {
-        "ingredients": [
-          "hot dog bun",
-          "hot dog sausage",
-          "ground beef",
-          "beans",
+          "beef",
+          "pinto beans",
+          "brown rice",
+          "corn",
           "tomatoes",
           "onion",
-          "cheese"
-        ],
-        "confidence_score": 6
-      }
-    },
-    {
-      "id": "test_15",
-      "input": "Margherita pizza.",
-      "reasoning": "Foods mentioned: Margherita pizza. Canonical components are pizza dough, tomatoes (sauce/crushed tomatoes), mozzarella, basil, and olive oil. This is relatively standardized compared to other pizza types.",
-      "output": {
-        "ingredients": [
-          "pizza dough",
-          "tomatoes",
-          "mozzarella",
-          "basil",
-          "olive oil"
+          "cilantro",
+          "lime",
+          "sour cream"
         ],
         "confidence_score": 8
       }
     },
     {
-      "id": "test_16",
-      "input": "Beef pho with basil and bean sprouts.",
-      "reasoning": "Foods mentioned: beef pho, basil, bean sprouts. Pho typically includes rice noodles and a beef-based broth. Common, distinctive aromatics for pho broth include onion, ginger, and star anise (spice is defining here). Then add the explicitly mentioned basil and bean sprouts plus beef.",
+      "id": "test_016",
+      "input": "Starbucks Bacon Gouda sandwich + latte",
+      "output": {
+        "ingredients": [
+          "bread",
+          "egg",
+          "bacon",
+          "gouda cheese",
+          "coffee",
+          "milk"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_017",
+      "input": "Breakfast burrito w eggs, chorizo, potatoes, and salsa verde",
+      "output": {
+        "ingredients": [
+          "flour tortilla",
+          "egg",
+          "chorizo",
+          "potatoes",
+          "tomatillos",
+          "onion",
+          "cilantro",
+          "lime"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_018",
+      "input": "Just had a salad",
+      "output": {
+        "ingredients": [
+          "mixed greens"
+        ],
+        "confidence_score": 2
+      }
+    },
+    {
+      "id": "test_019",
+      "input": "Shake Shack ShackBurger w cheese + crinkle fries",
+      "output": {
+        "ingredients": [
+          "bun",
+          "ground beef",
+          "cheese",
+          "lettuce",
+          "tomato",
+          "mayonnaise",
+          "ketchup",
+          "potatoes",
+          "oil"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_020",
+      "input": "Pho tai (rare beef) w basil and bean sprouts",
       "output": {
         "ingredients": [
           "rice noodles",
@@ -251,24 +317,421 @@
       }
     },
     {
-      "id": "test_17",
-      "input": "Overnight oats with chia, blueberries, and almond butter.",
-      "reasoning": "Foods mentioned: overnight oats, chia, blueberries, almond butter. Overnight oats strongly implies oats soaked in milk (or a milk-like liquid); milk is the most standard base. Then add chia seeds, blueberries, and almond butter as stated.",
+      "id": "test_021",
+      "input": "Poke bowl w salmon, rice, and spicy mayo",
       "output": {
         "ingredients": [
-          "oats",
-          "milk",
-          "chia seeds",
-          "blueberries",
-          "almond butter"
+          "salmon",
+          "rice",
+          "mayonnaise",
+          "hot sauce"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_022",
+      "input": "Wawa hoagie (italian)",
+      "output": {
+        "ingredients": [
+          "sub roll",
+          "salami",
+          "ham",
+          "pepperoni",
+          "cheese",
+          "lettuce",
+          "tomato",
+          "onion"
+        ],
+        "confidence_score": 4
+      }
+    },
+    {
+      "id": "test_023",
+      "input": "Coney dog with onions and mustard",
+      "output": {
+        "ingredients": [
+          "hot dog bun",
+          "hot dog sausage",
+          "ground beef",
+          "tomatoes",
+          "onion",
+          "mustard"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_024",
+      "input": "Korean fried chicken with pickled radish",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "breadcrumbs",
+          "oil",
+          "radish",
+          "vinegar"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_025",
+      "input": "PB&J on wheat",
+      "output": {
+        "ingredients": [
+          "wheat bread",
+          "peanut butter",
+          "jelly"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_026",
+      "input": "Charcuterie plate: brie, prosciutto, olives, and almonds",
+      "output": {
+        "ingredients": [
+          "brie",
+          "prosciutto",
+          "olives",
+          "almonds"
+        ],
+        "confidence_score": 10
+      }
+    },
+    {
+      "id": "test_027",
+      "input": "Chili cheese fries",
+      "output": {
+        "ingredients": [
+          "potatoes",
+          "oil",
+          "ground beef",
+          "beans",
+          "tomatoes",
+          "onion",
+          "cheese"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_028",
+      "input": "Ate at Olive Garden (idk what it was)",
+      "output": {
+        "ingredients": [],
+        "confidence_score": 1
+      }
+    },
+    {
+      "id": "test_029",
+      "input": "Margherita pizza",
+      "output": {
+        "ingredients": [
+          "pizza dough",
+          "tomatoes",
+          "mozzarella",
+          "basil",
+          "olive oil"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_030",
+      "input": "McNuggets + sweet & sour + fries",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "breadcrumbs",
+          "potatoes",
+          "oil",
+          "sweet and sour sauce"
         ],
         "confidence_score": 7
       }
     },
     {
-      "id": "test_18",
-      "input": "Chicken tikka masala with naan.",
-      "reasoning": "Foods mentioned: chicken tikka masala, naan. Tikka masala commonly includes chicken in a tomato-cream sauce with yogurt-marinated chicken and aromatics like onion, garlic, and ginger; exact spice blend varies, so keep to these core ingredients. Naan is a flatbread; the key grocery-level components are flour and yeast.",
+      "id": "test_031",
+      "input": "Bodega egg and cheese on a roll",
+      "output": {
+        "ingredients": [
+          "roll",
+          "egg",
+          "cheese"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_032",
+      "input": "Lox bagel with cream cheese and capers",
+      "output": {
+        "ingredients": [
+          "bagel",
+          "cream cheese",
+          "smoked salmon",
+          "capers"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_033",
+      "input": "Tried birria tacos with consomme",
+      "output": {
+        "ingredients": [
+          "tortillas",
+          "beef",
+          "broth",
+          "tomatoes",
+          "onion"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_034",
+      "input": "Just some fruit",
+      "output": {
+        "ingredients": [
+          "fruit"
+        ],
+        "confidence_score": 2
+      }
+    },
+    {
+      "id": "test_035",
+      "input": "Tuna melt on sourdough",
+      "output": {
+        "ingredients": [
+          "sourdough bread",
+          "tuna",
+          "cheese",
+          "mayonnaise"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_036",
+      "input": "Pasta primavera w lots of veggies",
+      "output": {
+        "ingredients": [
+          "pasta",
+          "mixed vegetables",
+          "olive oil"
+        ],
+        "confidence_score": 4
+      }
+    },
+    {
+      "id": "test_037",
+      "input": "Breakfast: overnight oats w chia + banana",
+      "output": {
+        "ingredients": [
+          "oats",
+          "milk",
+          "chia seeds",
+          "banana"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_038",
+      "input": "In-N-Out Double-Double animal style",
+      "output": {
+        "ingredients": [
+          "bun",
+          "ground beef",
+          "cheese",
+          "lettuce",
+          "tomato",
+          "onion",
+          "mayonnaise",
+          "ketchup",
+          "pickles"
+        ],
+        "confidence_score": 4
+      }
+    },
+    {
+      "id": "test_039",
+      "input": "Ate lasagna (meat)",
+      "output": {
+        "ingredients": [
+          "lasagna noodles",
+          "ground beef",
+          "tomato sauce",
+          "ricotta",
+          "mozzarella"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_040",
+      "input": "Just coffee",
+      "output": {
+        "ingredients": [
+          "coffee"
+        ],
+        "confidence_score": 10
+      }
+    },
+
+    {
+      "id": "test_041",
+      "input": "Cobb salad with bacon, blue cheese, avocado, and hard-boiled egg",
+      "output": {
+        "ingredients": [
+          "mixed greens",
+          "bacon",
+          "blue cheese",
+          "avocado",
+          "egg"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_042",
+      "input": "Turkey club w lettuce tomato mayo (triple decker)",
+      "output": {
+        "ingredients": [
+          "bread",
+          "turkey",
+          "bacon",
+          "lettuce",
+          "tomato",
+          "mayonnaise"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_043",
+      "input": "Bowl of cereal with milk",
+      "output": {
+        "ingredients": [
+          "breakfast cereal",
+          "milk"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_044",
+      "input": "Chilaquiles verdes with chicken and queso",
+      "output": {
+        "ingredients": [
+          "tortilla chips",
+          "tomatillos",
+          "chicken",
+          "cheese",
+          "onion",
+          "cilantro"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_045",
+      "input": "Falafel wrap w hummus",
+      "output": {
+        "ingredients": [
+          "flatbread",
+          "falafel",
+          "chickpeas",
+          "tahini",
+          "lemon juice",
+          "garlic",
+          "olive oil"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_046",
+      "input": "Had steak frites",
+      "output": {
+        "ingredients": [
+          "beef steak",
+          "potatoes",
+          "oil"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_047",
+      "input": "A slice of za",
+      "output": {
+        "ingredients": [
+          "pizza dough",
+          "tomato sauce",
+          "cheese"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_048",
+      "input": "Burrito bowl w chicken n guac",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "avocado"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_049",
+      "input": "Hummus + pita",
+      "output": {
+        "ingredients": [
+          "chickpeas",
+          "tahini",
+          "lemon juice",
+          "garlic",
+          "olive oil",
+          "pita bread"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_050",
+      "input": "Biscuits n gravy",
+      "output": {
+        "ingredients": [
+          "flour",
+          "butter",
+          "milk",
+          "pork sausage"
+        ],
+        "confidence_score": 7
+      }
+    },
+
+    {
+      "id": "test_051",
+      "input": "Everything bagel with scallion cream cheese",
+      "output": {
+        "ingredients": [
+          "bagel",
+          "cream cheese",
+          "scallions"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_052",
+      "input": "Chicken tikka masala + naan",
       "output": {
         "ingredients": [
           "chicken",
@@ -285,22 +748,126 @@
       }
     },
     {
-      "id": "test_19",
-      "input": "Sausage and pepper pasta.",
-      "reasoning": "Foods mentioned: sausage and pepper pasta. This implies pasta with sausage and (most commonly) bell peppers. Sauce is not specified, so avoid assuming tomato sauce; olive oil and garlic are common, but not guaranteed—keep to the stated core components only.",
+      "id": "test_053",
+      "input": "Ate a quesadilla real quick",
       "output": {
         "ingredients": [
-          "pasta",
-          "sausage",
-          "bell peppers"
+          "tortillas",
+          "cheese"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_054",
+      "input": "Pancakes and bacon",
+      "output": {
+        "ingredients": [
+          "flour",
+          "egg",
+          "milk",
+          "baking powder",
+          "bacon"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_055",
+      "input": "Nachos supreme (beef + cheese + jalapenos)",
+      "output": {
+        "ingredients": [
+          "tortilla chips",
+          "ground beef",
+          "cheese",
+          "jalapenos"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_056",
+      "input": "Chicken parm hero",
+      "output": {
+        "ingredients": [
+          "sub roll",
+          "chicken",
+          "breadcrumbs",
+          "tomato sauce",
+          "mozzarella"
         ],
         "confidence_score": 6
       }
     },
     {
-      "id": "test_20",
-      "input": "Loaded baked potato with sour cream, bacon, and chives.",
-      "reasoning": "Foods mentioned: baked potato, sour cream, bacon, chives. These are direct components. Many loaded potatoes also include butter/cheese, but they are not mentioned so exclude them.",
+      "id": "test_057",
+      "input": "Had some BBQ ribs + coleslaw",
+      "output": {
+        "ingredients": [
+          "pork ribs",
+          "barbecue sauce",
+          "cabbage",
+          "mayonnaise"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_058",
+      "input": "Granola bar",
+      "output": {
+        "ingredients": [
+          "granola bar"
+        ],
+        "confidence_score": 4
+      }
+    },
+    {
+      "id": "test_059",
+      "input": "Smashed spaghetti n meatballs",
+      "output": {
+        "ingredients": [
+          "spaghetti",
+          "tomato sauce",
+          "ground beef",
+          "egg",
+          "breadcrumbs"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_060",
+      "input": "Wings n blue cheese dip",
+      "output": {
+        "ingredients": [
+          "chicken wings",
+          "blue cheese",
+          "sour cream",
+          "mayonnaise"
+        ],
+        "confidence_score": 6
+      }
+    },
+
+    {
+      "id": "test_061",
+      "input": "Salmon sushi roll with avocado and cucumber",
+      "output": {
+        "ingredients": [
+          "rice",
+          "rice vinegar",
+          "nori (seaweed)",
+          "salmon",
+          "avocado",
+          "cucumber"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_062",
+      "input": "Loaded baked potato w sour cream + bacon + chives",
       "output": {
         "ingredients": [
           "potato",
@@ -312,57 +879,118 @@
       }
     },
     {
-      "id": "test_21",
-      "input": "Pancakes with maple syrup and strawberries.",
-      "reasoning": "Foods mentioned: pancakes, maple syrup, strawberries. Pancakes have a fairly standard batter base of flour, egg, milk, and a leavening agent (commonly baking powder). Then add maple syrup and strawberries as toppings.",
+      "id": "test_063",
+      "input": "Protein shake (whey + banana + peanut butter)",
       "output": {
         "ingredients": [
-          "flour",
-          "egg",
-          "milk",
-          "baking powder",
-          "maple syrup",
-          "strawberries"
-        ],
-        "confidence_score": 7
-      }
-    },
-    {
-      "id": "test_22",
-      "input": "Turkey club sandwich with lettuce, tomato, and mayo.",
-      "reasoning": "Foods mentioned: turkey club sandwich plus lettuce, tomato, mayo. A club sandwich canonically includes bread, turkey, and bacon (a defining feature). Add the explicitly listed lettuce, tomato, and mayonnaise. Cheese is common but not specified.",
-      "output": {
-        "ingredients": [
-          "bread",
-          "turkey",
-          "bacon",
-          "lettuce",
-          "tomato",
-          "mayonnaise"
+          "whey protein",
+          "banana",
+          "peanut butter"
         ],
         "confidence_score": 8
       }
     },
     {
-      "id": "test_23",
-      "input": "Bibimbap with beef and a fried egg.",
-      "reasoning": "Foods mentioned: bibimbap, beef, fried egg. Bibimbap is a mixed rice bowl; rice is core. It typically includes assorted vegetables and gochujang, often finished with sesame oil. Since vegetables aren’t specified, keep them generic while including the strongly implied gochujang and sesame oil as defining components.",
+      "id": "test_064",
+      "input": "Had dim sum (random stuff)",
+      "output": {
+        "ingredients": [],
+        "confidence_score": 1
+      }
+    },
+    {
+      "id": "test_065",
+      "input": "Burrata with tomatoes and basil",
       "output": {
         "ingredients": [
-          "rice",
-          "beef",
-          "egg",
-          "mixed vegetables",
-          "gochujang",
-          "sesame oil"
+          "burrata",
+          "tomatoes",
+          "basil",
+          "olive oil"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_066",
+      "input": "Chicken noodle soup",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "noodles",
+          "broth"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_067",
+      "input": "Hot take: just ate chips and guac",
+      "output": {
+        "ingredients": [
+          "tortilla chips",
+          "avocado"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_068",
+      "input": "Subway footlong meatball marinara",
+      "output": {
+        "ingredients": [
+          "sub roll",
+          "ground beef",
+          "breadcrumbs",
+          "tomato sauce"
+        ],
+        "confidence_score": 4
+      }
+    },
+    {
+      "id": "test_069",
+      "input": "CFA nuggets + mac n cheese",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "breadcrumbs",
+          "macaroni",
+          "cheese",
+          "milk",
+          "butter"
         ],
         "confidence_score": 5
       }
     },
     {
-      "id": "test_24",
-      "input": "Caprese salad.",
-      "reasoning": "Foods mentioned: caprese salad. Canonical ingredients are tomatoes, fresh mozzarella, basil, and olive oil. Balsamic vinegar is common but optional and not inherent, so omit it.",
+      "id": "test_070",
+      "input": "Ate hella mac n cheese",
+      "output": {
+        "ingredients": [
+          "macaroni",
+          "cheese",
+          "milk",
+          "butter"
+        ],
+        "confidence_score": 7
+      }
+    },
+
+    {
+      "id": "test_071",
+      "input": "Greek yogurt with honey and walnuts",
+      "output": {
+        "ingredients": [
+          "greek yogurt",
+          "honey",
+          "walnuts"
+        ],
+        "confidence_score": 10
+      }
+    },
+    {
+      "id": "test_072",
+      "input": "Caprese salad",
       "output": {
         "ingredients": [
           "tomatoes",
@@ -374,9 +1002,97 @@
       }
     },
     {
-      "id": "test_25",
-      "input": "An apple with cheddar slices.",
-      "reasoning": "Foods mentioned: apple and cheddar slices. Both are already ingredient-level; no additional inference needed.",
+      "id": "test_073",
+      "input": "Shawarma wrap (chicken) with garlic sauce",
+      "output": {
+        "ingredients": [
+          "flatbread",
+          "chicken",
+          "garlic",
+          "mayonnaise"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_074",
+      "input": "Just munched on trail mix",
+      "output": {
+        "ingredients": [
+          "mixed nuts",
+          "dried fruit"
+        ],
+        "confidence_score": 4
+      }
+    },
+    {
+      "id": "test_075",
+      "input": "Kinda demolished tacos al pastor",
+      "output": {
+        "ingredients": [
+          "tortillas",
+          "pork",
+          "pineapple",
+          "achiote paste"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_076",
+      "input": "Panda Express orange chicken + chow mein",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "breadcrumbs",
+          "orange sauce",
+          "noodles",
+          "mixed vegetables"
+        ],
+        "confidence_score": 4
+      }
+    },
+    {
+      "id": "test_077",
+      "input": "Had a burger",
+      "output": {
+        "ingredients": [
+          "burger bun",
+          "ground beef"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_078",
+      "input": "Bodied a bowl of ramen (instant) w an egg",
+      "output": {
+        "ingredients": [
+          "ramen noodles",
+          "broth",
+          "egg"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_079",
+      "input": "Veggie stir-fry with tofu and brown rice",
+      "output": {
+        "ingredients": [
+          "mixed vegetables",
+          "tofu",
+          "brown rice",
+          "vegetable oil",
+          "soy sauce",
+          "garlic"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_080",
+      "input": "Apple + cheddar slices",
       "output": {
         "ingredients": [
           "apple",
@@ -385,10 +1101,256 @@
         "confidence_score": 10
       }
     },
+
     {
-      "id": "test_26",
-      "input": "Chocolate chip cookie.",
-      "reasoning": "Foods mentioned: chocolate chip cookie. A standard cookie base includes flour, sugar, butter, and egg, with chocolate chips as the defining add-in. Other items (vanilla, baking soda, salt) can vary, so keep to the main core ingredients.",
+      "id": "test_081",
+      "input": "Chicken and waffles with maple syrup",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "breadcrumbs",
+          "waffle",
+          "maple syrup"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_082",
+      "input": "Bowl of oatmeal w cinnamon and raisins",
+      "output": {
+        "ingredients": [
+          "oats",
+          "water",
+          "cinnamon",
+          "raisins"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_083",
+      "input": "Baked ziti",
+      "output": {
+        "ingredients": [
+          "ziti",
+          "tomato sauce",
+          "ricotta",
+          "mozzarella"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_084",
+      "input": "Sausage, egg, and cheese McMuffin",
+      "output": {
+        "ingredients": [
+          "english muffin",
+          "pork sausage",
+          "egg",
+          "cheese"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_085",
+      "input": "Buldak noodles",
+      "output": {
+        "ingredients": [
+          "ramen noodles",
+          "spicy sauce"
+        ],
+        "confidence_score": 3
+      }
+    },
+    {
+      "id": "test_086",
+      "input": "Butter chicken with rice",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "tomatoes",
+          "butter",
+          "cream",
+          "rice"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_087",
+      "input": "Currywurst + fries",
+      "output": {
+        "ingredients": [
+          "sausage",
+          "ketchup",
+          "curry powder",
+          "potatoes",
+          "oil"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_088",
+      "input": "Breakfast sandwich: egg whites, spinach, feta on an english muffin",
+      "output": {
+        "ingredients": [
+          "english muffin",
+          "egg whites",
+          "spinach",
+          "feta"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_089",
+      "input": "Had some soup",
+      "output": {
+        "ingredients": [
+          "soup"
+        ],
+        "confidence_score": 2
+      }
+    },
+    {
+      "id": "test_090",
+      "input": "Boba milk tea (tapioca pearls)",
+      "output": {
+        "ingredients": [
+          "tea",
+          "milk",
+          "tapioca pearls",
+          "sugar"
+        ],
+        "confidence_score": 8
+      }
+    },
+
+    {
+      "id": "test_091",
+      "input": "Carne asada fries (loaded)",
+      "output": {
+        "ingredients": [
+          "potatoes",
+          "oil",
+          "beef",
+          "cheese",
+          "sour cream",
+          "avocado"
+        ],
+        "confidence_score": 4
+      }
+    },
+    {
+      "id": "test_092",
+      "input": "Ate a poke bowl thingy",
+      "output": {
+        "ingredients": [
+          "rice",
+          "raw fish"
+        ],
+        "confidence_score": 3
+      }
+    },
+    {
+      "id": "test_093",
+      "input": "Chicken katsu with rice and cabbage",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "breadcrumbs",
+          "rice",
+          "cabbage"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_094",
+      "input": "Tonkatsu ramen",
+      "output": {
+        "ingredients": [
+          "ramen noodles",
+          "pork broth",
+          "pork"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_095",
+      "input": "Ahi tuna salad",
+      "output": {
+        "ingredients": [
+          "tuna",
+          "mixed greens"
+        ],
+        "confidence_score": 4
+      }
+    },
+    {
+      "id": "test_096",
+      "input": "Whole Foods hot bar plate",
+      "output": {
+        "ingredients": [],
+        "confidence_score": 1
+      }
+    },
+    {
+      "id": "test_097",
+      "input": "Panera broccoli cheddar soup in a bread bowl",
+      "output": {
+        "ingredients": [
+          "broccoli",
+          "cheddar cheese",
+          "milk",
+          "bread"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_098",
+      "input": "Chicken Caesar wrap",
+      "output": {
+        "ingredients": [
+          "flour tortilla",
+          "romaine lettuce",
+          "chicken",
+          "parmesan cheese",
+          "egg yolk",
+          "olive oil",
+          "lemon juice",
+          "anchovies",
+          "garlic",
+          "mustard"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_099",
+      "input": "Grilled cheese + tomato soup",
+      "output": {
+        "ingredients": [
+          "bread",
+          "cheese",
+          "butter",
+          "tomatoes",
+          "broth",
+          "onion",
+          "garlic"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_100",
+      "input": "Ate a chocolate chip cookie",
       "output": {
         "ingredients": [
           "flour",
@@ -401,225 +1363,1314 @@
       }
     },
     {
-      "id": "test_27",
-      "input": "Js inhaled a burger lol",
-      "reasoning": "Food mentioned: a burger. This is vague with lots of variations. Core components that are strongly implied for a basic burger are a bun and a beef patty. Common toppings/condiments (cheese, lettuce, tomato, onion, ketchup) are not stated, so exclude them.",
+      "id": "test_101",
+      "input": "Shrimp scampi over linguine",
       "output": {
-        "ingredients": ["burger bun", "ground beef"],
-        "confidence_score": 5
-      }
-    },
-    {
-      "id": "test_28",
-      "input": "Crushed some nuggies and fries",
-      "reasoning": "Foods mentioned: chicken nuggets and fries. Nuggets are typically chicken with a breading; fries are potatoes fried in oil. Sauces not mentioned, so omit.",
-      "output": {
-        "ingredients": ["chicken", "breadcrumbs", "potatoes", "oil"],
+        "ingredients": [
+          "shrimp",
+          "linguine",
+          "butter",
+          "garlic",
+          "lemon juice",
+          "olive oil"
+        ],
         "confidence_score": 7
       }
     },
     {
-      "id": "test_29",
-      "input": "Ate hella mac n cheese",
-      "reasoning": "Food mentioned: macaroni and cheese. Canonical core ingredients are macaroni pasta, cheese, and milk; butter is also a standard base for many mac & cheese preparations. Specific cheese type unknown.",
+      "id": "test_102",
+      "input": "Pulled pork sandwich with coleslaw",
       "output": {
-        "ingredients": ["macaroni", "cheese", "milk", "butter"],
-        "confidence_score": 7
-      }
-    },
-    {
-      "id": "test_30",
-      "input": "Downed a slice of za",
-      "reasoning": "\"Za\" is slang for pizza; only one slice is mentioned but ingredients are the same. Generic pizza core components: pizza dough, tomato sauce, cheese. Toppings unknown.",
-      "output": {
-        "ingredients": ["pizza dough", "tomato sauce", "cheese"],
+        "ingredients": [
+          "bun",
+          "pork",
+          "barbecue sauce",
+          "cabbage",
+          "mayonnaise"
+        ],
         "confidence_score": 6
       }
     },
     {
-      "id": "test_31",
-      "input": "Smashed a burrito bowl w chicken n guac",
-      "reasoning": "Foods mentioned: burrito bowl with chicken and guacamole. A burrito bowl typically has rice and beans as core base items, but they’re not guaranteed. What is strongly implied is that it's a bowl (no tortilla necessarily) with chicken and guacamole (avocado-based). To avoid over-guessing, include chicken and avocado; include rice only if considered essential—here it's not explicitly stated, so omit.",
+      "id": "test_103",
+      "input": "Eggplant parmesan with spaghetti",
       "output": {
-        "ingredients": ["chicken", "avocado"],
-        "confidence_score": 5
-      }
-    },
-    {
-      "id": "test_32",
-      "input": "Had a lil charcuterie moment (cheese, crackers, salami)",
-      "reasoning": "Foods explicitly listed: cheese, crackers, salami. These are already ingredient-level/grocery-level items.",
-      "output": {
-        "ingredients": ["cheese", "crackers", "salami"],
-        "confidence_score": 10
-      }
-    },
-    {
-      "id": "test_33",
-      "input": "Kinda demolished some tacos al pastor",
-      "reasoning": "Food mentioned: tacos al pastor. Core components are tortillas and pork. Al pastor is characteristically marinated with achiote and pineapple; onion and cilantro are common toppings but not guaranteed. Include the distinctive, defining items that are strongly associated with al pastor: pork, pineapple, achiote, tortillas.",
-      "output": {
-        "ingredients": ["tortillas", "pork", "pineapple", "achiote paste"],
-        "confidence_score": 6
-      }
-    },
-    {
-      "id": "test_34",
-      "input": "Tore up a plate of spaghetti n meatballs",
-      "reasoning": "Foods mentioned: spaghetti and meatballs. Core: spaghetti pasta, tomato sauce, ground beef (meatballs), egg and breadcrumbs are common binders for meatballs. Parmesan is common but not stated.",
-      "output": {
-        "ingredients": ["spaghetti", "tomato sauce", "ground beef", "egg", "breadcrumbs"],
+        "ingredients": [
+          "eggplant",
+          "breadcrumbs",
+          "tomato sauce",
+          "mozzarella",
+          "parmesan cheese",
+          "spaghetti"
+        ],
         "confidence_score": 7
       }
     },
     {
-      "id": "test_35",
-      "input": "Just scarfed down a BLT",
-      "reasoning": "Food mentioned: BLT sandwich. Canonical ingredients are bread, bacon, lettuce, tomato, and typically mayonnaise (common/standard for BLTs).",
+      "id": "test_104",
+      "input": "Hot honey pepperoni pizza",
       "output": {
-        "ingredients": ["bread", "bacon", "lettuce", "tomato", "mayonnaise"],
-        "confidence_score": 8
-      }
-    },
-    {
-      "id": "test_36",
-      "input": "Ate a quesadilla real quick",
-      "reasoning": "Food mentioned: quesadilla. Core components are tortillas and melted cheese. Fillings (chicken, beans, etc.) are not mentioned so exclude.",
-      "output": {
-        "ingredients": ["tortillas", "cheese"],
-        "confidence_score": 8
-      }
-    },
-    {
-      "id": "test_37",
-      "input": "Late night: ramen bomb w an egg",
-      "reasoning": "Foods mentioned: ramen (likely instant ramen given the slang) and an egg. Core: ramen noodles and seasoning/broth base; add egg. Specific additions not mentioned.",
-      "output": {
-        "ingredients": ["ramen noodles", "broth", "egg"],
-        "confidence_score": 6
-      }
-    },
-    {
-      "id": "test_38",
-      "input": "Went ham on some pancakes n bacon",
-      "reasoning": "Foods mentioned: pancakes and bacon. Pancakes: flour, egg, milk, baking powder (common leavening). Bacon is direct.",
-      "output": {
-        "ingredients": ["flour", "egg", "milk", "baking powder", "bacon"],
+        "ingredients": [
+          "pizza dough",
+          "tomato sauce",
+          "mozzarella",
+          "pepperoni",
+          "honey",
+          "chili flakes"
+        ],
         "confidence_score": 7
       }
     },
     {
-      "id": "test_39",
-      "input": "Snacked on hummus w pita",
-      "reasoning": "Foods mentioned: hummus and pita. Hummus has a canonical base: chickpeas, tahini, lemon juice, garlic, olive oil. Pita is a flatbread; include it as an ingredient-level item.",
+      "id": "test_105",
+      "input": "Breakfast tacos with scrambled eggs and bacon",
       "output": {
-        "ingredients": ["chickpeas", "tahini", "lemon juice", "garlic", "olive oil", "pita bread"],
+        "ingredients": [
+          "tortillas",
+          "egg",
+          "bacon"
+        ],
         "confidence_score": 8
       }
     },
     {
-      "id": "test_40",
-      "input": "Got a big ol shawarma wrap",
-      "reasoning": "Food mentioned: shawarma wrap. Variations are huge (chicken vs beef, sauces, pickles, etc.). Core: flatbread wrap plus a shawarma meat. Since the meat type isn’t specified, use a generic 'shawarma-seasoned meat' is too abstract; better to list 'meat' is too vague. Most commonly it's chicken, but that’s guesswork—so include only flatbread and 'shawarma meat' as the best deducible ingredient label.",
+      "id": "test_106",
+      "input": "Crispy tofu banh mi",
       "output": {
-        "ingredients": ["flatbread", "shawarma meat"],
+        "ingredients": [
+          "baguette",
+          "tofu",
+          "carrots",
+          "daikon",
+          "vinegar",
+          "cucumber",
+          "cilantro"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_107",
+      "input": "Just grabbed some fast food",
+      "output": {
+        "ingredients": [],
+        "confidence_score": 1
+      }
+    },
+    {
+      "id": "test_108",
+      "input": "Clam chowder in a sourdough bowl",
+      "output": {
+        "ingredients": [
+          "clams",
+          "potatoes",
+          "cream",
+          "onion",
+          "sourdough bread"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_109",
+      "input": "Teriyaki chicken rice bowl",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "rice",
+          "soy sauce",
+          "sugar",
+          "ginger",
+          "garlic"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_110",
+      "input": "Bagel Bites",
+      "output": {
+        "ingredients": [
+          "pizza dough",
+          "tomato sauce",
+          "cheese"
+        ],
         "confidence_score": 4
       }
     },
     {
-      "id": "test_41",
-      "input": "Ate some tendies w ranch",
-      "reasoning": "Foods mentioned: chicken tenders and ranch. Tenders are chicken with breading; ranch is a creamy dressing commonly based on buttermilk and mayonnaise with herbs. Herbs/spices vary, so keep to the base components.",
+      "id": "test_111",
+      "input": "Smashburger with american cheese and pickles",
       "output": {
-        "ingredients": ["chicken", "breadcrumbs", "buttermilk", "mayonnaise"],
+        "ingredients": [
+          "bun",
+          "ground beef",
+          "american cheese",
+          "pickles"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_112",
+      "input": "Vegan buddha bowl with quinoa and roasted veggies",
+      "output": {
+        "ingredients": [
+          "quinoa",
+          "mixed vegetables",
+          "olive oil"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_113",
+      "input": "Chicken shawarma plate with rice and salad",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "shawarma spices",
+          "rice",
+          "mixed greens"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_114",
+      "input": "Buffalo chicken wrap",
+      "output": {
+        "ingredients": [
+          "flour tortilla",
+          "chicken",
+          "hot sauce",
+          "butter"
+        ],
         "confidence_score": 6
       }
     },
     {
-      "id": "test_42",
-      "input": "Lol I just wolfed down a grilled cheese",
-      "reasoning": "Food mentioned: grilled cheese. This is a fairly standard item. Core ingredients are bread and cheese, usually cooked with butter (or sometimes oil/mayo). Butter is the most canonical cooking fat here.",
+      "id": "test_115",
+      "input": "French dip sandwich with au jus",
       "output": {
-        "ingredients": ["bread", "cheese", "butter"],
-        "confidence_score": 9
+        "ingredients": [
+          "roll",
+          "roast beef",
+          "beef broth"
+        ],
+        "confidence_score": 7
       }
     },
     {
-      "id": "test_43",
-      "input": "Shmacked a lil yogurt bowl w granola n berries",
-      "reasoning": "Foods mentioned: yogurt bowl, granola, berries. Yogurt and granola are direct. \"Berries\" is generic, so keep it as a single ingredient category rather than guessing strawberry/blueberry/etc.",
+      "id": "test_116",
+      "input": "Chopped cheese from the bodega",
       "output": {
-        "ingredients": ["yogurt", "granola", "berries"],
+        "ingredients": [
+          "hero roll",
+          "ground beef",
+          "cheese",
+          "lettuce",
+          "tomato",
+          "onion"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_117",
+      "input": "Miso soup",
+      "output": {
+        "ingredients": [
+          "miso paste",
+          "dashi",
+          "tofu",
+          "scallions"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_118",
+      "input": "Spam musubi",
+      "output": {
+        "ingredients": [
+          "spam",
+          "rice",
+          "nori (seaweed)"
+        ],
         "confidence_score": 8
       }
     },
     {
-      "id": "test_44",
-      "input": "Ran thru some pad thai",
-      "reasoning": "Food mentioned: pad thai. Canonical pad thai commonly includes rice noodles, egg, bean sprouts, peanuts, and a sauce based on fish sauce and tamarind. Protein (shrimp/chicken/tofu) varies and isn’t stated, so omit.",
+      "id": "test_119",
+      "input": "Chicken gyro platter",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "pita bread",
+          "yogurt",
+          "cucumber",
+          "garlic"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_120",
+      "input": "Fish and chips",
+      "output": {
+        "ingredients": [
+          "fish",
+          "flour",
+          "potatoes",
+          "oil"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_121",
+      "input": "Chicken alfredo pasta",
+      "output": {
+        "ingredients": [
+          "fettuccine",
+          "chicken",
+          "cream",
+          "butter",
+          "parmesan cheese"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_122",
+      "input": "BBQ chicken pizza with red onions",
+      "output": {
+        "ingredients": [
+          "pizza dough",
+          "barbecue sauce",
+          "mozzarella",
+          "chicken",
+          "red onion"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_123",
+      "input": "Steak burrito with rice and black beans",
+      "output": {
+        "ingredients": [
+          "flour tortilla",
+          "beef",
+          "rice",
+          "black beans"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_124",
+      "input": "Crispy chicken sandwich and fries",
+      "output": {
+        "ingredients": [
+          "bun",
+          "chicken",
+          "breadcrumbs",
+          "potatoes",
+          "oil"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_125",
+      "input": "Fried rice with shrimp and egg",
+      "output": {
+        "ingredients": [
+          "rice",
+          "shrimp",
+          "egg",
+          "soy sauce",
+          "vegetable oil"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_126",
+      "input": "Veggie omelet with mushrooms and spinach",
+      "output": {
+        "ingredients": [
+          "egg",
+          "mushrooms",
+          "spinach",
+          "butter"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_127",
+      "input": "Cheeseburger deluxe with lettuce tomato and onion",
+      "output": {
+        "ingredients": [
+          "bun",
+          "ground beef",
+          "cheese",
+          "lettuce",
+          "tomato",
+          "onion"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_128",
+      "input": "Chicken nuggets happy meal",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "breadcrumbs",
+          "potatoes",
+          "oil"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_129",
+      "input": "Shrimp tacos with cabbage slaw",
+      "output": {
+        "ingredients": [
+          "tortillas",
+          "shrimp",
+          "cabbage"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_130",
+      "input": "Beef stroganoff over egg noodles",
+      "output": {
+        "ingredients": [
+          "beef",
+          "mushrooms",
+          "sour cream",
+          "egg noodles"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_131",
+      "input": "Turkey and cheese panini",
+      "output": {
+        "ingredients": [
+          "bread",
+          "turkey",
+          "cheese"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_132",
+      "input": "Chicken Caesar salad wrap",
+      "output": {
+        "ingredients": [
+          "flour tortilla",
+          "romaine lettuce",
+          "chicken",
+          "parmesan cheese",
+          "egg yolk",
+          "olive oil",
+          "lemon juice",
+          "anchovies",
+          "garlic",
+          "mustard"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_133",
+      "input": "Bacon egg and cheese on a bagel",
+      "output": {
+        "ingredients": [
+          "bagel",
+          "bacon",
+          "egg",
+          "cheese"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_134",
+      "input": "Chicken pho",
       "output": {
         "ingredients": [
           "rice noodles",
+          "chicken",
+          "chicken broth",
+          "onion",
+          "ginger"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_135",
+      "input": "Veggie burger with sweet potato fries",
+      "output": {
+        "ingredients": [
+          "bun",
+          "veggie patty",
+          "sweet potatoes",
+          "oil"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_136",
+      "input": "Meatball sub with provolone",
+      "output": {
+        "ingredients": [
+          "sub roll",
+          "ground beef",
+          "breadcrumbs",
+          "tomato sauce",
+          "provolone"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_137",
+      "input": "Avocado sushi roll",
+      "output": {
+        "ingredients": [
+          "rice",
+          "rice vinegar",
+          "nori (seaweed)",
+          "avocado"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_138",
+      "input": "Fettuccine carbonara",
+      "output": {
+        "ingredients": [
+          "fettuccine",
+          "egg",
+          "parmesan cheese",
+          "pork",
+          "black pepper"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_139",
+      "input": "Tuna salad sandwich",
+      "output": {
+        "ingredients": [
+          "bread",
+          "tuna",
+          "mayonnaise"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_140",
+      "input": "Chicken quesadilla with salsa",
+      "output": {
+        "ingredients": [
+          "tortillas",
+          "chicken",
+          "cheese",
+          "tomatoes",
+          "onion",
+          "cilantro"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_141",
+      "input": "Grilled salmon with asparagus",
+      "output": {
+        "ingredients": [
+          "salmon",
+          "asparagus",
+          "olive oil"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_142",
+      "input": "Chicken fried rice combo",
+      "output": {
+        "ingredients": [
+          "rice",
+          "chicken",
+          "egg",
+          "soy sauce",
+          "vegetable oil"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_143",
+      "input": "Pepperoni calzone",
+      "output": {
+        "ingredients": [
+          "pizza dough",
+          "mozzarella",
+          "pepperoni",
+          "tomato sauce"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_144",
+      "input": "Chicken pot pie",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "pie crust",
+          "carrots",
+          "peas",
+          "cream"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_145",
+      "input": "BLT with avocado",
+      "output": {
+        "ingredients": [
+          "bread",
+          "bacon",
+          "lettuce",
+          "tomato",
+          "avocado",
+          "mayonnaise"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_146",
+      "input": "Beef tacos with cheese",
+      "output": {
+        "ingredients": [
+          "tortillas",
+          "ground beef",
+          "cheese"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_147",
+      "input": "Shrimp pad thai",
+      "output": {
+        "ingredients": [
+          "rice noodles",
+          "shrimp",
           "egg",
           "bean sprouts",
           "peanuts",
           "fish sauce",
           "tamarind"
         ],
-        "confidence_score": 6
-      }
-    },
-    {
-      "id": "test_45",
-      "input": "Had some wings n blue cheese dip",
-      "reasoning": "Foods mentioned: wings and blue cheese dip. Wings implies chicken wings; sauce style isn’t specified, so don’t assume buffalo/hot sauce. Blue cheese dip is typically blue cheese plus a creamy base (sour cream and/or mayonnaise); include the most common base components without going into herbs.",
-      "output": {
-        "ingredients": ["chicken wings", "blue cheese", "sour cream", "mayonnaise"],
-        "confidence_score": 6
-      }
-    },
-    {
-      "id": "test_46",
-      "input": "Hit the diner and got biscuits n gravy",
-      "reasoning": "Food mentioned: biscuits and gravy (US-style). Biscuits are typically made from flour, butter, and milk (or buttermilk). The gravy is commonly sausage gravy: pork sausage cooked with flour and milk. Seasonings vary, so omit pepper/spices.",
-      "output": {
-        "ingredients": ["flour", "butter", "milk", "pork sausage"],
         "confidence_score": 7
       }
     },
     {
-      "id": "test_47",
-      "input": "Ate a poke bowl thingy",
-      "reasoning": "Food mentioned: poke bowl, but described vaguely. Core poke bowl components are typically rice and raw fish; other add-ins (seaweed, cucumber, soy sauce, avocado) vary widely and aren’t stated, so exclude them.",
+      "id": "test_148",
+      "input": "Ham and swiss croissant",
       "output": {
-        "ingredients": ["rice", "raw fish"],
-        "confidence_score": 3
+        "ingredients": [
+          "croissant",
+          "ham",
+          "swiss cheese"
+        ],
+        "confidence_score": 9
       }
     },
     {
-      "id": "test_48",
-      "input": "Just munched on some trail mix",
-      "reasoning": "Food mentioned: trail mix. This varies a lot, but the most common core components are mixed nuts and dried fruit; chocolate/candy is common but not guaranteed, so omit.",
+      "id": "test_149",
+      "input": "Greek salad with feta",
       "output": {
-        "ingredients": ["mixed nuts", "dried fruit"],
+        "ingredients": [
+          "tomatoes",
+          "cucumber",
+          "olives",
+          "feta",
+          "olive oil"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_150",
+      "input": "Ramen with pork belly and corn",
+      "output": {
+        "ingredients": [
+          "ramen noodles",
+          "broth",
+          "pork belly",
+          "corn"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_151",
+      "input": "Turkey chili",
+      "output": {
+        "ingredients": [
+          "ground turkey",
+          "beans",
+          "tomatoes",
+          "onion"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_152",
+      "input": "Fish tacos with crema",
+      "output": {
+        "ingredients": [
+          "tortillas",
+          "fish",
+          "sour cream"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_153",
+      "input": "Chicken gyro wrap",
+      "output": {
+        "ingredients": [
+          "pita bread",
+          "chicken",
+          "yogurt",
+          "cucumber",
+          "garlic"
+        ],
+        "confidence_score": 6
+      }
+    },
+    {
+      "id": "test_154",
+      "input": "Margarita pizza slice",
+      "output": {
+        "ingredients": [
+          "pizza dough",
+          "tomatoes",
+          "mozzarella",
+          "basil",
+          "olive oil"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_155",
+      "input": "Chicken burrito bowl",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "rice",
+          "beans"
+        ],
         "confidence_score": 4
       }
     },
     {
-      "id": "test_49",
-      "input": "Inhaled a tuna melt",
-      "reasoning": "Food mentioned: tuna melt. This typically includes bread, tuna, and melted cheese; tuna salad commonly includes mayonnaise. Some versions add celery/onion, but that’s not guaranteed, so exclude.",
+      "id": "test_156",
+      "input": "Veggie spring rolls",
       "output": {
-        "ingredients": ["bread", "tuna", "cheese", "mayonnaise"],
+        "ingredients": [
+          "rice paper",
+          "mixed vegetables"
+        ],
+        "confidence_score": 5
+      }
+    },
+    {
+      "id": "test_157",
+      "input": "Philly cheesesteak",
+      "output": {
+        "ingredients": [
+          "hoagie roll",
+          "beef",
+          "cheese",
+          "onion"
+        ],
         "confidence_score": 7
       }
     },
     {
-      "id": "test_50",
-      "input": "Bodied a bowl of cereal w milk",
-      "reasoning": "Foods mentioned: cereal and milk. The specific cereal type is unknown, so keep it generic as 'breakfast cereal' plus milk.",
+      "id": "test_158",
+      "input": "Chicken tenders and ranch",
       "output": {
-        "ingredients": ["breakfast cereal", "milk"],
+        "ingredients": [
+          "chicken",
+          "breadcrumbs",
+          "buttermilk",
+          "mayonnaise"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_159",
+      "input": "Breakfast burrito with sausage",
+      "output": {
+        "ingredients": [
+          "flour tortilla",
+          "egg",
+          "pork sausage"
+        ],
+        "confidence_score": 7
+      }
+    },
+    {
+      "id": "test_160",
+      "input": "Pasta with pesto and cherry tomatoes",
+      "output": {
+        "ingredients": [
+          "pasta",
+          "basil",
+          "olive oil",
+          "parmesan cheese",
+          "pine nuts",
+          "cherry tomatoes"
+        ],
+        "confidence_score": 8
+      }
+    },
+    {
+      "id": "test_161",
+      "input": "Had dinner out",
+      "output": {
+        "ingredients": [],
+        "confidence_score": 2
+      }
+    },
+    {
+      "id": "test_162",
+      "input": "Snacked on something sweet",
+      "output": {
+        "ingredients": [],
+        "confidence_score": 2
+      }
+    },
+    {
+      "id": "test_163",
+      "input": "Ate leftovers",
+      "output": {
+        "ingredients": [],
+        "confidence_score": 2
+      }
+    },
+    {
+      "id": "test_164",
+      "input": "Quick bite at the airport",
+      "output": {
+        "ingredients": [],
+        "confidence_score": 2
+      }
+    },
+    {
+      "id": "test_165",
+      "input": "Random tapas",
+      "output": {
+        "ingredients": [],
+        "confidence_score": 2
+      }
+    },
+
+    {
+      "id": "test_166",
+      "input": "Ramen",
+      "output": {
+        "ingredients": [
+          "ramen noodles",
+          "broth"
+        ],
+        "confidence_score": 3
+      }
+    },
+    {
+      "id": "test_167",
+      "input": "Curry and rice",
+      "output": {
+        "ingredients": [
+          "curry sauce",
+          "rice"
+        ],
+        "confidence_score": 3
+      }
+    },
+    {
+      "id": "test_168",
+      "input": "Burger combo",
+      "output": {
+        "ingredients": [
+          "burger bun",
+          "ground beef",
+          "potatoes"
+        ],
+        "confidence_score": 3
+      }
+    },
+    {
+      "id": "test_169",
+      "input": "Sushi platter",
+      "output": {
+        "ingredients": [
+          "rice",
+          "raw fish",
+          "nori (seaweed)"
+        ],
+        "confidence_score": 3
+      }
+    },
+    {
+      "id": "test_170",
+      "input": "Pasta dish",
+      "output": {
+        "ingredients": [
+          "pasta"
+        ],
+        "confidence_score": 3
+      }
+    },
+
+    {
+      "id": "test_171",
+      "input": "Chicken sandwich",
+      "output": {
+        "ingredients": [
+          "bun",
+          "chicken"
+        ],
+        "confidence_score": 4
+      }
+    },
+    {
+      "id": "test_172",
+      "input": "Beef burrito",
+      "output": {
+        "ingredients": [
+          "flour tortilla",
+          "beef"
+        ],
+        "confidence_score": 4
+      }
+    },
+    {
+      "id": "test_173",
+      "input": "Veggie pizza slice",
+      "output": {
+        "ingredients": [
+          "pizza dough",
+          "tomato sauce",
+          "cheese",
+          "vegetables"
+        ],
+        "confidence_score": 4
+      }
+    },
+    {
+      "id": "test_174",
+      "input": "Chicken salad sandwich",
+      "output": {
+        "ingredients": [
+          "bread",
+          "chicken",
+          "mayonnaise"
+        ],
+        "confidence_score": 4
+      }
+    },
+    {
+      "id": "test_175",
+      "input": "Fried chicken plate",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "flour",
+          "oil"
+        ],
+        "confidence_score": 4
+      }
+    },
+
+    {
+      "id": "test_176",
+      "input": "Peanut butter and jelly sandwich",
+      "output": {
+        "ingredients": [
+          "bread",
+          "peanut butter",
+          "jelly"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_177",
+      "input": "Oatmeal with blueberries",
+      "output": {
+        "ingredients": [
+          "oats",
+          "water",
+          "blueberries"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_178",
+      "input": "Scrambled eggs and toast",
+      "output": {
+        "ingredients": [
+          "egg",
+          "bread",
+          "butter"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_179",
+      "input": "Grilled cheese sandwich",
+      "output": {
+        "ingredients": [
+          "bread",
+          "cheese",
+          "butter"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_180",
+      "input": "Caprese salad",
+      "output": {
+        "ingredients": [
+          "tomatoes",
+          "fresh mozzarella",
+          "basil",
+          "olive oil"
+        ],
+        "confidence_score": 9
+      }
+    },
+
+    {
+      "id": "test_181",
+      "input": "Greek yogurt with honey",
+      "output": {
+        "ingredients": [
+          "greek yogurt",
+          "honey"
+        ],
+        "confidence_score": 10
+      }
+    },
+    {
+      "id": "test_182",
+      "input": "Apple and peanut butter",
+      "output": {
+        "ingredients": [
+          "apple",
+          "peanut butter"
+        ],
+        "confidence_score": 10
+      }
+    },
+    {
+      "id": "test_183",
+      "input": "Cheddar cheese cubes",
+      "output": {
+        "ingredients": [
+          "cheddar cheese"
+        ],
+        "confidence_score": 10
+      }
+    },
+    {
+      "id": "test_184",
+      "input": "Black coffee",
+      "output": {
+        "ingredients": [
+          "coffee"
+        ],
+        "confidence_score": 10
+      }
+    },
+    {
+      "id": "test_185",
+      "input": "Banana",
+      "output": {
+        "ingredients": [
+          "banana"
+        ],
+        "confidence_score": 10
+      }
+    },
+
+    {
+      "id": "test_186",
+      "input": "Loaded nachos with beef beans cheese sour cream guac and jalapenos",
+      "output": {
+        "ingredients": [
+          "tortilla chips",
+          "ground beef",
+          "beans",
+          "cheese",
+          "sour cream",
+          "avocado",
+          "jalapenos"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_187",
+      "input": "Chicken Caesar salad with croutons and extra parmesan",
+      "output": {
+        "ingredients": [
+          "romaine lettuce",
+          "chicken",
+          "parmesan cheese",
+          "bread",
+          "egg yolk",
+          "olive oil",
+          "lemon juice",
+          "anchovies",
+          "garlic",
+          "mustard"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_188",
+      "input": "Breakfast platter with pancakes eggs bacon sausage and hash browns",
+      "output": {
+        "ingredients": [
+          "flour",
+          "egg",
+          "milk",
+          "bacon",
+          "pork sausage",
+          "potatoes"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_189",
+      "input": "Spaghetti with meatballs and marinara sauce",
+      "output": {
+        "ingredients": [
+          "spaghetti",
+          "ground beef",
+          "breadcrumbs",
+          "egg",
+          "tomato sauce"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_190",
+      "input": "Burrito with chicken rice beans cheese sour cream and salsa",
+      "output": {
+        "ingredients": [
+          "flour tortilla",
+          "chicken",
+          "rice",
+          "beans",
+          "cheese",
+          "sour cream",
+          "tomatoes",
+          "onion",
+          "cilantro"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_191",
+      "input": "Turkey sandwich on wheat with lettuce tomato and mayo",
+      "output": {
+        "ingredients": [
+          "wheat bread",
+          "turkey",
+          "lettuce",
+          "tomato",
+          "mayonnaise"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_192",
+      "input": "Pho with beef basil bean sprouts lime and jalapeno",
+      "output": {
+        "ingredients": [
+          "rice noodles",
+          "beef",
+          "beef broth",
+          "basil",
+          "bean sprouts",
+          "lime",
+          "jalapeno"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_193",
+      "input": "Sushi roll with salmon avocado cucumber and spicy mayo",
+      "output": {
+        "ingredients": [
+          "rice",
+          "rice vinegar",
+          "nori (seaweed)",
+          "salmon",
+          "avocado",
+          "cucumber",
+          "mayonnaise",
+          "hot sauce"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_194",
+      "input": "Chicken shawarma wrap with rice salad and garlic sauce",
+      "output": {
+        "ingredients": [
+          "flatbread",
+          "chicken",
+          "rice",
+          "mixed greens",
+          "garlic",
+          "mayonnaise"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_195",
+      "input": "Steak fajitas with peppers onions tortillas guacamole and sour cream",
+      "output": {
+        "ingredients": [
+          "beef",
+          "bell peppers",
+          "onion",
+          "tortillas",
+          "avocado",
+          "sour cream"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_196",
+      "input": "Chicken noodle soup with carrots celery and egg noodles",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "broth",
+          "carrots",
+          "celery",
+          "egg noodles"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_197",
+      "input": "BBQ plate with ribs baked beans coleslaw and cornbread",
+      "output": {
+        "ingredients": [
+          "pork ribs",
+          "barbecue sauce",
+          "beans",
+          "cabbage",
+          "mayonnaise",
+          "cornbread"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_198",
+      "input": "Greek salad with chicken feta olives cucumber and tomatoes",
+      "output": {
+        "ingredients": [
+          "chicken",
+          "feta",
+          "olives",
+          "cucumber",
+          "tomatoes",
+          "olive oil"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_199",
+      "input": "Loaded baked potato with butter cheese bacon sour cream and chives",
+      "output": {
+        "ingredients": [
+          "potato",
+          "butter",
+          "cheese",
+          "bacon",
+          "sour cream",
+          "chives"
+        ],
+        "confidence_score": 9
+      }
+    },
+    {
+      "id": "test_200",
+      "input": "Breakfast burrito with eggs bacon cheese potatoes and salsa",
+      "output": {
+        "ingredients": [
+          "flour tortilla",
+          "egg",
+          "bacon",
+          "cheese",
+          "potatoes",
+          "tomatoes",
+          "onion",
+          "cilantro"
+        ],
         "confidence_score": 9
       }
     }

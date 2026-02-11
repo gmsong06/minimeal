@@ -8,20 +8,9 @@ load_dotenv()
 
 client = OpenAI()
 
-_REASONING_HEADER_RE = re.compile(
-    r"(?is)\bReasoning\b(?:\s*\(step-by-step\))?\s*:\s*(.*?)(?:\n\s*```|$)"
-)
-
 _FENCED_JSON_RE = re.compile(
     r"(?is)```(?:json)?\s*({.*?})\s*```"
 )
-
-def _extract_reasoning(text: str) -> str:
-    m = _REASONING_HEADER_RE.search(text)
-    if not m:
-        return ""
-    reasoning = m.group(1).strip()
-    return reasoning
 
 def _extract_json_object(text: str) -> Dict[str, Any]:
     m = _FENCED_JSON_RE.search(text)
@@ -60,7 +49,6 @@ def parse_gpt_meal_conversion_response(text: str) -> Dict[str, Any]:
     Raises ValueError if ingredients can't be found.
     """
 
-    reasoning = _extract_reasoning(text)
     payload = _extract_json_object(text)
 
     ingredients = payload.get("ingredients", None)
@@ -68,14 +56,13 @@ def parse_gpt_meal_conversion_response(text: str) -> Dict[str, Any]:
         raise ValueError("Parsed JSON does not contain a valid 'ingredients' list.")
 
     return {
-        "reasoning": reasoning,
         "ingredients": ingredients,
         "confidence_score": payload.get("confidence_score"),
     }
 
 def get_gpt_meal_conversion(system_prompt: str, user_prompt: str) -> str:
     response = client.responses.create(
-        model="gpt-5.2",
+        model="gpt-4",
         input=[
             {
                 "role": "system",
@@ -110,15 +97,15 @@ def get_prompt(base_prompt_path: str, examples_path: str) -> str:
 
 if __name__ == "__main__":
     system_prompt = get_prompt(
-        "prompts/system_prompts/meal_conversion_v2.txt",
+        "prompts/system_prompts/meal_conversion_v3.txt",
         "prompts/few_shot_examples/meal_conversion_examples.json"
     )
 
-    user_prompt = "chickpea stew with tomatoes, onions, garlic, and spices"
+    user_prompt = "ramen"
 
     response = get_gpt_meal_conversion(system_prompt, user_prompt)
-    reasoning, ingredients, confidence_score = parse_gpt_meal_conversion_response(response).values()
+    print(response)
+    ingredients, confidence_score = parse_gpt_meal_conversion_response(response).values()
 
-    print(f"Reasoning:\n{reasoning}\n")
     print(f"Ingredients:\n{ingredients}\n")
     print(f"Confidence Score: {confidence_score}\n")

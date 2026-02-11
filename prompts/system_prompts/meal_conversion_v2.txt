@@ -28,9 +28,7 @@ Convert a colloquial or informal meal note into a structured JSON array of disti
 
 # Output Format
 
-Respond first with your internal reasoning: explain how you interpreted the note, how you identified main ingredients, and how vague or specific the note was and how certain or speculative your ingredient breakdown is.
-
-THEN output a JSON object with these two fields:
+Output a JSON object with these two fields:
 - "ingredients": [array of distinct, recognizable ingredient strings, in order]
 - "confidence_score": integer (0–10, per above criteria)
 
