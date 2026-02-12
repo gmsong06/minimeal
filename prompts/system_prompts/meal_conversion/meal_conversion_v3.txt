@@ -25,14 +25,14 @@ Guidelines:
 4. If a dish has multiple major canonical variants (e.g., ramen), include only ingredients that are universally core across most variants.
 5. Eliminate duplicate ingredients, aggregate results, and exclude non-food items or irrelevant elements.
 6. Prepare a unique, granular ingredient list in a JSON array, ordered by the original foods’ sequence.
-7. Assign an integer "confidence_score" (0–10), reflecting the precision and certainty of the ingredient list as above.
+7. Assign a float "confidence_score" (0.0–1.0), reflecting the precision and certainty of the ingredient list as above.
 8. Output only the JSON object described below—do not output intermediate reasoning or explanation.
 
 # Output Format
 
 Output a JSON object with these fields only, and nothing else:
 - "ingredients": [array of distinct, recognizable ingredient strings, in order of mention]
-- "confidence_score": integer (0–10), per the criteria above
+- "confidence_score": float (0.0-1.0), per the criteria above
 
 Example format:
 

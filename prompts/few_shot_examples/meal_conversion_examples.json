@@ -6,7 +6,7 @@
       "reasoning": "The meal specifically mentions a burrito with identified contents: black beans, rice, and salsa. A burrito generally requires a tortilla to wrap the fillings. Salsa typically consists of tomatoes, onion, cilantro, and lime; exact salsa composition can vary but these are standard.",
       "output": {
         "ingredients": ["tortilla", "black beans", "rice", "tomatoes", "onion", "cilantro", "lime"],
-        "confidence_score": 8
+        "confidence_score": 0.8
       }
     },
     {
@@ -15,7 +15,7 @@
       "reasoning": "Grilled cheese usually includes bread, cheese, and butter. Tomato soup commonly includes tomatoes plus aromatics like onion/garlic and broth. Fries with mustard break down to potatoes, oil, and mustard. These are fairly standard items with limited variation in core components.",
       "output": {
         "ingredients": ["bread", "cheese", "butter", "tomatoes", "onion", "garlic", "broth", "potatoes", "oil", "mustard"],
-        "confidence_score": 9
+        "confidence_score": 0.9
       }
     },
     {
@@ -24,7 +24,7 @@
       "reasoning": "A Caesar salad typically includes romaine lettuce, chicken, parmesan, and croutons (bread). Caesar dressing is strongly implied and has a canonical base of egg yolk, olive oil, lemon juice, anchovies, garlic, and mustard, though proportions vary.",
       "output": {
         "ingredients": ["romaine lettuce", "chicken", "parmesan cheese", "bread", "egg yolk", "olive oil", "lemon juice", "anchovies", "garlic", "mustard"],
-        "confidence_score": 7
+        "confidence_score": 0.7
       }
     },
     {
@@ -33,7 +33,7 @@
       "reasoning": "A burger is mentioned but with no details. Many variations exist, so only the core components that are strongly implied are included: a bun and a beef patty (ground beef).",
       "output": {
         "ingredients": ["burger bun", "ground beef"],
-        "confidence_score": 5
+        "confidence_score": 0.5
       }
     },
     {
@@ -42,7 +42,7 @@
       "reasoning": "The note is extremely vague—just 'sushi'—which varies widely. Core components are rice and nori (seaweed). Raw fish and rice vinegar are common; cucumber and wasabi are also common but not guaranteed, so overall certainty is low.",
       "output": {
         "ingredients": ["rice", "nori (seaweed)", "raw fish", "cucumbers", "rice vinegar", "wasabi"],
-        "confidence_score": 3
+        "confidence_score": 0.3
       }
     }
   ]

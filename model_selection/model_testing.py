@@ -316,7 +316,7 @@ def compare_models(models: list, results_paths: list, model_comparison_path: str
 
 if __name__ == "__main__":
     system_prompt = get_prompt(
-        "prompts/system_prompts/meal_conversion_v3.txt",
+        "prompts/system_prompts/meal_conversion/meal_conversion_v3.txt",
         "prompts/few_shot_examples/meal_conversion_examples.json",
     )
 
