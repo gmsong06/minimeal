@@ -60,25 +60,9 @@ def parse_gpt_meal_conversion_response(text: str) -> Dict[str, Any]:
         "confidence_score": payload.get("confidence_score"),
     }
 
-def parse_gpt_assign_portion_classes_response(output_text: str):
-    """
-    Robust parser that:
-    - Removes ```json fences
-    - Extracts JSON block
-    - Parses safely
-    """
-
+def parse_gpt_assign_portion_classes_response(text: str):
     try:
-        text = output_text.strip()
-
-        # Remove triple backtick fences if present
-        if text.startswith("```"):
-            text = re.sub(r"^```[a-zA-Z]*\n?", "", text)  # remove opening ```json
-            text = re.sub(r"\n?```$", "", text)           # remove closing ```
-
-        text = text.strip()
-
-        parsed = json.loads(text)
+        parsed = _extract_json_object(text)
 
         # Normalize foods
         cleaned_foods = []
@@ -89,8 +73,6 @@ def parse_gpt_assign_portion_classes_response(output_text: str):
                 "confidence": float(item.get("confidence", 0.0)),
             })
 
-        print(cleaned_foods)
-        print()
         return {
             "meal_description": parsed.get("meal_description", ""),
             "foods": cleaned_foods,
@@ -99,7 +81,7 @@ def parse_gpt_assign_portion_classes_response(output_text: str):
 
     except Exception as e:
         print("Failed to parse assign_portion_classes response:", e)
-        print("Raw output:", output_text)
+        print("Raw output:", text)
         return {
             "meal_description": "",
             "foods": [],
