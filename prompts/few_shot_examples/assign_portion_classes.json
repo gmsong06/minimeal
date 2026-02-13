@@ -1,0 +1,95 @@
+{
+  "examples": [
+    {
+      "id": "1",
+      "input": {
+        "meal_description": "Grilled cheese w tomato soup and a side of fries with mustard",
+        "foods": ["bread", "cheese", "butter", "tomatoes", "onion", "garlic", "broth", "potatoes", "oil", "mustard"]
+      },
+      "output": {
+        "meal_description": "Grilled cheese w tomato soup and a side of fries with mustard",
+        "foods": [
+          { "name": "bread", "portion_class": "primary_starch", "confidence": 1.0 },
+          { "name": "cheese", "portion_class": "primary_protein", "confidence": 0.9 },
+          { "name": "butter", "portion_class": "added_fat", "confidence": 1.0 },
+          { "name": "tomatoes", "portion_class": "primary_veg", "confidence": 1.0 },
+          { "name": "onion", "portion_class": "secondary_veg", "confidence": 1.0 },
+          { "name": "garlic", "portion_class": "garnish_trace", "confidence": 0.8 },
+          { "name": "broth", "portion_class": "sauce_condiment", "confidence": 0.8 },
+          { "name": "potatoes", "portion_class": "primary_starch", "confidence": 0.9 },
+          { "name": "oil", "portion_class": "added_fat", "confidence": 0.9 },
+          { "name": "mustard", "portion_class": "sauce_condiment", "confidence": 1.0 }
+        ],
+        "notes": [
+          "quantity and prominence of cheese vs. other proteins is unclear",
+          "broth may be minor or equal to tomatoes in soup composition"
+        ]
+      }
+    },
+    {
+      "id": "2",
+      "input": {
+        "meal_description": "Egg salad sandwich with pickles, lettuce, and a can of diet cola",
+        "foods": ["egg", "mayonnaise", "bread", "lettuce", "pickles", "diet cola"]
+      },
+      "output": {
+        "meal_description": "Egg salad sandwich with pickles, lettuce, and a can of diet cola",
+        "foods": [
+          { "name": "egg", "portion_class": "primary_protein", "confidence": 1.0 },
+          { "name": "mayonnaise", "portion_class": "added_fat", "confidence": 1.0 },
+          { "name": "bread", "portion_class": "primary_starch", "confidence": 1.0 },
+          { "name": "lettuce", "portion_class": "secondary_veg", "confidence": 1.0 },
+          { "name": "pickles", "portion_class": "garnish_trace", "confidence": 0.9 },
+          { "name": "diet cola", "portion_class": "beverage_noncaloric", "confidence": 1.0 }
+        ],
+        "notes": []
+      }
+    },
+    {
+      "id": "3",
+      "input": {
+        "meal_description": "Chicken burrito bowl with rice, black beans, fajita veggies, guac, and salsa",
+        "foods": ["chicken", "rice", "black beans", "bell peppers", "onions", "avocado", "salsa"]
+      },
+      "output": {
+        "meal_description": "Chicken burrito bowl with rice, black beans, fajita veggies, guac, and salsa",
+        "foods": [
+          { "name": "chicken", "portion_class": "primary_protein", "confidence": 1.0 },
+          { "name": "rice", "portion_class": "primary_starch", "confidence": 1.0 },
+          { "name": "black beans", "portion_class": "legume_component", "confidence": 1.0 },
+          { "name": "bell peppers", "portion_class": "primary_veg", "confidence": 0.9 },
+          { "name": "onions", "portion_class": "secondary_veg", "confidence": 0.9 },
+          { "name": "avocado", "portion_class": "added_fat", "confidence": 0.95 },
+          { "name": "salsa", "portion_class": "sauce_condiment", "confidence": 1.0 }
+        ],
+        "notes": [
+          "relative proportion of rice vs beans is unclear",
+          "fajita vegetables may be primary or secondary depending on serving size"
+        ]
+      }
+    },
+    {
+      "id": "4",
+      "input": {
+        "meal_description": "Greek yogurt parfait with strawberries, granola, almonds, and honey plus a latte",
+        "foods": ["greek yogurt", "strawberries", "granola", "almonds", "honey", "milk", "espresso"]
+      },
+      "output": {
+        "meal_description": "Greek yogurt parfait with strawberries, granola, almonds, and honey plus a latte",
+        "foods": [
+          { "name": "greek yogurt", "portion_class": "primary_protein", "confidence": 0.95 },
+          { "name": "strawberries", "portion_class": "primary_veg", "confidence": 0.85 },
+          { "name": "granola", "portion_class": "primary_starch", "confidence": 0.9 },
+          { "name": "almonds", "portion_class": "snack_handful", "confidence": 0.9 },
+          { "name": "honey", "portion_class": "sauce_condiment", "confidence": 0.85 },
+          { "name": "milk", "portion_class": "dairy_component", "confidence": 0.9 },
+          { "name": "espresso", "portion_class": "beverage_noncaloric", "confidence": 0.9 }
+        ],
+        "notes": [
+          "relative dominance of yogurt vs granola is unclear",
+          "latte milk volume relative to espresso is unknown"
+        ]
+      }
+    }
+  ]
+}

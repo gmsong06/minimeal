@@ -1,6 +1,6 @@
 import json
 
-def get_prompt(base_prompt_path: str, examples_path: str) -> str:
+def get_prompt(base_prompt_path: str, examples_path: str, want_reasoning: bool) -> str:
     # Get base prompt
     with open(base_prompt_path, 'r') as file:
         base_prompt = file.read()
@@ -14,7 +14,8 @@ def get_prompt(base_prompt_path: str, examples_path: str) -> str:
     for example in examples["examples"]:
         base_prompt += f"Example {example['id']}\n\n"
         base_prompt += f"Input: {example['input']}\n"
-        base_prompt += f"Reasoning: {example['reasoning']}\n"
+        if want_reasoning:
+            base_prompt += f"Reasoning: {example['reasoning']}\n"
         base_prompt += f"Output: {example['output']}\n\n"
     
     return base_prompt
