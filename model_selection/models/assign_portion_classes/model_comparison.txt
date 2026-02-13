@@ -1,0 +1,53 @@
+Model Comparison Results with 100 tests:
+
+Model: gpt-4o
+Avg Class Accuracy: 0.7773
+Avg Confidence MAE: 0.1111
+Avg Invalid Class Rate: 0.0000
+Avg Missing Item Rate: 0.0000
+Avg Extra Item Rate: 0.0000
+Latency avg (ms): 3289.76
+Latency p50 (ms): 2367.58
+Latency p95 (ms): 8478.77
+Latency p99 (ms): 11069.28
+Latency max (ms): 12538.02
+Avg total tokens: 3346.4
+P95 total tokens: 3508.4
+Avg cost (USD): 0.006511
+P95 cost (USD): 0.010854
+Total cost (USD): 0.651073
+
+Model: gpt-4o-mini
+Avg Class Accuracy: 0.7558
+Avg Confidence MAE: 0.1060
+Avg Invalid Class Rate: 0.0000
+Avg Missing Item Rate: 0.0000
+Avg Extra Item Rate: 0.0000
+Latency avg (ms): 4876.56
+Latency p50 (ms): 4212.10
+Latency p95 (ms): 9290.04
+Latency p99 (ms): 11474.37
+Latency max (ms): 11914.50
+Avg total tokens: 3339.7
+P95 total tokens: 3498.4
+Avg cost (USD): 0.000415
+P95 cost (USD): 0.000628
+Total cost (USD): 0.041529
+
+Model: gpt-4.1-nano
+Avg Class Accuracy: 0.7828
+Avg Confidence MAE: 0.1201
+Avg Invalid Class Rate: 0.0000
+Avg Missing Item Rate: 0.0000
+Avg Extra Item Rate: 0.0000
+Latency avg (ms): 2839.81
+Latency p50 (ms): 2402.89
+Latency p95 (ms): 4112.51
+Latency p99 (ms): 6893.18
+Latency max (ms): 34241.92
+Avg total tokens: 3373.0
+P95 total tokens: 3543.8
+Avg cost (USD): 0.000207
+P95 cost (USD): 0.000416
+Total cost (USD): 0.020702
+

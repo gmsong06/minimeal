@@ -1,4 +1,4 @@
-from utils.model import get_gpt_response, parse_gpt_meal_conversion_response
+from utils.model import get_gpt_response, parse_gpt_meal_conversion_response, parse_gpt_assign_portion_classes_response
 from utils.prompt import get_prompt
 
 if __name__ == "__main__":
@@ -10,7 +10,7 @@ if __name__ == "__main__":
 
     assign_portion_classes_system_prompt = get_prompt(
         "prompts/system_prompts/assign_portion_classes/assign_portion_classes_v2.txt",
-        "prompts/few_shot_examples/assign_portion_classes.json",
+        "prompts/few_shot_examples/assign_portion_classes_examples.json",
         False
     )
 
@@ -23,10 +23,25 @@ if __name__ == "__main__":
     print(ingredients)
 
     portion_classes_input = {}
-    portion_classes_input["meal_desc"] = user_prompt
-    portion_classes_input["foods"] = ingredients
+    portion_classes_input["meal_desc"] = "Chipotle chicken burrito with black beans, cilantro-lime rice, fajita veggies, and pico"
+    portion_classes_input["foods"] = [
+               "flour tortilla",
+               "chicken",
+               "black beans",
+               "rice",
+               "cilantro",
+               "lime",
+               "bell peppers",
+               "onion",
+               "tomatoes",
+               "onion",
+               "cilantro",
+               "lime"
+            ]
+         
 
     assign_portion_classes_response = get_gpt_response("gpt-4o-mini", assign_portion_classes_system_prompt, str(portion_classes_input))
 
     print(assign_portion_classes_response.output_text)
+    print(parse_gpt_assign_portion_classes_response(assign_portion_classes_response.output_text))
     # print(assign_portion_classes_system_prompt)

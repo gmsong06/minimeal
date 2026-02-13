@@ -1,15 +1,12 @@
 import json
 import time
 import logging
-from typing import Any, Dict, List, Tuple, Optional
+from typing import Any, Dict, List, Tuple
 
-from utils.model import get_gpt_response, parse_gpt_meal_conversion_response
+from utils.model import get_gpt_response, parse_gpt_assign_portion_classes_response
 from utils.prompt import get_prompt
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 PRICING_PER_1M = {
     "gpt-4o": {"input": 2.50, "cached_input": 1.25, "output": 10.00},
@@ -18,8 +15,27 @@ PRICING_PER_1M = {
 }
 
 
+ALLOWED_CLASSES = {
+    "primary_protein",
+    "secondary_protein",
+    "primary_starch",
+    "secondary_starch",
+    "primary_veg",
+    "secondary_veg",
+    "legume_component",
+    "sauce_condiment",
+    "added_fat",
+    "dairy_component",
+    "snack_item_single",
+    "snack_handful",
+    "beverage_caloric",
+    "beverage_noncaloric",
+    "garnish_trace",
+    "other",
+}
+
+
 def _percentile(values: List[float], pct: float) -> float:
-    """Simple percentile without numpy. pct in [0, 100]."""
     if not values:
         return 0.0
     values_sorted = sorted(values)
@@ -32,15 +48,6 @@ def _percentile(values: List[float], pct: float) -> float:
 
 
 def _safe_get_usage(response: Any) -> Tuple[int, int, int, int]:
-    """
-    Extract usage from response.
-
-    Supports your object:
-      ResponseUsage(input_tokens=..., input_tokens_details.cached_tokens=...,
-                    output_tokens=..., total_tokens=...)
-
-    Returns: (input_tokens, output_tokens, total_tokens, cached_input_tokens)
-    """
     usage = None
     if hasattr(response, "usage"):
         usage = getattr(response, "usage")
@@ -86,15 +93,6 @@ def estimate_cost_usd(
     *,
     cached_prompt_tokens: int = 0,
 ) -> float:
-    
-    """
-    Estimate cost using text-token pricing (USD per 1M tokens).
-    If cached_prompt_tokens is provided, that portion is charged at cached_input rate.
-    """
-
-    logging.info(f"Estimating cost for model={model} with prompt_tokens={prompt_tokens}, ")
-    logging.info(f"completion_tokens={completion_tokens}, cached_prompt_tokens={cached_prompt_tokens}")
-
     if model not in PRICING_PER_1M:
         return 0.0
 
@@ -107,17 +105,123 @@ def estimate_cost_usd(
         + (cached_prompt_tokens / 1_000_000) * rates["cached_input"]
         + (int(completion_tokens or 0) / 1_000_000) * rates["output"]
     )
-
     return float(cost)
+
+
+def _normalize_food_name(s: str) -> str:
+    # Keep very conservative normalization to avoid "inventing" foods.
+    return (s or "").strip().lower()
+
+
+def _extract_pred_map(parsed: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    """
+    parsed output format expected:
+    {
+      "meal_description": "...",
+      "foods": [{"name": "...", "portion_class": "...", "confidence": 0.0-1.0}, ...],
+      "notes": [...]
+    }
+    """
+    pred_map: Dict[str, Dict[str, Any]] = {}
+    foods = parsed.get("foods", []) or []
+    for item in foods:
+        name = _normalize_food_name(item.get("name", ""))
+        # If duplicates exist (e.g., onion appears twice), keep the first occurrence only;
+        # optionally you can change this to keep a list per name.
+        if name and name not in pred_map:
+            pred_map[name] = {
+                "portion_class": item.get("portion_class"),
+                "confidence": item.get("confidence"),
+            }
+    return pred_map
+
+
+def _extract_truth_map(example: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    truth_map: Dict[str, Dict[str, Any]] = {}
+    foods = example.get("output", {}).get("foods", []) or []
+    for item in foods:
+        name = _normalize_food_name(item.get("name", ""))
+        if name and name not in truth_map:
+            truth_map[name] = {
+                "portion_class": item.get("portion_class"),
+                "confidence": item.get("confidence"),
+            }
+    return truth_map
+
+
+def _evaluate_example(
+    example: Dict[str, Any],
+    pred_parsed: Dict[str, Any],
+) -> Dict[str, float]:
+    """
+    Metrics:
+      - class_accuracy: exact match rate for portion_class over foods in input list
+      - confidence_mae: mean absolute error vs ground-truth confidence (only where both present)
+      - invalid_class_rate: fraction of predicted items with portion_class not in allowed set
+      - missing_item_rate: fraction of input foods missing from prediction
+      - extra_item_rate: fraction of predicted foods not in input foods list (should be 0 if parser is strict)
+    """
+    input_foods = example["input"]["foods"]
+    input_names = [_normalize_food_name(x) for x in input_foods]
+    input_set = set(input_names)
+
+    pred_map = _extract_pred_map(pred_parsed)
+    truth_map = _extract_truth_map(example)
+
+    # invalid class rate over predicted items
+    invalid = 0
+    for v in pred_map.values():
+        pc = v.get("portion_class")
+        if pc not in ALLOWED_CLASSES:
+            invalid += 1
+    invalid_class_rate = invalid / max(len(pred_map), 1)
+
+    # missing / extra
+    missing = sum(1 for n in input_names if n not in pred_map)
+    missing_item_rate = missing / max(len(input_names), 1)
+
+    extra = sum(1 for n in pred_map.keys() if n not in input_set)
+    extra_item_rate = extra / max(len(pred_map), 1)
+
+    # class accuracy + confidence MAE (aligned by normalized name)
+    correct = 0
+    conf_abs_err_sum = 0.0
+    conf_cnt = 0
+
+    for n in input_names:
+        pred = pred_map.get(n)
+        truth = truth_map.get(n)
+
+        if pred and truth:
+            if pred.get("portion_class") == truth.get("portion_class"):
+                correct += 1
+
+            pred_c = pred.get("confidence")
+            truth_c = truth.get("confidence")
+            if isinstance(pred_c, (int, float)) and isinstance(truth_c, (int, float)):
+                conf_abs_err_sum += abs(float(pred_c) - float(truth_c))
+                conf_cnt += 1
+
+    class_accuracy = correct / max(len(input_names), 1)
+    confidence_mae = conf_abs_err_sum / max(conf_cnt, 1)
+
+    return {
+        "class_accuracy": class_accuracy,
+        "confidence_mae": confidence_mae,
+        "invalid_class_rate": invalid_class_rate,
+        "missing_item_rate": missing_item_rate,
+        "extra_item_rate": extra_item_rate,
+    }
 
 
 def evaluate_model(model: str, system_prompt: str, test_set: list, results_path: str):
     results: List[Dict[str, Any]] = []
 
-    sum_precision = 0.0
-    sum_recall = 0.0
-    sum_f1_score = 0.0
-    sum_confidence_score_error = 0.0
+    sum_class_acc = 0.0
+    sum_conf_mae = 0.0
+    sum_invalid_rate = 0.0
+    sum_missing_rate = 0.0
+    sum_extra_rate = 0.0
 
     latencies_ms: List[float] = []
     prompt_tokens_list: List[int] = []
@@ -125,18 +229,17 @@ def evaluate_model(model: str, system_prompt: str, test_set: list, results_path:
     total_tokens_list: List[int] = []
     costs_usd: List[float] = []
 
-    for test in test_set:
-        logging.info(f"Evaluating model {model} on test input: {test['input']}")
-        user_prompt = test["input"]
+    for ex in test_set:
+        time.sleep(3)
+        logging.info(f"Evaluating model {model} on id={ex.get('id')}")
+        user_prompt = ex["input"]
 
-        # ---- latency timing (end-to-end for model call) ----
         t0 = time.perf_counter()
-        response = get_gpt_response(model, system_prompt, user_prompt)
+        response = get_gpt_response(model, system_prompt, str(user_prompt))
         t1 = time.perf_counter()
         latency_ms = (t1 - t0) * 1000.0
         latencies_ms.append(latency_ms)
 
-        # Cost
         prompt_tokens, completion_tokens, total_tokens, cached_prompt_tokens = _safe_get_usage(response)
         prompt_tokens_list.append(prompt_tokens)
         completion_tokens_list.append(completion_tokens)
@@ -150,65 +253,35 @@ def evaluate_model(model: str, system_prompt: str, test_set: list, results_path:
         )
         costs_usd.append(cost_usd)
 
-        parsed_response = parse_gpt_meal_conversion_response(response.output_text)
-        ingredients = parsed_response["ingredients"]
-        confidence_score = parsed_response["confidence_score"]
+        parsed = parse_gpt_assign_portion_classes_response(response.output_text)
 
-        ground_truth_ingredients = test["output"]["ingredients"]
-        ground_truth_confidence = test["output"]["confidence_score"]
-
-        recall = (
-            len(set(ingredients) & set(ground_truth_ingredients)) / len(set(ground_truth_ingredients))
-            if ground_truth_ingredients else 0.0
-        )
-        precision = (
-            len(set(ingredients) & set(ground_truth_ingredients)) / len(set(ingredients))
-            if ingredients else 0.0
-        )
-        confidence_score_error = abs(confidence_score - ground_truth_confidence)
-        f1_score = (
-            2 * (precision * recall) / (precision + recall)
-            if (precision + recall) > 0 else 0.0
-        )
+        metrics = _evaluate_example(ex, parsed)
 
         results.append({
+            "id": ex.get("id"),
             "input": user_prompt,
-            "prediction": {
-                "ingredients": ingredients,
-                "confidence_score": confidence_score
-            },
-            "ground_truth": {
-                "ingredients": ground_truth_ingredients,
-                "confidence_score": ground_truth_confidence
-            },
+            "prediction": parsed,
+            "ground_truth": ex.get("output"),
             "usage": {
                 "prompt_tokens": prompt_tokens,
                 "completion_tokens": completion_tokens,
                 "total_tokens": total_tokens,
-                "cached_prompt_tokens": cached_prompt_tokens
+                "cached_prompt_tokens": cached_prompt_tokens,
             },
-            "cost": {
-                "usd_estimate": cost_usd
-            },
+            "cost": {"usd_estimate": cost_usd},
             "metrics": {
-                "precision": precision,
-                "recall": recall,
-                "f1_score": f1_score,
-                "confidence_score_error": confidence_score_error,
-                "latency_ms": latency_ms
-            }
+                **metrics,
+                "latency_ms": latency_ms,
+            },
         })
 
-        sum_precision += precision
-        sum_recall += recall
-        sum_f1_score += f1_score
-        sum_confidence_score_error += confidence_score_error
+        sum_class_acc += metrics["class_accuracy"]
+        sum_conf_mae += metrics["confidence_mae"]
+        sum_invalid_rate += metrics["invalid_class_rate"]
+        sum_missing_rate += metrics["missing_item_rate"]
+        sum_extra_rate += metrics["extra_item_rate"]
 
     n = max(len(test_set), 1)
-    avg_precision = sum_precision / n
-    avg_recall = sum_recall / n
-    avg_f1 = sum_f1_score / n
-    avg_conf_err = sum_confidence_score_error / n
 
     # latency summary
     latency_summary = {
@@ -237,10 +310,11 @@ def evaluate_model(model: str, system_prompt: str, test_set: list, results_path:
 
     results.append({
         "average_metrics": {
-            "precision": avg_precision,
-            "recall": avg_recall,
-            "f1_score": avg_f1,
-            "confidence_score_error": avg_conf_err,
+            "class_accuracy": sum_class_acc / n,
+            "confidence_mae": sum_conf_mae / n,
+            "invalid_class_rate": sum_invalid_rate / n,
+            "missing_item_rate": sum_missing_rate / n,
+            "extra_item_rate": sum_extra_rate / n,
             "latency_ms": latency_summary,
             "tokens": token_summary,
             "cost": cost_summary,
@@ -248,25 +322,26 @@ def evaluate_model(model: str, system_prompt: str, test_set: list, results_path:
         }
     })
 
-    with open(results_path, "w") as file:
-        json.dump(results, file, indent=4)
+    with open(results_path, "w") as f:
+        json.dump(results, f, indent=4)
 
 
 def compare_models(models: list, results_paths: list, model_comparison_path: str, number_of_tests: int):
-    logging.info(f"Comparing models: {models} using results from paths: {results_paths}")
+    logging.info(f"Comparing models: {models}")
     with open(model_comparison_path, "w") as comparison_file:
         comparison_file.write(f"Model Comparison Results with {number_of_tests} tests:\n\n")
 
         for model, path in zip(models, results_paths):
-            with open(path, "r") as file:
-                results = json.load(file)
+            with open(path, "r") as f:
+                results = json.load(f)
                 avg = results[-1]["average_metrics"]
 
             comparison_file.write(f"Model: {model}\n")
-            comparison_file.write(f"Average Precision: {avg['precision']:.4f}\n")
-            comparison_file.write(f"Average Recall: {avg['recall']:.4f}\n")
-            comparison_file.write(f"Average F1 Score: {avg['f1_score']:.4f}\n")
-            comparison_file.write(f"Average Confidence Score Error: {avg['confidence_score_error']:.4f}\n")
+            comparison_file.write(f"Avg Class Accuracy: {avg['class_accuracy']:.4f}\n")
+            comparison_file.write(f"Avg Confidence MAE: {avg['confidence_mae']:.4f}\n")
+            comparison_file.write(f"Avg Invalid Class Rate: {avg['invalid_class_rate']:.4f}\n")
+            comparison_file.write(f"Avg Missing Item Rate: {avg['missing_item_rate']:.4f}\n")
+            comparison_file.write(f"Avg Extra Item Rate: {avg['extra_item_rate']:.4f}\n")
 
             lat = avg.get("latency_ms", {})
             if isinstance(lat, dict):
@@ -289,11 +364,13 @@ def compare_models(models: list, results_paths: list, model_comparison_path: str
 
             comparison_file.write("\n")
 
+            # print summary to stdout too
             print(f"Model: {model}")
-            print(f"Average Precision: {avg['precision']:.4f}")
-            print(f"Average Recall: {avg['recall']:.4f}")
-            print(f"Average F1 Score: {avg['f1_score']:.4f}")
-            print(f"Average Confidence Score Error: {avg['confidence_score_error']:.4f}")
+            print(f"Avg Class Accuracy: {avg['class_accuracy']:.4f}")
+            print(f"Avg Confidence MAE: {avg['confidence_mae']:.4f}")
+            print(f"Avg Invalid Class Rate: {avg['invalid_class_rate']:.4f}")
+            print(f"Avg Missing Item Rate: {avg['missing_item_rate']:.4f}")
+            print(f"Avg Extra Item Rate: {avg['extra_item_rate']:.4f}")
 
             if isinstance(lat, dict):
                 print(f"Latency avg (ms): {lat.get('avg', 0.0):.2f}")
@@ -315,13 +392,15 @@ def compare_models(models: list, results_paths: list, model_comparison_path: str
 
 
 if __name__ == "__main__":
+    # System prompt should instruct the model to do assign_portion_classes and output strict JSON.
     system_prompt = get_prompt(
-        "prompts/system_prompts/meal_conversion/meal_conversion_v3.txt",
-        "prompts/few_shot_examples/meal_conversion_examples.json",
+        "prompts/system_prompts/assign_portion_classes/assign_portion_classes_v1.txt",
+        "prompts/few_shot_examples/assign_portion_classes_examples.json",
+        False
     )
 
-    with open("prompts/test_sets/meal_conversion_tests.json", "r") as file:
-        test_set = json.load(file)
+    with open("prompts/test_sets/assign_portion_classes_subtests.json", "r") as f:
+        test_set = json.load(f)
 
     models = ["gpt-4o", "gpt-4o-mini", "gpt-4.1-nano"]
 
@@ -329,13 +408,13 @@ if __name__ == "__main__":
         evaluate_model(
             model,
             system_prompt,
-            test_set["tests"],
-            f"model_selection/models/{model}_meal_conversion_test_results.json",
+            test_set["examples"],
+            f"model_selection/models/assign_portion_classes/{model}_assign_portion_classes_test_results.json",
         )
 
     compare_models(
         models,
-        [f"model_selection/models/{model}_meal_conversion_test_results.json" for model in models],
-        "model_selection/model_comparison.txt",
-        number_of_tests=len(test_set["tests"]),
+        [f"model_selection/models/assign_portion_classes/{model}_assign_portion_classes_test_results.json" for model in models],
+        "model_selection/models/assign_portion_classes/model_comparison.txt",
+        number_of_tests=len(test_set["examples"]),
     )

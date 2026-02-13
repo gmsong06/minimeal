@@ -1,0 +1,4387 @@
+{
+   "examples":[
+      {
+         "id":"1",
+         "input":{
+            "meal_description":"Chipotle chicken burrito with black beans, cilantro-lime rice, fajita veggies, and pico",
+            "foods":[
+               "flour tortilla",
+               "chicken",
+               "black beans",
+               "rice",
+               "cilantro",
+               "lime",
+               "bell peppers",
+               "onion",
+               "tomatoes",
+               "onion",
+               "cilantro",
+               "lime"
+            ]
+         },
+         "output":{
+            "meal_description":"Chipotle chicken burrito with black beans, cilantro-lime rice, fajita veggies, and pico",
+            "foods":[
+               {
+                  "name":"flour tortilla",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.95
+               },
+               {
+                  "name":"black beans",
+                  "portion_class":"legume_component",
+                  "confidence":0.95
+               },
+               {
+                  "name":"rice",
+                  "portion_class":"primary_starch",
+                  "confidence":0.8
+               },
+               {
+                  "name":"cilantro",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.95
+               },
+               {
+                  "name":"lime",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.85
+               },
+               {
+                  "name":"bell peppers",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"tomatoes",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.8
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"cilantro",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.95
+               },
+               {
+                  "name":"lime",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "relative prominence of tortilla vs rice/beans is unclear",
+               "pico/fajita vegetables likely minor-to-moderate but exact portions are unknown"
+            ]
+         }
+      },
+      {
+         "id":"2",
+         "input":{
+            "meal_description":"Big Mac meal (Big Mac + fries + Coke)",
+            "foods":[
+               "sesame seed bun",
+               "ground beef",
+               "lettuce",
+               "cheese",
+               "pickles",
+               "onion",
+               "mayonnaise",
+               "ketchup",
+               "potatoes",
+               "oil",
+               "cola"
+            ]
+         },
+         "output":{
+            "meal_description":"Big Mac meal (Big Mac + fries + Coke)",
+            "foods":[
+               {
+                  "name":"sesame seed bun",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"ground beef",
+                  "portion_class":"primary_protein",
+                  "confidence":0.95
+               },
+               {
+                  "name":"lettuce",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"pickles",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.9
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"mayonnaise",
+                  "portion_class":"added_fat",
+                  "confidence":0.95
+               },
+               {
+                  "name":"ketchup",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.95
+               },
+               {
+                  "name":"potatoes",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.85
+               },
+               {
+                  "name":"oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               },
+               {
+                  "name":"cola",
+                  "portion_class":"beverage_caloric",
+                  "confidence":0.95
+               }
+            ],
+            "notes":[
+               "fries are likely a side (secondary starch) but could be a large portion depending on meal size"
+            ]
+         }
+      },
+      {
+         "id":"3",
+         "input":{
+            "meal_description":"Gyro w/ tzatziki and onions",
+            "foods":[
+               "pita bread",
+               "gyro meat",
+               "yogurt",
+               "cucumber",
+               "garlic",
+               "lemon juice",
+               "onion"
+            ]
+         },
+         "output":{
+            "meal_description":"Gyro w/ tzatziki and onions",
+            "foods":[
+               {
+                  "name":"pita bread",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"gyro meat",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"yogurt",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"cucumber",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"garlic",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.8
+               },
+               {
+                  "name":"lemon juice",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.75
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "tzatziki composition is split across items; relative amounts of yogurt vs cucumber/garlic/lemon are unclear"
+            ]
+         }
+      },
+      {
+         "id":"4",
+         "input":{
+            "meal_description":"BLT + fries + chocolate shake",
+            "foods":[
+               "bread",
+               "bacon",
+               "lettuce",
+               "tomato",
+               "mayonnaise",
+               "potatoes",
+               "oil",
+               "milk",
+               "ice cream",
+               "chocolate syrup"
+            ]
+         },
+         "output":{
+            "meal_description":"BLT + fries + chocolate shake",
+            "foods":[
+               {
+                  "name":"bread",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"bacon",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"lettuce",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"tomato",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"mayonnaise",
+                  "portion_class":"added_fat",
+                  "confidence":0.95
+               },
+               {
+                  "name":"potatoes",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.85
+               },
+               {
+                  "name":"oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               },
+               {
+                  "name":"milk",
+                  "portion_class":"beverage_caloric",
+                  "confidence":0.75
+               },
+               {
+                  "name":"ice cream",
+                  "portion_class":"beverage_caloric",
+                  "confidence":0.7
+               },
+               {
+                  "name":"chocolate syrup",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.8
+               }
+            ],
+            "notes":[
+               "shake components (milk/ice cream/syrup) are treated as a caloric beverage but exact composition is unknown",
+               "fries are likely a side"
+            ]
+         }
+      },
+      {
+         "id":"5",
+         "input":{
+            "meal_description":"Had lunch at a diner",
+            "foods":[
+               
+            ]
+         },
+         "output":{
+            "meal_description":"Had lunch at a diner",
+            "foods":[
+               
+            ],
+            "notes":[
+               "no foods provided; meal content is unknown"
+            ]
+         }
+      },
+      {
+         "id":"6",
+         "input":{
+            "meal_description":"Street tacos: carne asada with onion + cilantro",
+            "foods":[
+               "corn tortillas",
+               "beef",
+               "onion",
+               "cilantro"
+            ]
+         },
+         "output":{
+            "meal_description":"Street tacos: carne asada with onion + cilantro",
+            "foods":[
+               {
+                  "name":"corn tortillas",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"beef",
+                  "portion_class":"primary_protein",
+                  "confidence":0.95
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"cilantro",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.95
+               }
+            ],
+            "notes":[
+               "tortilla vs beef dominance depends on serving size (number of tacos)"
+            ]
+         }
+      },
+      {
+         "id":"7",
+         "input":{
+            "meal_description":"Iced coffee with oat milk and vanilla syrup",
+            "foods":[
+               "coffee",
+               "ice",
+               "oat milk",
+               "vanilla syrup"
+            ]
+         },
+         "output":{
+            "meal_description":"Iced coffee with oat milk and vanilla syrup",
+            "foods":[
+               {
+                  "name":"coffee",
+                  "portion_class":"beverage_noncaloric",
+                  "confidence":0.85
+               },
+               {
+                  "name":"ice",
+                  "portion_class":"other",
+                  "confidence":0.6
+               },
+               {
+                  "name":"oat milk",
+                  "portion_class":"beverage_caloric",
+                  "confidence":0.75
+               },
+               {
+                  "name":"vanilla syrup",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "oat milk is treated as a caloric beverage component; exact sweetness/calorie impact depends on amount",
+               "ice is non-nutritive and mapped to other"
+            ]
+         }
+      },
+      {
+         "id":"8",
+         "input":{
+            "meal_description":"Ate ramen (tonkotsu) with chashu, nori, and soft egg",
+            "foods":[
+               "ramen noodles",
+               "pork broth",
+               "pork",
+               "egg",
+               "nori (seaweed)"
+            ]
+         },
+         "output":{
+            "meal_description":"Ate ramen (tonkotsu) with chashu, nori, and soft egg",
+            "foods":[
+               {
+                  "name":"ramen noodles",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"pork broth",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               },
+               {
+                  "name":"pork",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"egg",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.75
+               },
+               {
+                  "name":"nori (seaweed)",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.8
+               }
+            ],
+            "notes":[
+               "relative prominence of pork vs egg as protein is unclear",
+               "broth could be substantial but is categorized as sauce/condiment by rule"
+            ]
+         }
+      },
+      {
+         "id":"9",
+         "input":{
+            "meal_description":"Caesar salad w grilled chicken, extra parm",
+            "foods":[
+               "romaine lettuce",
+               "chicken",
+               "parmesan cheese",
+               "egg yolk",
+               "olive oil",
+               "lemon juice",
+               "anchovies",
+               "garlic",
+               "mustard"
+            ]
+         },
+         "output":{
+            "meal_description":"Caesar salad w grilled chicken, extra parm",
+            "foods":[
+               {
+                  "name":"romaine lettuce",
+                  "portion_class":"primary_veg",
+                  "confidence":0.95
+               },
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"parmesan cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.8
+               },
+               {
+                  "name":"egg yolk",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.65
+               },
+               {
+                  "name":"olive oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               },
+               {
+                  "name":"lemon juice",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               },
+               {
+                  "name":"anchovies",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.6
+               },
+               {
+                  "name":"garlic",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.75
+               },
+               {
+                  "name":"mustard",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "anchovy/egg yolk roles depend on whether they are in dressing vs visible components",
+               "parmesan amount is unclear despite 'extra'"
+            ]
+         }
+      },
+      {
+         "id":"10",
+         "input":{
+            "meal_description":"CFA spicy deluxe w waffle fries",
+            "foods":[
+               "bun",
+               "chicken",
+               "breadcrumbs",
+               "lettuce",
+               "tomato",
+               "pickles",
+               "mayonnaise",
+               "potatoes",
+               "oil"
+            ]
+         },
+         "output":{
+            "meal_description":"CFA spicy deluxe w waffle fries",
+            "foods":[
+               {
+                  "name":"bun",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"breadcrumbs",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.75
+               },
+               {
+                  "name":"lettuce",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"tomato",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"pickles",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.9
+               },
+               {
+                  "name":"mayonnaise",
+                  "portion_class":"added_fat",
+                  "confidence":0.95
+               },
+               {
+                  "name":"potatoes",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.85
+               },
+               {
+                  "name":"oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "breadcrumbs are part of breading; prominence vs bun is unclear",
+               "fries are likely a side (secondary starch)"
+            ]
+         }
+      },
+      {
+         "id":"11",
+         "input":{
+            "meal_description":"Homemade avocado toast with everything bagel seasoning",
+            "foods":[
+               "bread",
+               "avocado",
+               "sesame seeds",
+               "poppy seeds",
+               "salt",
+               "garlic",
+               "onion"
+            ]
+         },
+         "output":{
+            "meal_description":"Homemade avocado toast with everything bagel seasoning",
+            "foods":[
+               {
+                  "name":"bread",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"avocado",
+                  "portion_class":"added_fat",
+                  "confidence":0.95
+               },
+               {
+                  "name":"sesame seeds",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.85
+               },
+               {
+                  "name":"poppy seeds",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.85
+               },
+               {
+                  "name":"salt",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.8
+               },
+               {
+                  "name":"garlic",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.8
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.75
+               }
+            ],
+            "notes":[
+               "everything seasoning components are treated as trace; actual amounts may vary"
+            ]
+         }
+      },
+      {
+         "id":"12",
+         "input":{
+            "meal_description":"Banh mi with pork, pate, and pickled veg",
+            "foods":[
+               "baguette",
+               "pork",
+               "pate",
+               "carrots",
+               "daikon",
+               "vinegar",
+               "cucumber",
+               "cilantro"
+            ]
+         },
+         "output":{
+            "meal_description":"Banh mi with pork, pate, and pickled veg",
+            "foods":[
+               {
+                  "name":"baguette",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"pork",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"pate",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.75
+               },
+               {
+                  "name":"carrots",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"daikon",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"vinegar",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.8
+               },
+               {
+                  "name":"cucumber",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"cilantro",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "pate may be significant or a thin spread depending on preparation"
+            ]
+         }
+      },
+      {
+         "id":"13",
+         "input":{
+            "meal_description":"Sushi omakase",
+            "foods":[
+               "rice",
+               "rice vinegar",
+               "raw fish",
+               "nori (seaweed)"
+            ]
+         },
+         "output":{
+            "meal_description":"Sushi omakase",
+            "foods":[
+               {
+                  "name":"rice",
+                  "portion_class":"primary_starch",
+                  "confidence":0.8
+               },
+               {
+                  "name":"rice vinegar",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.7
+               },
+               {
+                  "name":"raw fish",
+                  "portion_class":"primary_protein",
+                  "confidence":0.8
+               },
+               {
+                  "name":"nori (seaweed)",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.6
+               }
+            ],
+            "notes":[
+               "omakase is variable; whether nori is present/meaningful across courses is unclear",
+               "relative prominence of rice vs fish depends on courses served"
+            ]
+         }
+      },
+      {
+         "id":"14",
+         "input":{
+            "meal_description":"Pad see ew with chicken",
+            "foods":[
+               "wide rice noodles",
+               "chicken",
+               "soy sauce",
+               "egg",
+               "mixed vegetables",
+               "vegetable oil"
+            ]
+         },
+         "output":{
+            "meal_description":"Pad see ew with chicken",
+            "foods":[
+               {
+                  "name":"wide rice noodles",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"soy sauce",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.9
+               },
+               {
+                  "name":"egg",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.75
+               },
+               {
+                  "name":"mixed vegetables",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.75
+               },
+               {
+                  "name":"vegetable oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "vegetable proportion varies by restaurant"
+            ]
+         }
+      },
+      {
+         "id":"15",
+         "input":{
+            "meal_description":"Chipotle bowl: steak, pinto beans, brown rice, corn salsa, sour cream",
+            "foods":[
+               "beef",
+               "pinto beans",
+               "brown rice",
+               "corn",
+               "tomatoes",
+               "onion",
+               "cilantro",
+               "lime",
+               "sour cream"
+            ]
+         },
+         "output":{
+            "meal_description":"Chipotle bowl: steak, pinto beans, brown rice, corn salsa, sour cream",
+            "foods":[
+               {
+                  "name":"beef",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"pinto beans",
+                  "portion_class":"legume_component",
+                  "confidence":0.95
+               },
+               {
+                  "name":"brown rice",
+                  "portion_class":"primary_starch",
+                  "confidence":0.85
+               },
+               {
+                  "name":"corn",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.75
+               },
+               {
+                  "name":"tomatoes",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.75
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.75
+               },
+               {
+                  "name":"cilantro",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.85
+               },
+               {
+                  "name":"lime",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.75
+               },
+               {
+                  "name":"sour cream",
+                  "portion_class":"dairy_component",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "relative proportion of rice vs beans vs steak is unclear",
+               "corn salsa components may be minor or moderate depending on serving size"
+            ]
+         }
+      },
+      {
+         "id":"16",
+         "input":{
+            "meal_description":"Starbucks Bacon Gouda sandwich + latte",
+            "foods":[
+               "bread",
+               "egg",
+               "bacon",
+               "gouda cheese",
+               "coffee",
+               "milk"
+            ]
+         },
+         "output":{
+            "meal_description":"Starbucks Bacon Gouda sandwich + latte",
+            "foods":[
+               {
+                  "name":"bread",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"egg",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.8
+               },
+               {
+                  "name":"bacon",
+                  "portion_class":"primary_protein",
+                  "confidence":0.75
+               },
+               {
+                  "name":"gouda cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"coffee",
+                  "portion_class":"beverage_noncaloric",
+                  "confidence":0.8
+               },
+               {
+                  "name":"milk",
+                  "portion_class":"beverage_caloric",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "whether bacon or egg is the dominant protein is unclear",
+               "latte milk volume is unknown"
+            ]
+         }
+      },
+      {
+         "id":"17",
+         "input":{
+            "meal_description":"Breakfast burrito w eggs, chorizo, potatoes, and salsa verde",
+            "foods":[
+               "flour tortilla",
+               "egg",
+               "chorizo",
+               "potatoes",
+               "tomatillos",
+               "onion",
+               "cilantro",
+               "lime"
+            ]
+         },
+         "output":{
+            "meal_description":"Breakfast burrito w eggs, chorizo, potatoes, and salsa verde",
+            "foods":[
+               {
+                  "name":"flour tortilla",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"egg",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.8
+               },
+               {
+                  "name":"chorizo",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"potatoes",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.75
+               },
+               {
+                  "name":"tomatillos",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.75
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.75
+               },
+               {
+                  "name":"cilantro",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.85
+               },
+               {
+                  "name":"lime",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.75
+               }
+            ],
+            "notes":[
+               "potatoes could be a major filler or a smaller component depending on burrito size",
+               "salsa verde composition and quantity are uncertain"
+            ]
+         }
+      },
+      {
+         "id":"18",
+         "input":{
+            "meal_description":"Just had a salad",
+            "foods":[
+               "mixed greens"
+            ]
+         },
+         "output":{
+            "meal_description":"Just had a salad",
+            "foods":[
+               {
+                  "name":"mixed greens",
+                  "portion_class":"primary_veg",
+                  "confidence":0.6
+               }
+            ],
+            "notes":[
+               "salad contents are underspecified; greens may not be the only component"
+            ]
+         }
+      },
+      {
+         "id":"19",
+         "input":{
+            "meal_description":"Shake Shack ShackBurger w cheese + crinkle fries",
+            "foods":[
+               "bun",
+               "ground beef",
+               "cheese",
+               "lettuce",
+               "tomato",
+               "mayonnaise",
+               "ketchup",
+               "potatoes",
+               "oil"
+            ]
+         },
+         "output":{
+            "meal_description":"Shake Shack ShackBurger w cheese + crinkle fries",
+            "foods":[
+               {
+                  "name":"bun",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"ground beef",
+                  "portion_class":"primary_protein",
+                  "confidence":0.95
+               },
+               {
+                  "name":"cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"lettuce",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"tomato",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"mayonnaise",
+                  "portion_class":"added_fat",
+                  "confidence":0.95
+               },
+               {
+                  "name":"ketchup",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.95
+               },
+               {
+                  "name":"potatoes",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.85
+               },
+               {
+                  "name":"oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "fries are likely a side (secondary starch)"
+            ]
+         }
+      },
+      {
+         "id":"20",
+         "input":{
+            "meal_description":"Pho tai (rare beef) w basil and bean sprouts",
+            "foods":[
+               "rice noodles",
+               "beef",
+               "beef broth",
+               "onion",
+               "ginger",
+               "star anise",
+               "basil",
+               "bean sprouts"
+            ]
+         },
+         "output":{
+            "meal_description":"Pho tai (rare beef) w basil and bean sprouts",
+            "foods":[
+               {
+                  "name":"rice noodles",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"beef",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"beef broth",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.8
+               },
+               {
+                  "name":"ginger",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.75
+               },
+               {
+                  "name":"star anise",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.75
+               },
+               {
+                  "name":"basil",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.8
+               },
+               {
+                  "name":"bean sprouts",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.8
+               }
+            ],
+            "notes":[
+               "broth is substantial but categorized as sauce/condiment by rule",
+               "herbs/spices may be trace or moderate depending on serving"
+            ]
+         }
+      },
+      {
+         "id":"21",
+         "input":{
+            "meal_description":"Poke bowl w salmon, rice, and spicy mayo",
+            "foods":[
+               "salmon",
+               "rice",
+               "mayonnaise",
+               "hot sauce"
+            ]
+         },
+         "output":{
+            "meal_description":"Poke bowl w salmon, rice, and spicy mayo",
+            "foods":[
+               {
+                  "name":"salmon",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"rice",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"mayonnaise",
+                  "portion_class":"added_fat",
+                  "confidence":0.95
+               },
+               {
+                  "name":"hot sauce",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "spicy mayo vs hot sauce split is unclear (could be one combined sauce)"
+            ]
+         }
+      },
+      {
+         "id":"22",
+         "input":{
+            "meal_description":"Wawa hoagie (italian)",
+            "foods":[
+               "sub roll",
+               "salami",
+               "ham",
+               "pepperoni",
+               "cheese",
+               "lettuce",
+               "tomato",
+               "onion"
+            ]
+         },
+         "output":{
+            "meal_description":"Wawa hoagie (italian)",
+            "foods":[
+               {
+                  "name":"sub roll",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"salami",
+                  "portion_class":"primary_protein",
+                  "confidence":0.75
+               },
+               {
+                  "name":"ham",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.65
+               },
+               {
+                  "name":"pepperoni",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.65
+               },
+               {
+                  "name":"cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.8
+               },
+               {
+                  "name":"lettuce",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"tomato",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "multiple meats present; dominant protein is unclear"
+            ]
+         }
+      },
+      {
+         "id":"23",
+         "input":{
+            "meal_description":"Coney dog with onions and mustard",
+            "foods":[
+               "hot dog bun",
+               "hot dog sausage",
+               "ground beef",
+               "tomatoes",
+               "onion",
+               "mustard"
+            ]
+         },
+         "output":{
+            "meal_description":"Coney dog with onions and mustard",
+            "foods":[
+               {
+                  "name":"hot dog bun",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"hot dog sausage",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"ground beef",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.7
+               },
+               {
+                  "name":"tomatoes",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.65
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"mustard",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.95
+               }
+            ],
+            "notes":[
+               "coney sauce composition varies; tomatoes/ground beef may function as a topping sauce"
+            ]
+         }
+      },
+      {
+         "id":"24",
+         "input":{
+            "meal_description":"Korean fried chicken with pickled radish",
+            "foods":[
+               "chicken",
+               "breadcrumbs",
+               "oil",
+               "radish",
+               "vinegar"
+            ]
+         },
+         "output":{
+            "meal_description":"Korean fried chicken with pickled radish",
+            "foods":[
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"breadcrumbs",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.75
+               },
+               {
+                  "name":"oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               },
+               {
+                  "name":"radish",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.8
+               },
+               {
+                  "name":"vinegar",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.75
+               }
+            ],
+            "notes":[
+               "pickled radish may be a small or moderate side"
+            ]
+         }
+      },
+      {
+         "id":"25",
+         "input":{
+            "meal_description":"PB&J on wheat",
+            "foods":[
+               "wheat bread",
+               "peanut butter",
+               "jelly"
+            ]
+         },
+         "output":{
+            "meal_description":"PB&J on wheat",
+            "foods":[
+               {
+                  "name":"wheat bread",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"peanut butter",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               },
+               {
+                  "name":"jelly",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "peanut butter could be considered a protein source but is categorized as added fat by rule"
+            ]
+         }
+      },
+      {
+         "id":"26",
+         "input":{
+            "meal_description":"Charcuterie plate: brie, prosciutto, olives, and almonds",
+            "foods":[
+               "brie",
+               "prosciutto",
+               "olives",
+               "almonds"
+            ]
+         },
+         "output":{
+            "meal_description":"Charcuterie plate: brie, prosciutto, olives, and almonds",
+            "foods":[
+               {
+                  "name":"brie",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"prosciutto",
+                  "portion_class":"primary_protein",
+                  "confidence":0.8
+               },
+               {
+                  "name":"olives",
+                  "portion_class":"snack_handful",
+                  "confidence":0.75
+               },
+               {
+                  "name":"almonds",
+                  "portion_class":"snack_handful",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "charcuterie portions vary widely; which item is most prominent is unclear"
+            ]
+         }
+      },
+      {
+         "id":"27",
+         "input":{
+            "meal_description":"Chili cheese fries",
+            "foods":[
+               "potatoes",
+               "oil",
+               "ground beef",
+               "beans",
+               "tomatoes",
+               "onion",
+               "cheese"
+            ]
+         },
+         "output":{
+            "meal_description":"Chili cheese fries",
+            "foods":[
+               {
+                  "name":"potatoes",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               },
+               {
+                  "name":"ground beef",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.75
+               },
+               {
+                  "name":"beans",
+                  "portion_class":"legume_component",
+                  "confidence":0.8
+               },
+               {
+                  "name":"tomatoes",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.65
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.75
+               },
+               {
+                  "name":"cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.8
+               }
+            ],
+            "notes":[
+               "chili component proportions (beef/beans/tomatoes/onion) vary by recipe"
+            ]
+         }
+      },
+      {
+         "id":"28",
+         "input":{
+            "meal_description":"Ate at Olive Garden (idk what it was)",
+            "foods":[
+               
+            ]
+         },
+         "output":{
+            "meal_description":"Ate at Olive Garden (idk what it was)",
+            "foods":[
+               
+            ],
+            "notes":[
+               "no foods provided; meal content is unknown"
+            ]
+         }
+      },
+      {
+         "id":"29",
+         "input":{
+            "meal_description":"Margherita pizza",
+            "foods":[
+               "pizza dough",
+               "tomatoes",
+               "mozzarella",
+               "basil",
+               "olive oil"
+            ]
+         },
+         "output":{
+            "meal_description":"Margherita pizza",
+            "foods":[
+               {
+                  "name":"pizza dough",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"tomatoes",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.75
+               },
+               {
+                  "name":"mozzarella",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"basil",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.85
+               },
+               {
+                  "name":"olive oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "tomatoes may be sauce or fresh slices depending on style"
+            ]
+         }
+      },
+      {
+         "id":"30",
+         "input":{
+            "meal_description":"McNuggets + sweet & sour + fries",
+            "foods":[
+               "chicken",
+               "breadcrumbs",
+               "potatoes",
+               "oil",
+               "sweet and sour sauce"
+            ]
+         },
+         "output":{
+            "meal_description":"McNuggets + sweet & sour + fries",
+            "foods":[
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"breadcrumbs",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.75
+               },
+               {
+                  "name":"potatoes",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.85
+               },
+               {
+                  "name":"oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               },
+               {
+                  "name":"sweet and sour sauce",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.95
+               }
+            ],
+            "notes":[
+               "fries are likely a side (secondary starch)"
+            ]
+         }
+      },
+      {
+         "id":"31",
+         "input":{
+            "meal_description":"Bodega egg and cheese on a roll",
+            "foods":[
+               "roll",
+               "egg",
+               "cheese"
+            ]
+         },
+         "output":{
+            "meal_description":"Bodega egg and cheese on a roll",
+            "foods":[
+               {
+                  "name":"roll",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"egg",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "egg vs cheese dominance is unclear"
+            ]
+         }
+      },
+      {
+         "id":"32",
+         "input":{
+            "meal_description":"Lox bagel with cream cheese and capers",
+            "foods":[
+               "bagel",
+               "cream cheese",
+               "smoked salmon",
+               "capers"
+            ]
+         },
+         "output":{
+            "meal_description":"Lox bagel with cream cheese and capers",
+            "foods":[
+               {
+                  "name":"bagel",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"cream cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.9
+               },
+               {
+                  "name":"smoked salmon",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"capers",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               
+            ]
+         }
+      },
+      {
+         "id":"33",
+         "input":{
+            "meal_description":"Tried birria tacos with consomme",
+            "foods":[
+               "tortillas",
+               "beef",
+               "broth",
+               "tomatoes",
+               "onion"
+            ]
+         },
+         "output":{
+            "meal_description":"Tried birria tacos with consomme",
+            "foods":[
+               {
+                  "name":"tortillas",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"beef",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"broth",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               },
+               {
+                  "name":"tomatoes",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.65
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.8
+               }
+            ],
+            "notes":[
+               "consommé is substantial but categorized as sauce/condiment by rule",
+               "tomatoes may be part of broth/sauce rather than a distinct vegetable topping"
+            ]
+         }
+      },
+      {
+         "id":"34",
+         "input":{
+            "meal_description":"Just some fruit",
+            "foods":[
+               "fruit"
+            ]
+         },
+         "output":{
+            "meal_description":"Just some fruit",
+            "foods":[
+               {
+                  "name":"fruit",
+                  "portion_class":"primary_veg",
+                  "confidence":0.6
+               }
+            ],
+            "notes":[
+               "fruit is mapped to primary_veg because no fruit portion_class exists"
+            ]
+         }
+      },
+      {
+         "id":"35",
+         "input":{
+            "meal_description":"Tuna melt on sourdough",
+            "foods":[
+               "sourdough bread",
+               "tuna",
+               "cheese",
+               "mayonnaise"
+            ]
+         },
+         "output":{
+            "meal_description":"Tuna melt on sourdough",
+            "foods":[
+               {
+                  "name":"sourdough bread",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"tuna",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"mayonnaise",
+                  "portion_class":"added_fat",
+                  "confidence":0.95
+               }
+            ],
+            "notes":[
+               
+            ]
+         }
+      },
+      {
+         "id":"36",
+         "input":{
+            "meal_description":"Pasta primavera w lots of veggies",
+            "foods":[
+               "pasta",
+               "mixed vegetables",
+               "olive oil"
+            ]
+         },
+         "output":{
+            "meal_description":"Pasta primavera w lots of veggies",
+            "foods":[
+               {
+                  "name":"pasta",
+                  "portion_class":"primary_starch",
+                  "confidence":0.85
+               },
+               {
+                  "name":"mixed vegetables",
+                  "portion_class":"primary_veg",
+                  "confidence":0.8
+               },
+               {
+                  "name":"olive oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "primavera can be either pasta-dominant or vegetable-dominant depending on portioning"
+            ]
+         }
+      },
+      {
+         "id":"37",
+         "input":{
+            "meal_description":"Breakfast: overnight oats w chia + banana",
+            "foods":[
+               "oats",
+               "milk",
+               "chia seeds",
+               "banana"
+            ]
+         },
+         "output":{
+            "meal_description":"Breakfast: overnight oats w chia + banana",
+            "foods":[
+               {
+                  "name":"oats",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"milk",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"chia seeds",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.7
+               },
+               {
+                  "name":"banana",
+                  "portion_class":"primary_veg",
+                  "confidence":0.8
+               }
+            ],
+            "notes":[
+               "chia could be a minor garnish or a meaningful component depending on amount",
+               "banana is mapped to primary_veg due to label set limitations"
+            ]
+         }
+      },
+      {
+         "id":"38",
+         "input":{
+            "meal_description":"In-N-Out Double-Double animal style",
+            "foods":[
+               "bun",
+               "ground beef",
+               "cheese",
+               "lettuce",
+               "tomato",
+               "onion",
+               "mayonnaise",
+               "ketchup",
+               "pickles"
+            ]
+         },
+         "output":{
+            "meal_description":"In-N-Out Double-Double animal style",
+            "foods":[
+               {
+                  "name":"bun",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"ground beef",
+                  "portion_class":"primary_protein",
+                  "confidence":0.95
+               },
+               {
+                  "name":"cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"lettuce",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"tomato",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"mayonnaise",
+                  "portion_class":"added_fat",
+                  "confidence":0.95
+               },
+               {
+                  "name":"ketchup",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.95
+               },
+               {
+                  "name":"pickles",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "animal style typically adds sauce/onion; exact prominence of condiments is unclear"
+            ]
+         }
+      },
+      {
+         "id":"39",
+         "input":{
+            "meal_description":"Ate lasagna (meat)",
+            "foods":[
+               "lasagna noodles",
+               "ground beef",
+               "tomato sauce",
+               "ricotta",
+               "mozzarella"
+            ]
+         },
+         "output":{
+            "meal_description":"Ate lasagna (meat)",
+            "foods":[
+               {
+                  "name":"lasagna noodles",
+                  "portion_class":"primary_starch",
+                  "confidence":0.85
+               },
+               {
+                  "name":"ground beef",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"tomato sauce",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.8
+               },
+               {
+                  "name":"ricotta",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"mozzarella",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "relative prominence of noodles vs meat vs cheese layers is unclear"
+            ]
+         }
+      },
+      {
+         "id":"40",
+         "input":{
+            "meal_description":"Just coffee",
+            "foods":[
+               "coffee"
+            ]
+         },
+         "output":{
+            "meal_description":"Just coffee",
+            "foods":[
+               {
+                  "name":"coffee",
+                  "portion_class":"beverage_noncaloric",
+                  "confidence":1.0
+               }
+            ],
+            "notes":[
+               
+            ]
+         }
+      },
+      {
+         "id":"41",
+         "input":{
+            "meal_description":"Cobb salad with bacon, blue cheese, avocado, and hard-boiled egg",
+            "foods":[
+               "mixed greens",
+               "bacon",
+               "blue cheese",
+               "avocado",
+               "egg"
+            ]
+         },
+         "output":{
+            "meal_description":"Cobb salad with bacon, blue cheese, avocado, and hard-boiled egg",
+            "foods":[
+               {
+                  "name":"mixed greens",
+                  "portion_class":"primary_veg",
+                  "confidence":0.95
+               },
+               {
+                  "name":"bacon",
+                  "portion_class":"primary_protein",
+                  "confidence":0.75
+               },
+               {
+                  "name":"blue cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"avocado",
+                  "portion_class":"added_fat",
+                  "confidence":0.95
+               },
+               {
+                  "name":"egg",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.8
+               }
+            ],
+            "notes":[
+               "bacon vs egg dominance as protein is unclear"
+            ]
+         }
+      },
+      {
+         "id":"42",
+         "input":{
+            "meal_description":"Turkey club w lettuce tomato mayo (triple decker)",
+            "foods":[
+               "bread",
+               "turkey",
+               "bacon",
+               "lettuce",
+               "tomato",
+               "mayonnaise"
+            ]
+         },
+         "output":{
+            "meal_description":"Turkey club w lettuce tomato mayo (triple decker)",
+            "foods":[
+               {
+                  "name":"bread",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"turkey",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"bacon",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.75
+               },
+               {
+                  "name":"lettuce",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"tomato",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"mayonnaise",
+                  "portion_class":"added_fat",
+                  "confidence":0.95
+               }
+            ],
+            "notes":[
+               
+            ]
+         }
+      },
+      {
+         "id":"43",
+         "input":{
+            "meal_description":"Bowl of cereal with milk",
+            "foods":[
+               "breakfast cereal",
+               "milk"
+            ]
+         },
+         "output":{
+            "meal_description":"Bowl of cereal with milk",
+            "foods":[
+               {
+                  "name":"breakfast cereal",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"milk",
+                  "portion_class":"dairy_component",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               
+            ]
+         }
+      },
+      {
+         "id":"44",
+         "input":{
+            "meal_description":"Chilaquiles verdes with chicken and queso",
+            "foods":[
+               "tortilla chips",
+               "tomatillos",
+               "chicken",
+               "cheese",
+               "onion",
+               "cilantro"
+            ]
+         },
+         "output":{
+            "meal_description":"Chilaquiles verdes with chicken and queso",
+            "foods":[
+               {
+                  "name":"tortilla chips",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"tomatillos",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.75
+               },
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.8
+               },
+               {
+                  "name":"cilantro",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "salsa verde quantity and thickness are unclear"
+            ]
+         }
+      },
+      {
+         "id":"45",
+         "input":{
+            "meal_description":"Falafel wrap w hummus",
+            "foods":[
+               "flatbread",
+               "falafel",
+               "chickpeas",
+               "tahini",
+               "lemon juice",
+               "garlic",
+               "olive oil"
+            ]
+         },
+         "output":{
+            "meal_description":"Falafel wrap w hummus",
+            "foods":[
+               {
+                  "name":"flatbread",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"falafel",
+                  "portion_class":"primary_protein",
+                  "confidence":0.7
+               },
+               {
+                  "name":"chickpeas",
+                  "portion_class":"legume_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"tahini",
+                  "portion_class":"added_fat",
+                  "confidence":0.85
+               },
+               {
+                  "name":"lemon juice",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.75
+               },
+               {
+                  "name":"garlic",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.75
+               },
+               {
+                  "name":"olive oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "falafel is chickpea-based; separation between falafel vs chickpeas in the list makes component roles ambiguous"
+            ]
+         }
+      },
+      {
+         "id":"46",
+         "input":{
+            "meal_description":"Had steak frites",
+            "foods":[
+               "beef steak",
+               "potatoes",
+               "oil"
+            ]
+         },
+         "output":{
+            "meal_description":"Had steak frites",
+            "foods":[
+               {
+                  "name":"beef steak",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"potatoes",
+                  "portion_class":"primary_starch",
+                  "confidence":0.85
+               },
+               {
+                  "name":"oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "steak vs fries dominance varies by serving size"
+            ]
+         }
+      },
+      {
+         "id":"47",
+         "input":{
+            "meal_description":"A slice of za",
+            "foods":[
+               "pizza dough",
+               "tomato sauce",
+               "cheese"
+            ]
+         },
+         "output":{
+            "meal_description":"A slice of za",
+            "foods":[
+               {
+                  "name":"pizza dough",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"tomato sauce",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               },
+               {
+                  "name":"cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "single slice implies smaller portions overall"
+            ]
+         }
+      },
+      {
+         "id":"48",
+         "input":{
+            "meal_description":"Burrito bowl w chicken n guac",
+            "foods":[
+               "chicken",
+               "avocado"
+            ]
+         },
+         "output":{
+            "meal_description":"Burrito bowl w chicken n guac",
+            "foods":[
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.8
+               },
+               {
+                  "name":"avocado",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "burrito bowl typically includes other components (rice/beans/etc.) but they are not in the foods list"
+            ]
+         }
+      },
+      {
+         "id":"49",
+         "input":{
+            "meal_description":"Hummus + pita",
+            "foods":[
+               "chickpeas",
+               "tahini",
+               "lemon juice",
+               "garlic",
+               "olive oil",
+               "pita bread"
+            ]
+         },
+         "output":{
+            "meal_description":"Hummus + pita",
+            "foods":[
+               {
+                  "name":"chickpeas",
+                  "portion_class":"legume_component",
+                  "confidence":0.9
+               },
+               {
+                  "name":"tahini",
+                  "portion_class":"added_fat",
+                  "confidence":0.85
+               },
+               {
+                  "name":"lemon juice",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.75
+               },
+               {
+                  "name":"garlic",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.75
+               },
+               {
+                  "name":"olive oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.85
+               },
+               {
+                  "name":"pita bread",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "hummus composition proportions are uncertain"
+            ]
+         }
+      },
+      {
+         "id":"50",
+         "input":{
+            "meal_description":"Biscuits n gravy",
+            "foods":[
+               "flour",
+               "butter",
+               "milk",
+               "pork sausage"
+            ]
+         },
+         "output":{
+            "meal_description":"Biscuits n gravy",
+            "foods":[
+               {
+                  "name":"flour",
+                  "portion_class":"primary_starch",
+                  "confidence":0.75
+               },
+               {
+                  "name":"butter",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               },
+               {
+                  "name":"milk",
+                  "portion_class":"dairy_component",
+                  "confidence":0.8
+               },
+               {
+                  "name":"pork sausage",
+                  "portion_class":"primary_protein",
+                  "confidence":0.75
+               }
+            ],
+            "notes":[
+               "flour/butter/milk could represent both biscuit and gravy; structure vs sauce roles are ambiguous"
+            ]
+         }
+      },
+      {
+         "id":"51",
+         "input":{
+            "meal_description":"Everything bagel with scallion cream cheese",
+            "foods":[
+               "bagel",
+               "cream cheese",
+               "scallions"
+            ]
+         },
+         "output":{
+            "meal_description":"Everything bagel with scallion cream cheese",
+            "foods":[
+               {
+                  "name":"bagel",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"cream cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.9
+               },
+               {
+                  "name":"scallions",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               
+            ]
+         }
+      },
+      {
+         "id":"52",
+         "input":{
+            "meal_description":"Chicken tikka masala + naan",
+            "foods":[
+               "chicken",
+               "yogurt",
+               "tomatoes",
+               "cream",
+               "onion",
+               "garlic",
+               "ginger",
+               "flour",
+               "yeast"
+            ]
+         },
+         "output":{
+            "meal_description":"Chicken tikka masala + naan",
+            "foods":[
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"yogurt",
+                  "portion_class":"dairy_component",
+                  "confidence":0.75
+               },
+               {
+                  "name":"tomatoes",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.7
+               },
+               {
+                  "name":"cream",
+                  "portion_class":"dairy_component",
+                  "confidence":0.8
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.75
+               },
+               {
+                  "name":"garlic",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.7
+               },
+               {
+                  "name":"ginger",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.7
+               },
+               {
+                  "name":"flour",
+                  "portion_class":"primary_starch",
+                  "confidence":0.6
+               },
+               {
+                  "name":"yeast",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.5
+               }
+            ],
+            "notes":[
+               "naan is implied but not explicitly listed; flour/yeast likely represent naan but could also be part of sauce thickening",
+               "tomatoes/onion/yogurt/cream may be part of sauce; exact prominence unclear"
+            ]
+         }
+      },
+      {
+         "id":"53",
+         "input":{
+            "meal_description":"Ate a quesadilla real quick",
+            "foods":[
+               "tortillas",
+               "cheese"
+            ]
+         },
+         "output":{
+            "meal_description":"Ate a quesadilla real quick",
+            "foods":[
+               {
+                  "name":"tortillas",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"cheese",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "cheese is treated as a main filling here (secondary_protein) rather than generic dairy_component"
+            ]
+         }
+      },
+      {
+         "id":"54",
+         "input":{
+            "meal_description":"Pancakes and bacon",
+            "foods":[
+               "flour",
+               "egg",
+               "milk",
+               "baking powder",
+               "bacon"
+            ]
+         },
+         "output":{
+            "meal_description":"Pancakes and bacon",
+            "foods":[
+               {
+                  "name":"flour",
+                  "portion_class":"primary_starch",
+                  "confidence":0.85
+               },
+               {
+                  "name":"egg",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.75
+               },
+               {
+                  "name":"milk",
+                  "portion_class":"dairy_component",
+                  "confidence":0.8
+               },
+               {
+                  "name":"baking powder",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.6
+               },
+               {
+                  "name":"bacon",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "egg may function structurally in pancakes rather than as a distinct protein component"
+            ]
+         }
+      },
+      {
+         "id":"55",
+         "input":{
+            "meal_description":"Nachos supreme (beef + cheese + jalapenos)",
+            "foods":[
+               "tortilla chips",
+               "ground beef",
+               "cheese",
+               "jalapenos"
+            ]
+         },
+         "output":{
+            "meal_description":"Nachos supreme (beef + cheese + jalapenos)",
+            "foods":[
+               {
+                  "name":"tortilla chips",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"ground beef",
+                  "portion_class":"primary_protein",
+                  "confidence":0.8
+               },
+               {
+                  "name":"cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"jalapenos",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.8
+               }
+            ],
+            "notes":[
+               "jalapeños may be a topping (trace) or a more substantial component depending on amount"
+            ]
+         }
+      },
+      {
+         "id":"56",
+         "input":{
+            "meal_description":"Chicken parm hero",
+            "foods":[
+               "sub roll",
+               "chicken",
+               "breadcrumbs",
+               "tomato sauce",
+               "mozzarella"
+            ]
+         },
+         "output":{
+            "meal_description":"Chicken parm hero",
+            "foods":[
+               {
+                  "name":"sub roll",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"breadcrumbs",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.75
+               },
+               {
+                  "name":"tomato sauce",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               },
+               {
+                  "name":"mozzarella",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "breadcrumbs are part of breading; prominence varies"
+            ]
+         }
+      },
+      {
+         "id":"57",
+         "input":{
+            "meal_description":"Had some BBQ ribs + coleslaw",
+            "foods":[
+               "pork ribs",
+               "barbecue sauce",
+               "cabbage",
+               "mayonnaise"
+            ]
+         },
+         "output":{
+            "meal_description":"Had some BBQ ribs + coleslaw",
+            "foods":[
+               {
+                  "name":"pork ribs",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"barbecue sauce",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.9
+               },
+               {
+                  "name":"cabbage",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"mayonnaise",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "coleslaw portion may be small or substantial"
+            ]
+         }
+      },
+      {
+         "id":"58",
+         "input":{
+            "meal_description":"Granola bar",
+            "foods":[
+               "granola bar"
+            ]
+         },
+         "output":{
+            "meal_description":"Granola bar",
+            "foods":[
+               {
+                  "name":"granola bar",
+                  "portion_class":"snack_item_single",
+                  "confidence":0.95
+               }
+            ],
+            "notes":[
+               
+            ]
+         }
+      },
+      {
+         "id":"59",
+         "input":{
+            "meal_description":"Smashed spaghetti n meatballs",
+            "foods":[
+               "spaghetti",
+               "tomato sauce",
+               "ground beef",
+               "egg",
+               "breadcrumbs"
+            ]
+         },
+         "output":{
+            "meal_description":"Smashed spaghetti n meatballs",
+            "foods":[
+               {
+                  "name":"spaghetti",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"tomato sauce",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               },
+               {
+                  "name":"ground beef",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"egg",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.65
+               },
+               {
+                  "name":"breadcrumbs",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.65
+               }
+            ],
+            "notes":[
+               "egg/breadcrumbs likely bind meatballs rather than serve as separate components"
+            ]
+         }
+      },
+      {
+         "id":"60",
+         "input":{
+            "meal_description":"Wings n blue cheese dip",
+            "foods":[
+               "chicken wings",
+               "blue cheese",
+               "sour cream",
+               "mayonnaise"
+            ]
+         },
+         "output":{
+            "meal_description":"Wings n blue cheese dip",
+            "foods":[
+               {
+                  "name":"chicken wings",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"blue cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.8
+               },
+               {
+                  "name":"sour cream",
+                  "portion_class":"dairy_component",
+                  "confidence":0.8
+               },
+               {
+                  "name":"mayonnaise",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "dip composition vs portion is unclear (blue cheese/sour cream/mayo)"
+            ]
+         }
+      },
+      {
+         "id":"61",
+         "input":{
+            "meal_description":"Salmon sushi roll with avocado and cucumber",
+            "foods":[
+               "rice",
+               "rice vinegar",
+               "nori (seaweed)",
+               "salmon",
+               "avocado",
+               "cucumber"
+            ]
+         },
+         "output":{
+            "meal_description":"Salmon sushi roll with avocado and cucumber",
+            "foods":[
+               {
+                  "name":"rice",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"rice vinegar",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.75
+               },
+               {
+                  "name":"nori (seaweed)",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.7
+               },
+               {
+                  "name":"salmon",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"avocado",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               },
+               {
+                  "name":"cucumber",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "nori may be structural but is treated as garnish/trace here due to typical small quantity"
+            ]
+         }
+      },
+      {
+         "id":"62",
+         "input":{
+            "meal_description":"Loaded baked potato w sour cream + bacon + chives",
+            "foods":[
+               "potato",
+               "sour cream",
+               "bacon",
+               "chives"
+            ]
+         },
+         "output":{
+            "meal_description":"Loaded baked potato w sour cream + bacon + chives",
+            "foods":[
+               {
+                  "name":"potato",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"sour cream",
+                  "portion_class":"dairy_component",
+                  "confidence":0.9
+               },
+               {
+                  "name":"bacon",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.8
+               },
+               {
+                  "name":"chives",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "bacon could be moderate or light topping depending on serving"
+            ]
+         }
+      },
+      {
+         "id":"63",
+         "input":{
+            "meal_description":"Protein shake (whey + banana + peanut butter)",
+            "foods":[
+               "whey protein",
+               "banana",
+               "peanut butter"
+            ]
+         },
+         "output":{
+            "meal_description":"Protein shake (whey + banana + peanut butter)",
+            "foods":[
+               {
+                  "name":"whey protein",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"banana",
+                  "portion_class":"primary_veg",
+                  "confidence":0.75
+               },
+               {
+                  "name":"peanut butter",
+                  "portion_class":"added_fat",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "shake liquid base is not listed; listed items may not represent full beverage composition"
+            ]
+         }
+      },
+      {
+         "id":"64",
+         "input":{
+            "meal_description":"Had dim sum (random stuff)",
+            "foods":[
+               
+            ]
+         },
+         "output":{
+            "meal_description":"Had dim sum (random stuff)",
+            "foods":[
+               
+            ],
+            "notes":[
+               "no foods provided; meal content is unknown"
+            ]
+         }
+      },
+      {
+         "id":"65",
+         "input":{
+            "meal_description":"Burrata with tomatoes and basil",
+            "foods":[
+               "burrata",
+               "tomatoes",
+               "basil",
+               "olive oil"
+            ]
+         },
+         "output":{
+            "meal_description":"Burrata with tomatoes and basil",
+            "foods":[
+               {
+                  "name":"burrata",
+                  "portion_class":"dairy_component",
+                  "confidence":0.9
+               },
+               {
+                  "name":"tomatoes",
+                  "portion_class":"primary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"basil",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.85
+               },
+               {
+                  "name":"olive oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "tomato vs burrata dominance is unclear"
+            ]
+         }
+      },
+      {
+         "id":"66",
+         "input":{
+            "meal_description":"Chicken noodle soup",
+            "foods":[
+               "chicken",
+               "noodles",
+               "broth"
+            ]
+         },
+         "output":{
+            "meal_description":"Chicken noodle soup",
+            "foods":[
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.75
+               },
+               {
+                  "name":"noodles",
+                  "portion_class":"primary_starch",
+                  "confidence":0.75
+               },
+               {
+                  "name":"broth",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "relative dominance of noodles vs chicken varies by soup"
+            ]
+         }
+      },
+      {
+         "id":"67",
+         "input":{
+            "meal_description":"Hot take: just ate chips and guac",
+            "foods":[
+               "tortilla chips",
+               "avocado"
+            ]
+         },
+         "output":{
+            "meal_description":"Hot take: just ate chips and guac",
+            "foods":[
+               {
+                  "name":"tortilla chips",
+                  "portion_class":"snack_handful",
+                  "confidence":0.85
+               },
+               {
+                  "name":"avocado",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "chips could be snack-size or meal-size depending on quantity"
+            ]
+         }
+      },
+      {
+         "id":"68",
+         "input":{
+            "meal_description":"Subway footlong meatball marinara",
+            "foods":[
+               "sub roll",
+               "ground beef",
+               "breadcrumbs",
+               "tomato sauce"
+            ]
+         },
+         "output":{
+            "meal_description":"Subway footlong meatball marinara",
+            "foods":[
+               {
+                  "name":"sub roll",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"ground beef",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"breadcrumbs",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.65
+               },
+               {
+                  "name":"tomato sauce",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "breadcrumbs likely bind meatballs rather than act as a distinct starch component"
+            ]
+         }
+      },
+      {
+         "id":"69",
+         "input":{
+            "meal_description":"CFA nuggets + mac n cheese",
+            "foods":[
+               "chicken",
+               "breadcrumbs",
+               "macaroni",
+               "cheese",
+               "milk",
+               "butter"
+            ]
+         },
+         "output":{
+            "meal_description":"CFA nuggets + mac n cheese",
+            "foods":[
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"breadcrumbs",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.7
+               },
+               {
+                  "name":"macaroni",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.8
+               },
+               {
+                  "name":"cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"milk",
+                  "portion_class":"dairy_component",
+                  "confidence":0.8
+               },
+               {
+                  "name":"butter",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "two distinct items (nuggets + mac) make primary vs secondary starch less clear"
+            ]
+         }
+      },
+      {
+         "id":"70",
+         "input":{
+            "meal_description":"Ate hella mac n cheese",
+            "foods":[
+               "macaroni",
+               "cheese",
+               "milk",
+               "butter"
+            ]
+         },
+         "output":{
+            "meal_description":"Ate hella mac n cheese",
+            "foods":[
+               {
+                  "name":"macaroni",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"milk",
+                  "portion_class":"dairy_component",
+                  "confidence":0.8
+               },
+               {
+                  "name":"butter",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "cheese may be very dominant but is kept as dairy_component per rules"
+            ]
+         }
+      },
+      {
+         "id":"71",
+         "input":{
+            "meal_description":"Greek yogurt with honey and walnuts",
+            "foods":[
+               "greek yogurt",
+               "honey",
+               "walnuts"
+            ]
+         },
+         "output":{
+            "meal_description":"Greek yogurt with honey and walnuts",
+            "foods":[
+               {
+                  "name":"greek yogurt",
+                  "portion_class":"dairy_component",
+                  "confidence":0.95
+               },
+               {
+                  "name":"honey",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.9
+               },
+               {
+                  "name":"walnuts",
+                  "portion_class":"snack_handful",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               
+            ]
+         }
+      },
+      {
+         "id":"72",
+         "input":{
+            "meal_description":"Caprese salad",
+            "foods":[
+               "tomatoes",
+               "fresh mozzarella",
+               "basil",
+               "olive oil"
+            ]
+         },
+         "output":{
+            "meal_description":"Caprese salad",
+            "foods":[
+               {
+                  "name":"tomatoes",
+                  "portion_class":"primary_veg",
+                  "confidence":0.9
+               },
+               {
+                  "name":"fresh mozzarella",
+                  "portion_class":"dairy_component",
+                  "confidence":0.9
+               },
+               {
+                  "name":"basil",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.85
+               },
+               {
+                  "name":"olive oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "tomato vs mozzarella dominance depends on serving style"
+            ]
+         }
+      },
+      {
+         "id":"73",
+         "input":{
+            "meal_description":"Shawarma wrap (chicken) with garlic sauce",
+            "foods":[
+               "flatbread",
+               "chicken",
+               "garlic",
+               "mayonnaise"
+            ]
+         },
+         "output":{
+            "meal_description":"Shawarma wrap (chicken) with garlic sauce",
+            "foods":[
+               {
+                  "name":"flatbread",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"garlic",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.75
+               },
+               {
+                  "name":"mayonnaise",
+                  "portion_class":"added_fat",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "garlic sauce composition is simplified; mayo may be part of sauce rather than a distinct fat"
+            ]
+         }
+      },
+      {
+         "id":"74",
+         "input":{
+            "meal_description":"Just munched on trail mix",
+            "foods":[
+               "mixed nuts",
+               "dried fruit"
+            ]
+         },
+         "output":{
+            "meal_description":"Just munched on trail mix",
+            "foods":[
+               {
+                  "name":"mixed nuts",
+                  "portion_class":"snack_handful",
+                  "confidence":0.9
+               },
+               {
+                  "name":"dried fruit",
+                  "portion_class":"snack_handful",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               
+            ]
+         }
+      },
+      {
+         "id":"75",
+         "input":{
+            "meal_description":"Kinda demolished tacos al pastor",
+            "foods":[
+               "tortillas",
+               "pork",
+               "pineapple",
+               "achiote paste"
+            ]
+         },
+         "output":{
+            "meal_description":"Kinda demolished tacos al pastor",
+            "foods":[
+               {
+                  "name":"tortillas",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"pork",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"pineapple",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.75
+               },
+               {
+                  "name":"achiote paste",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.7
+               }
+            ],
+            "notes":[
+               "pineapple amount varies from trace to moderate"
+            ]
+         }
+      },
+      {
+         "id":"76",
+         "input":{
+            "meal_description":"Panda Express orange chicken + chow mein",
+            "foods":[
+               "chicken",
+               "breadcrumbs",
+               "orange sauce",
+               "noodles",
+               "mixed vegetables"
+            ]
+         },
+         "output":{
+            "meal_description":"Panda Express orange chicken + chow mein",
+            "foods":[
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.8
+               },
+               {
+                  "name":"breadcrumbs",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.7
+               },
+               {
+                  "name":"orange sauce",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.9
+               },
+               {
+                  "name":"noodles",
+                  "portion_class":"primary_starch",
+                  "confidence":0.8
+               },
+               {
+                  "name":"mixed vegetables",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.75
+               }
+            ],
+            "notes":[
+               "two-item combo makes which component is primary less clear"
+            ]
+         }
+      },
+      {
+         "id":"77",
+         "input":{
+            "meal_description":"Had a burger",
+            "foods":[
+               "burger bun",
+               "ground beef"
+            ]
+         },
+         "output":{
+            "meal_description":"Had a burger",
+            "foods":[
+               {
+                  "name":"burger bun",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"ground beef",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               
+            ]
+         }
+      },
+      {
+         "id":"78",
+         "input":{
+            "meal_description":"Bodied a bowl of ramen (instant) w an egg",
+            "foods":[
+               "ramen noodles",
+               "broth",
+               "egg"
+            ]
+         },
+         "output":{
+            "meal_description":"Bodied a bowl of ramen (instant) w an egg",
+            "foods":[
+               {
+                  "name":"ramen noodles",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"broth",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               },
+               {
+                  "name":"egg",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.8
+               }
+            ],
+            "notes":[
+               "instant ramen broth may be a seasoning packet; still treated as sauce/condiment"
+            ]
+         }
+      },
+      {
+         "id":"79",
+         "input":{
+            "meal_description":"Veggie stir-fry with tofu and brown rice",
+            "foods":[
+               "mixed vegetables",
+               "tofu",
+               "brown rice",
+               "vegetable oil",
+               "soy sauce",
+               "garlic"
+            ]
+         },
+         "output":{
+            "meal_description":"Veggie stir-fry with tofu and brown rice",
+            "foods":[
+               {
+                  "name":"mixed vegetables",
+                  "portion_class":"primary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"tofu",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"brown rice",
+                  "portion_class":"primary_starch",
+                  "confidence":0.8
+               },
+               {
+                  "name":"vegetable oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               },
+               {
+                  "name":"soy sauce",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.9
+               },
+               {
+                  "name":"garlic",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.75
+               }
+            ],
+            "notes":[
+               "relative dominance of vegetables vs rice is unclear"
+            ]
+         }
+      },
+      {
+         "id":"80",
+         "input":{
+            "meal_description":"Apple + cheddar slices",
+            "foods":[
+               "apple",
+               "cheddar cheese"
+            ]
+         },
+         "output":{
+            "meal_description":"Apple + cheddar slices",
+            "foods":[
+               {
+                  "name":"apple",
+                  "portion_class":"primary_veg",
+                  "confidence":0.8
+               },
+               {
+                  "name":"cheddar cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "apple is mapped to primary_veg due to label set limitations"
+            ]
+         }
+      },
+      {
+         "id":"81",
+         "input":{
+            "meal_description":"Chicken and waffles with maple syrup",
+            "foods":[
+               "chicken",
+               "breadcrumbs",
+               "waffle",
+               "maple syrup"
+            ]
+         },
+         "output":{
+            "meal_description":"Chicken and waffles with maple syrup",
+            "foods":[
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"breadcrumbs",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.7
+               },
+               {
+                  "name":"waffle",
+                  "portion_class":"primary_starch",
+                  "confidence":0.85
+               },
+               {
+                  "name":"maple syrup",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "chicken vs waffle dominance varies by serving"
+            ]
+         }
+      },
+      {
+         "id":"82",
+         "input":{
+            "meal_description":"Bowl of oatmeal w cinnamon and raisins",
+            "foods":[
+               "oats",
+               "water",
+               "cinnamon",
+               "raisins"
+            ]
+         },
+         "output":{
+            "meal_description":"Bowl of oatmeal w cinnamon and raisins",
+            "foods":[
+               {
+                  "name":"oats",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"water",
+                  "portion_class":"other",
+                  "confidence":0.6
+               },
+               {
+                  "name":"cinnamon",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.85
+               },
+               {
+                  "name":"raisins",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.75
+               }
+            ],
+            "notes":[
+               "raisins could be moderate or light topping depending on amount",
+               "water is non-nutritive and mapped to other"
+            ]
+         }
+      },
+      {
+         "id":"83",
+         "input":{
+            "meal_description":"Baked ziti",
+            "foods":[
+               "ziti",
+               "tomato sauce",
+               "ricotta",
+               "mozzarella"
+            ]
+         },
+         "output":{
+            "meal_description":"Baked ziti",
+            "foods":[
+               {
+                  "name":"ziti",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"tomato sauce",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               },
+               {
+                  "name":"ricotta",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"mozzarella",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               
+            ]
+         }
+      },
+      {
+         "id":"84",
+         "input":{
+            "meal_description":"Sausage, egg, and cheese McMuffin",
+            "foods":[
+               "english muffin",
+               "pork sausage",
+               "egg",
+               "cheese"
+            ]
+         },
+         "output":{
+            "meal_description":"Sausage, egg, and cheese McMuffin",
+            "foods":[
+               {
+                  "name":"english muffin",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"pork sausage",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"egg",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.8
+               },
+               {
+                  "name":"cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "egg vs sausage dominance as protein varies by sandwich build"
+            ]
+         }
+      },
+      {
+         "id":"85",
+         "input":{
+            "meal_description":"Buldak noodles",
+            "foods":[
+               "ramen noodles",
+               "spicy sauce"
+            ]
+         },
+         "output":{
+            "meal_description":"Buldak noodles",
+            "foods":[
+               {
+                  "name":"ramen noodles",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"spicy sauce",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               
+            ]
+         }
+      },
+      {
+         "id":"86",
+         "input":{
+            "meal_description":"Butter chicken with rice",
+            "foods":[
+               "chicken",
+               "tomatoes",
+               "butter",
+               "cream",
+               "rice"
+            ]
+         },
+         "output":{
+            "meal_description":"Butter chicken with rice",
+            "foods":[
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"tomatoes",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.7
+               },
+               {
+                  "name":"butter",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               },
+               {
+                  "name":"cream",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"rice",
+                  "portion_class":"primary_starch",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "tomatoes likely part of sauce rather than a distinct vegetable component"
+            ]
+         }
+      },
+      {
+         "id":"87",
+         "input":{
+            "meal_description":"Currywurst + fries",
+            "foods":[
+               "sausage",
+               "ketchup",
+               "curry powder",
+               "potatoes",
+               "oil"
+            ]
+         },
+         "output":{
+            "meal_description":"Currywurst + fries",
+            "foods":[
+               {
+                  "name":"sausage",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"ketchup",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.9
+               },
+               {
+                  "name":"curry powder",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.85
+               },
+               {
+                  "name":"potatoes",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.85
+               },
+               {
+                  "name":"oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "fries are likely a side"
+            ]
+         }
+      },
+      {
+         "id":"88",
+         "input":{
+            "meal_description":"Breakfast sandwich: egg whites, spinach, feta on an english muffin",
+            "foods":[
+               "english muffin",
+               "egg whites",
+               "spinach",
+               "feta"
+            ]
+         },
+         "output":{
+            "meal_description":"Breakfast sandwich: egg whites, spinach, feta on an english muffin",
+            "foods":[
+               {
+                  "name":"english muffin",
+                  "portion_class":"primary_starch",
+                  "confidence":0.95
+               },
+               {
+                  "name":"egg whites",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"spinach",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"feta",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               
+            ]
+         }
+      },
+      {
+         "id":"89",
+         "input":{
+            "meal_description":"Had some soup",
+            "foods":[
+               "soup"
+            ]
+         },
+         "output":{
+            "meal_description":"Had some soup",
+            "foods":[
+               {
+                  "name":"soup",
+                  "portion_class":"other",
+                  "confidence":0.3
+               }
+            ],
+            "notes":[
+               "soup contents are unknown; cannot assign specific portion role"
+            ]
+         }
+      },
+      {
+         "id":"90",
+         "input":{
+            "meal_description":"Boba milk tea (tapioca pearls)",
+            "foods":[
+               "tea",
+               "milk",
+               "tapioca pearls",
+               "sugar"
+            ]
+         },
+         "output":{
+            "meal_description":"Boba milk tea (tapioca pearls)",
+            "foods":[
+               {
+                  "name":"tea",
+                  "portion_class":"beverage_noncaloric",
+                  "confidence":0.65
+               },
+               {
+                  "name":"milk",
+                  "portion_class":"beverage_caloric",
+                  "confidence":0.85
+               },
+               {
+                  "name":"tapioca pearls",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.7
+               },
+               {
+                  "name":"sugar",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.75
+               }
+            ],
+            "notes":[
+               "tea is the base but overall drink is caloric due to milk/sugar; component split is approximate"
+            ]
+         }
+      },
+      {
+         "id":"91",
+         "input":{
+            "meal_description":"Carne asada fries (loaded)",
+            "foods":[
+               "potatoes",
+               "oil",
+               "beef",
+               "cheese",
+               "sour cream",
+               "avocado"
+            ]
+         },
+         "output":{
+            "meal_description":"Carne asada fries (loaded)",
+            "foods":[
+               {
+                  "name":"potatoes",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               },
+               {
+                  "name":"beef",
+                  "portion_class":"primary_protein",
+                  "confidence":0.8
+               },
+               {
+                  "name":"cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"sour cream",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"avocado",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "beef may be a topping (secondary) or substantial (primary) depending on serving"
+            ]
+         }
+      },
+      {
+         "id":"92",
+         "input":{
+            "meal_description":"Ate a poke bowl thingy",
+            "foods":[
+               "rice",
+               "raw fish"
+            ]
+         },
+         "output":{
+            "meal_description":"Ate a poke bowl thingy",
+            "foods":[
+               {
+                  "name":"rice",
+                  "portion_class":"primary_starch",
+                  "confidence":0.8
+               },
+               {
+                  "name":"raw fish",
+                  "portion_class":"primary_protein",
+                  "confidence":0.8
+               }
+            ],
+            "notes":[
+               "poke bowl is underspecified; other components may exist but are not listed"
+            ]
+         }
+      },
+      {
+         "id":"93",
+         "input":{
+            "meal_description":"Chicken katsu with rice and cabbage",
+            "foods":[
+               "chicken",
+               "breadcrumbs",
+               "rice",
+               "cabbage"
+            ]
+         },
+         "output":{
+            "meal_description":"Chicken katsu with rice and cabbage",
+            "foods":[
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.9
+               },
+               {
+                  "name":"breadcrumbs",
+                  "portion_class":"secondary_starch",
+                  "confidence":0.75
+               },
+               {
+                  "name":"rice",
+                  "portion_class":"primary_starch",
+                  "confidence":0.85
+               },
+               {
+                  "name":"cabbage",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "rice vs chicken dominance depends on serving size"
+            ]
+         }
+      },
+      {
+         "id":"94",
+         "input":{
+            "meal_description":"Tonkatsu ramen",
+            "foods":[
+               "ramen noodles",
+               "pork broth",
+               "pork"
+            ]
+         },
+         "output":{
+            "meal_description":"Tonkatsu ramen",
+            "foods":[
+               {
+                  "name":"ramen noodles",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"pork broth",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               },
+               {
+                  "name":"pork",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               
+            ]
+         }
+      },
+      {
+         "id":"95",
+         "input":{
+            "meal_description":"Ahi tuna salad",
+            "foods":[
+               "tuna",
+               "mixed greens"
+            ]
+         },
+         "output":{
+            "meal_description":"Ahi tuna salad",
+            "foods":[
+               {
+                  "name":"tuna",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"mixed greens",
+                  "portion_class":"primary_veg",
+                  "confidence":0.9
+               }
+            ],
+            "notes":[
+               "salad could include other items not listed"
+            ]
+         }
+      },
+      {
+         "id":"96",
+         "input":{
+            "meal_description":"Whole Foods hot bar plate",
+            "foods":[
+               
+            ]
+         },
+         "output":{
+            "meal_description":"Whole Foods hot bar plate",
+            "foods":[
+               
+            ],
+            "notes":[
+               "no foods provided; meal content is unknown"
+            ]
+         }
+      },
+      {
+         "id":"97",
+         "input":{
+            "meal_description":"Panera broccoli cheddar soup in a bread bowl",
+            "foods":[
+               "broccoli",
+               "cheddar cheese",
+               "milk",
+               "bread"
+            ]
+         },
+         "output":{
+            "meal_description":"Panera broccoli cheddar soup in a bread bowl",
+            "foods":[
+               {
+                  "name":"broccoli",
+                  "portion_class":"primary_veg",
+                  "confidence":0.75
+               },
+               {
+                  "name":"cheddar cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.85
+               },
+               {
+                  "name":"milk",
+                  "portion_class":"dairy_component",
+                  "confidence":0.8
+               },
+               {
+                  "name":"bread",
+                  "portion_class":"primary_starch",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "bread bowl can make bread a major starch or a partial container depending on how much is eaten"
+            ]
+         }
+      },
+      {
+         "id":"98",
+         "input":{
+            "meal_description":"Chicken Caesar wrap",
+            "foods":[
+               "flour tortilla",
+               "romaine lettuce",
+               "chicken",
+               "parmesan cheese",
+               "egg yolk",
+               "olive oil",
+               "lemon juice",
+               "anchovies",
+               "garlic",
+               "mustard"
+            ]
+         },
+         "output":{
+            "meal_description":"Chicken Caesar wrap",
+            "foods":[
+               {
+                  "name":"flour tortilla",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"romaine lettuce",
+                  "portion_class":"primary_veg",
+                  "confidence":0.75
+               },
+               {
+                  "name":"chicken",
+                  "portion_class":"primary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"parmesan cheese",
+                  "portion_class":"dairy_component",
+                  "confidence":0.8
+               },
+               {
+                  "name":"egg yolk",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.65
+               },
+               {
+                  "name":"olive oil",
+                  "portion_class":"added_fat",
+                  "confidence":0.9
+               },
+               {
+                  "name":"lemon juice",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               },
+               {
+                  "name":"anchovies",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.6
+               },
+               {
+                  "name":"garlic",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.75
+               },
+               {
+                  "name":"mustard",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.85
+               }
+            ],
+            "notes":[
+               "wraps vary: lettuce may be moderate (secondary) or substantial (primary)"
+            ]
+         }
+      },
+      {
+         "id":"99",
+         "input":{
+            "meal_description":"Grilled cheese + tomato soup",
+            "foods":[
+               "bread",
+               "cheese",
+               "butter",
+               "tomatoes",
+               "broth",
+               "onion",
+               "garlic"
+            ]
+         },
+         "output":{
+            "meal_description":"Grilled cheese + tomato soup",
+            "foods":[
+               {
+                  "name":"bread",
+                  "portion_class":"primary_starch",
+                  "confidence":0.9
+               },
+               {
+                  "name":"cheese",
+                  "portion_class":"secondary_protein",
+                  "confidence":0.85
+               },
+               {
+                  "name":"butter",
+                  "portion_class":"added_fat",
+                  "confidence":0.95
+               },
+               {
+                  "name":"tomatoes",
+                  "portion_class":"primary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"broth",
+                  "portion_class":"sauce_condiment",
+                  "confidence":0.8
+               },
+               {
+                  "name":"onion",
+                  "portion_class":"secondary_veg",
+                  "confidence":0.85
+               },
+               {
+                  "name":"garlic",
+                  "portion_class":"garnish_trace",
+                  "confidence":0.8
+               }
+            ],
+            "notes":[
+               "cheese treated as main filling protein in grilled cheese; soup composition (tomato vs broth) varies"
+            ]
+         }
+      },
+      {
+         "id":"100",
+         "input":{
+            "meal_description":"Ate a chocolate chip cookie",
+            "foods":[
+               "flour",
+               "sugar",
+               "butter",
+               "egg",
+               "chocolate chips"
+            ]
+         },
+         "output":{
+            "meal_description":"Ate a chocolate chip cookie",
+            "foods":[
+               {
+                  "name":"flour",
+                  "portion_class":"snack_item_single",
+                  "confidence":0.55
+               },
+               {
+                  "name":"sugar",
+                  "portion_class":"snack_item_single",
+                  "confidence":0.55
+               },
+               {
+                  "name":"butter",
+                  "portion_class":"snack_item_single",
+                  "confidence":0.55
+               },
+               {
+                  "name":"egg",
+                  "portion_class":"snack_item_single",
+                  "confidence":0.55
+               },
+               {
+                  "name":"chocolate chips",
+                  "portion_class":"snack_item_single",
+                  "confidence":0.55
+               }
+            ],
+            "notes":[
+               "foods list represents ingredients of a single cookie; all items function as part of one discrete snack"
+            ]
+         }
+      }
+   ]
+}

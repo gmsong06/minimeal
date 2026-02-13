@@ -60,6 +60,53 @@ def parse_gpt_meal_conversion_response(text: str) -> Dict[str, Any]:
         "confidence_score": payload.get("confidence_score"),
     }
 
+def parse_gpt_assign_portion_classes_response(output_text: str):
+    """
+    Robust parser that:
+    - Removes ```json fences
+    - Extracts JSON block
+    - Parses safely
+    """
+
+    try:
+        text = output_text.strip()
+
+        # Remove triple backtick fences if present
+        if text.startswith("```"):
+            text = re.sub(r"^```[a-zA-Z]*\n?", "", text)  # remove opening ```json
+            text = re.sub(r"\n?```$", "", text)           # remove closing ```
+
+        text = text.strip()
+
+        parsed = json.loads(text)
+
+        # Normalize foods
+        cleaned_foods = []
+        for item in parsed.get("foods", []):
+            cleaned_foods.append({
+                "name": item.get("name", "").strip().lower(),
+                "portion_class": item.get("portion_class", "").strip(),
+                "confidence": float(item.get("confidence", 0.0)),
+            })
+
+        print(cleaned_foods)
+        print()
+        return {
+            "meal_description": parsed.get("meal_description", ""),
+            "foods": cleaned_foods,
+            "notes": parsed.get("notes", []),
+        }
+
+    except Exception as e:
+        print("Failed to parse assign_portion_classes response:", e)
+        print("Raw output:", output_text)
+        return {
+            "meal_description": "",
+            "foods": [],
+            "notes": ["Parsing failure"]
+        }
+
+
 def get_gpt_response(model: str, system_prompt: str, user_prompt: str) -> str:
     response = client.responses.create(
         model=model,
