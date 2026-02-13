@@ -3,7 +3,7 @@ import time
 import logging
 from typing import Any, Dict, List, Tuple, Optional
 
-from utils.model import get_gpt_meal_conversion, parse_gpt_meal_conversion_response
+from utils.model import get_gpt_response, parse_gpt_meal_conversion_response
 from utils.prompt import get_prompt
 
 logging.basicConfig(
@@ -131,7 +131,7 @@ def evaluate_model(model: str, system_prompt: str, test_set: list, results_path:
 
         # ---- latency timing (end-to-end for model call) ----
         t0 = time.perf_counter()
-        response = get_gpt_meal_conversion(model, system_prompt, user_prompt)
+        response = get_gpt_response(model, system_prompt, user_prompt)
         t1 = time.perf_counter()
         latency_ms = (t1 - t0) * 1000.0
         latencies_ms.append(latency_ms)

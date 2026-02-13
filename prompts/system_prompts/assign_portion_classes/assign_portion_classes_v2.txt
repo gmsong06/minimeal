@@ -131,5 +131,3 @@ Return only JSON in the following structure:
 - Persist with careful reasoning for each food until all have assigned classes, confidence, and any relevant ambiguity notes.
 
 Reminder: Assign a single portion_class per food, ALWAYS reason about each item in the context of the meal, and ONLY output the required JSON structure.
-
-

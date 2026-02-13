@@ -60,7 +60,7 @@ def parse_gpt_meal_conversion_response(text: str) -> Dict[str, Any]:
         "confidence_score": payload.get("confidence_score"),
     }
 
-def get_gpt_meal_conversion(model: str, system_prompt: str, user_prompt: str) -> str:
+def get_gpt_response(model: str, system_prompt: str, user_prompt: str) -> str:
     response = client.responses.create(
         model=model,
         input=[
