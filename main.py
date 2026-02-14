@@ -1,4 +1,10 @@
-from utils.model import get_gpt_response, parse_gpt_meal_conversion_response, parse_gpt_assign_portion_classes_response
+from utils.model import (
+    get_gpt_response, 
+    parse_gpt_meal_conversion_response, 
+    parse_gpt_assign_portion_classes_response,
+    parse_gpt_choose_candidates_response
+)
+
 from utils.prompt import get_prompt
 import json
 
@@ -6,13 +12,13 @@ def process_input(user_meal: str, meal_conversion_model: str, assign_portion_cla
     meal_conversion_system_prompt = get_prompt(
         "prompts/system_prompts/meal_conversion/meal_conversion_v3.txt",
         "prompts/few_shot_examples/meal_conversion_examples.json",
-        True
+        want_reasoning=True
     )
 
     assign_portion_classes_system_prompt = get_prompt(
         "prompts/system_prompts/assign_portion_classes/assign_portion_classes_v2.txt",
         "prompts/few_shot_examples/assign_portion_classes_examples.json",
-        False
+        want_reasoning=False
     )
 
     meal_conversion_response = get_gpt_response(
@@ -80,11 +86,40 @@ def build_choose_candidate_input(processed_meal: dict):
     
     return gpt_input
 
+def get_chosen_candidates(choose_candidate_input: str, choose_candidate_model: str):
+    choose_candidate_system_prompt = get_prompt(
+        "prompts/system_prompts/choose_candidate/choose_candidate.txt",
+        "prompts/few_shot_examples/choose_candidate_examples.json",
+        want_reasoning=False
+    )
+
+    choose_candidate_response = get_gpt_response(
+        choose_candidate_model, 
+        choose_candidate_system_prompt, 
+        choose_candidate_input
+    )
+
+    return parse_gpt_choose_candidates_response(choose_candidate_response.output_text)
+
+def remove_other_candidates(processed_meal: str, chosen_candidates: dict):
+    for food in processed_meal["foods"]:
+        chosen_candidate = {}
+        for c in food.get("usda_candidates", []):
+            if c["fdcId"] == chosen_candidates[food["name"]]:
+                chosen_candidate = c
+                break
+
+        food["usda_match"] = chosen_candidate
+    
+
 if __name__ == "__main__":
-    user_prompt = "Wawa hoagie (italian)"
+    user_prompt = "grilled chicken w tomato soup"
 
     processed_meal = process_input(user_prompt, "gpt-4.1-nano", "gpt-4.1-nano")
 
     add_usda_candidates(processed_meal)
-    input_to_gpt = build_choose_candidate_input(processed_meal)
-    print(input_to_gpt)
+    input_to_choose_candidate = build_choose_candidate_input(processed_meal)
+    
+    chosen_candidates = get_chosen_candidates(str(input_to_choose_candidate), "gpt-4.1-nano")
+    remove_other_candidates(processed_meal, chosen_candidates)
+    print(processed_meal)

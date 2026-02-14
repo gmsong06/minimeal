@@ -88,6 +88,16 @@ def parse_gpt_assign_portion_classes_response(text: str):
             "notes": ["Parsing failure"]
         }
 
+def parse_gpt_choose_candidates_response(text: str):
+    try:
+        parsed = _extract_json_object(text)
+
+        return parsed
+
+    except Exception as e:
+        print("Failed to parse choose_candidates response:", e)
+        print("Raw output:", text)
+        return {}
 
 def get_gpt_response(model: str, system_prompt: str, user_prompt: str) -> str:
     response = client.responses.create(

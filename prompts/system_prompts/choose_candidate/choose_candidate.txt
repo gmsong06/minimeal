@@ -47,46 +47,6 @@ Example output:
   "vegetable broth": null
 }
 
-# Example
-
-Input:
-{
-  "meal_description": "grille cheese w broccoli and tomato soup",
-  "foods": [
-    {
-      "name": "bread",
-      "portion_class": "primary_starch",
-      "confidence": 1.0,
-      "usda_candidates": [
-        {"description": "Onion rings, breaded...", "fdcId": 324317},
-        {"description": "Bread, white, commercially prepared", "fdcId": 325871},
-        {"description": "Bread, whole-wheat, commercially prepared", "fdcId": 335240}
-      ]
-    },
-    {
-      "name": "cheese",
-      "portion_class": "primary_protein",
-      "confidence": 0.9,
-      "usda_candidates": [
-        {"description": "Cheese, cheddar", "fdcId": 328637},
-        {"description": "Cheese, mozzarella...", "fdcId": 329370}
-      ]
-    },
-    ...
-  ],
-  "notes": [
-    "cheese is likely a major component shaping the 'grilled cheese', but its relative prominence vs. bread is not explicitly specified",
-    "tomato soup is the main basis of the dish, while broccoli may be a side or part of the soup"
-  ]
-}
-
-Output:
-{
-  "bread": 325871,
-  "cheese": 328637,
-  ...
-}
-
 # Notes
 
 - You must reason through the context of the meal before making your choice for each food.

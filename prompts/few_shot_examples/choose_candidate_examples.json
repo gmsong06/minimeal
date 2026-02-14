@@ -1,0 +1,246 @@
+{
+  "examples": [
+    {
+        "id": "1",
+        "input": {
+            "meal_description":"grille cheese w broccoli and tomato soup",
+            "foods":[
+                {
+                    "name":"bread",
+                    "portion_class":"primary_starch",
+                    "confidence":1.0,
+                    "usda_candidates":[
+                        {
+                        "description":"Onion rings, breaded, par fried, frozen, prepared, heated in oven",
+                        "fdcId":324317
+                        },
+                        {
+                        "description":"Bread, white, commercially prepared",
+                        "fdcId":325871
+                        },
+                        {
+                        "description":"Bread, whole-wheat, commercially prepared",
+                        "fdcId":335240
+                        },
+                        {
+                        "description":"Flour, bread, white, enriched, unbleached",
+                        "fdcId":790146
+                        }
+                    ]
+                },
+                {
+                    "name":"cheese",
+                    "portion_class":"primary_protein",
+                    "confidence":0.9,
+                    "usda_candidates":[
+                        {
+                        "description":"Cheese, parmesan, grated",
+                        "fdcId":325036
+                        },
+                        {
+                        "description":"Cheese, pasteurized process, American, vitamin D fortified",
+                        "fdcId":325198
+                        },
+                        {
+                        "description":"Cheese, cheddar",
+                        "fdcId":328637
+                        },
+                        {
+                        "description":"Cheese, cottage, lowfat, 2% milkfat",
+                        "fdcId":328841
+                        },
+                        {
+                        "description":"Cheese, mozzarella, low moisture, part-skim",
+                        "fdcId":329370
+                        },
+                        {
+                        "description":"Cheese, dry white, queso seco",
+                        "fdcId":746765
+                        },
+                        {
+                        "description":"Cheese, ricotta, whole milk",
+                        "fdcId":746766
+                        },
+                        {
+                        "description":"Cheese, swiss",
+                        "fdcId":746767
+                        },
+                        {
+                        "description":"Cheese, American, restaurant",
+                        "fdcId":747429
+                        },
+                        {
+                        "description":"Cheese, parmesan, grated, refrigerated",
+                        "fdcId":2259795
+                        },
+                        {
+                        "description":"Cheese, feta, whole milk, crumbled",
+                        "fdcId":2259796
+                        },
+                        {
+                        "description":"Cottage cheese, full fat, large or small curd",
+                        "fdcId":2346384
+                        },
+                        {
+                        "description":"Cream cheese, full fat, block",
+                        "fdcId":2346385
+                        },
+                        {
+                        "description":"Cheese, monterey jack, solid",
+                        "fdcId":2647438
+                        },
+                        {
+                        "description":"Cheese, pasteurized process cheese food or product, American, singles",
+                        "fdcId":2647439
+                        },
+                        {
+                        "description":"Cheese, provolone, sliced",
+                        "fdcId":2647440
+                        },
+                        {
+                        "description":"Cheese, oaxaca, solid",
+                        "fdcId":2647441
+                        },
+                        {
+                        "description":"Cheese, queso fresco, solid",
+                        "fdcId":2647442
+                        },
+                        {
+                        "description":"Cheese, cotija, solid",
+                        "fdcId":2647443
+                        }
+                    ]
+                },
+                {
+                    "name":"butter",
+                    "portion_class":"added_fat",
+                    "confidence":1.0,
+                    "usda_candidates":[
+                        {
+                        "description":"Butter, stick, unsalted",
+                        "fdcId":789828
+                        },
+                        {
+                        "description":"Butter, stick, salted",
+                        "fdcId":790508
+                        },
+                        {
+                        "description":"Buttermilk, low fat",
+                        "fdcId":2259792
+                        },
+                        {
+                        "description":"Peanut butter, creamy",
+                        "fdcId":2262072
+                        },
+                        {
+                        "description":"Sesame butter, creamy",
+                        "fdcId":2262073
+                        },
+                        {
+                        "description":"Almond butter, creamy",
+                        "fdcId":2262074
+                        },
+                        {
+                        "description":"Squash, winter, butternut, raw",
+                        "fdcId":2685570
+                        }
+                    ]
+                },
+                {
+                    "name":"broccoli",
+                    "portion_class":"primary_veg",
+                    "confidence":1.0,
+                    "usda_candidates":[
+                        {
+                        "description":"Broccoli, raw",
+                        "fdcId":747447
+                        }
+                    ]
+                },
+                {
+                    "name":"tomatoes",
+                    "portion_class":"primary_veg",
+                    "confidence":1.0,
+                    "usda_candidates":[
+                        {
+                        "description":"Tomatoes, grape, raw",
+                        "fdcId":321360
+                        },
+                        {
+                        "description":"Tomatoes, canned, red, ripe, diced",
+                        "fdcId":333281
+                        },
+                        {
+                        "description":"Tomatoes, whole, canned, solids and liquids, with salt added",
+                        "fdcId":2685578
+                        },
+                        {
+                        "description":"Tomatoes, crushed, canned",
+                        "fdcId":2685581
+                        }
+                    ]
+                },
+                {
+                    "name":"onion",
+                    "portion_class":"secondary_veg",
+                    "confidence":1.0,
+                    "usda_candidates":[
+                        {
+                        "description":"Onion rings, breaded, par fried, frozen, prepared, heated in oven",
+                        "fdcId":324317
+                        },
+                        {
+                        "description":"Onions, red, raw",
+                        "fdcId":790577
+                        },
+                        {
+                        "description":"Onions, yellow, raw",
+                        "fdcId":790646
+                        },
+                        {
+                        "description":"Onions, white, raw",
+                        "fdcId":1104962
+                        },
+                        {
+                        "description":"Green onion, (scallion), bulb and greens, root removed, raw",
+                        "fdcId":2727585
+                        }
+                    ]
+                },
+                {
+                    "name":"garlic",
+                    "portion_class":"garnish_trace",
+                    "confidence":0.8,
+                    "usda_candidates":[
+                        {
+                        "description":"Garlic, raw",
+                        "fdcId":1104647
+                        }
+                    ]
+                },
+                {
+                    "name":"vegetable broth",
+                    "portion_class":"sauce_condiment",
+                    "confidence":0.8,
+                    "usda_candidates":[
+                        
+                    ]
+                }
+            ],
+            "notes":[
+                "cheese is likely a major component shaping the 'grilled cheese', but its relative prominence vs. bread is not explicitly specified",
+                "broccoli and tomato soup are both vegetable components; tomato soup is the main basis of the dish, while broccoli may be a side or part of the soup"
+            ]
+        },
+        "output": {
+            "bread": 325871,
+            "cheese": 328637,
+            "butter": 789828,
+            "broccoli": 747447,
+            "tomatoes": 2685578,
+            "onion": 790646,
+            "garlic": 1104647,
+            "vegetable broth": null
+        }
+    }]
+}
