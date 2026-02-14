@@ -7,6 +7,8 @@ from utils.model import (
 
 from utils.prompt import get_prompt
 import json
+import copy
+import config
 
 def process_input(user_meal: str, meal_conversion_model: str, assign_portion_classes_model: str):
     meal_conversion_system_prompt = get_prompt(
@@ -71,7 +73,7 @@ def build_choose_candidate_input(processed_meal: dict):
     processed_meal should have already gone through add_usda_candidates
     """
 
-    gpt_input = processed_meal
+    gpt_input = copy.deepcopy(processed_meal)
 
     for food in gpt_input["foods"]:
         simplified = []
@@ -104,13 +106,22 @@ def get_chosen_candidates(choose_candidate_input: str, choose_candidate_model: s
 def remove_other_candidates(processed_meal: str, chosen_candidates: dict):
     for food in processed_meal["foods"]:
         chosen_candidate = {}
-        for c in food.get("usda_candidates", []):
+        for c in food["usda_candidates"]:
             if c["fdcId"] == chosen_candidates[food["name"]]:
                 chosen_candidate = c
                 break
 
         food["usda_match"] = chosen_candidate
     
+def extract_essential_nutrients(processed_meal: str):
+    for food in processed_meal["foods"]:
+        essential_nutrients = []
+        if food["usda_match"] != {}:
+            for nutrient in food["usda_match"]["foodNutrients"]:
+                if nutrient["nutrient"]["id"] in config.ESSENTIAL_IDS:
+                    essential_nutrients.append(nutrient)
+
+        food["essential_nutrients"] = essential_nutrients
 
 if __name__ == "__main__":
     user_prompt = "grilled chicken w tomato soup"
@@ -121,5 +132,11 @@ if __name__ == "__main__":
     input_to_choose_candidate = build_choose_candidate_input(processed_meal)
     
     chosen_candidates = get_chosen_candidates(str(input_to_choose_candidate), "gpt-4.1-nano")
+
     remove_other_candidates(processed_meal, chosen_candidates)
-    print(processed_meal)
+    extract_essential_nutrients(processed_meal)
+
+    with open("processed_meal.json", "w") as f:
+        json.dump(processed_meal, f)
+
+    # print(processed_meal)

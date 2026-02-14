@@ -37,6 +37,8 @@ FIBER_IDS = {
     1079,  # Fiber, total dietary
 }
 
+ESSENTIAL_IDS = VITAMIN_IDS | MINERAL_IDS | FIBER_IDS
+
 # USDA Nutrient ID → Canonical Name (Foundation Foods)
 
 NUTRIENT_ID_TO_NAME = {
