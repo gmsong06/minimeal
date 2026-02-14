@@ -1,0 +1,97 @@
+You are given a meal description, a list of foods with candidate USDA items (usda_candidates), and accompanying notes, formatted as a JSON dictionary.
+
+Your task is:
+- For each food in the foods list, use the overall meal_description and notes to reason through which usda_candidate (from the candidates listed under each food) is the most contextually appropriate match for how that food is likely used in the meal.
+- After reasoning for each, return the FDC ID of the chosen USDA candidate food for each food item.
+- If a food does not have any suitable usda_candidates, return null for that food's value.
+
+# Steps
+
+1. For each food in the foods list:
+    - Review the meal_description, notes, and any relevant details.
+    - Examine the usda_candidates list for the food.
+    - Based on the context, select the candidate whose description most closely matches how the food would be used, e.g., in a sandwich, soup, or garnish.
+    - If there is uncertainty or ambiguity, explain your reasoning in selecting the best fit.
+    - If no suitable candidate is present (or if usda_candidates is an empty list), assign null.
+
+2. Collate the results as a dictionary where each key is the food's name or unique identifier, and the value is the selected usda_candidate's fdcId (or null).
+
+# Input Format
+
+Input is a JSON object with the following fields:
+- meal_description: A brief description of the meal.
+- foods: A list of objects, each with:
+    - name: The name of the food.
+    - portion_class: A category label for the food's portion.
+    - confidence: A float representing the model's confidence in identifying the food.
+    - usda_candidates: A list of candidate USDA foods, each providing:
+        - description: Textual description of the USDA item.
+        - fdcId: Unique ID for that item.
+- notes: (Optional) Additional meal-level context as a list of strings.
+
+# Output Format
+
+Return a JSON dictionary where:
+- Each key is the name of a food from the input foods list
+- Each value is the selected fdcId (integer) if one was chosen, or null if no candidate is appropriate.
+
+Example output:
+{
+  "bread": 325871,
+  "cheese": 328637,
+  "butter": 789828,
+  "broccoli": 747447,
+  "tomatoes": 2685578,
+  "onion": 790646,
+  "garlic": 1104647,
+  "vegetable broth": null
+}
+
+# Example
+
+Input:
+{
+  "meal_description": "grille cheese w broccoli and tomato soup",
+  "foods": [
+    {
+      "name": "bread",
+      "portion_class": "primary_starch",
+      "confidence": 1.0,
+      "usda_candidates": [
+        {"description": "Onion rings, breaded...", "fdcId": 324317},
+        {"description": "Bread, white, commercially prepared", "fdcId": 325871},
+        {"description": "Bread, whole-wheat, commercially prepared", "fdcId": 335240}
+      ]
+    },
+    {
+      "name": "cheese",
+      "portion_class": "primary_protein",
+      "confidence": 0.9,
+      "usda_candidates": [
+        {"description": "Cheese, cheddar", "fdcId": 328637},
+        {"description": "Cheese, mozzarella...", "fdcId": 329370}
+      ]
+    },
+    ...
+  ],
+  "notes": [
+    "cheese is likely a major component shaping the 'grilled cheese', but its relative prominence vs. bread is not explicitly specified",
+    "tomato soup is the main basis of the dish, while broccoli may be a side or part of the soup"
+  ]
+}
+
+Output:
+{
+  "bread": 325871,
+  "cheese": 328637,
+  ...
+}
+
+# Notes
+
+- You must reason through the context of the meal before making your choice for each food.
+- Always return a flat JSON object as output, keyed by food name.
+- If there are candidate items for a food that do not match the context at all, use null.
+- Do not include any explanations, reasoning, or intermediate steps in your output—just the final JSON result. 
+
+If the task is ambiguous, err on the side of selecting the most generic or likely option based on the meal description and notes.

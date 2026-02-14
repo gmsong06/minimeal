@@ -59,12 +59,32 @@ def add_usda_candidates(processed_meal: dict):
         food["usda_candidates"] = candidates
 
         print(f"For {name}, USDA found {len(candidates)} candidates.")
+
+def build_choose_candidate_input(processed_meal: dict):
+    """
+    processed_meal should have already gone through add_usda_candidates
+    """
+
+    gpt_input = processed_meal
+
+    for food in gpt_input["foods"]:
+        simplified = []
+
+        for c in food.get("usda_candidates", []):
+            simplified.append({
+                "description": c.get("description"),
+                "fdcId": c.get("fdcId"),
+            })
+
+        food["usda_candidates"] = simplified
     
+    return gpt_input
 
 if __name__ == "__main__":
-    user_prompt = "grille cheese w broccoli and tomato soup"
+    user_prompt = "Wawa hoagie (italian)"
 
     processed_meal = process_input(user_prompt, "gpt-4.1-nano", "gpt-4.1-nano")
-    print(processed_meal)
+
     add_usda_candidates(processed_meal)
-    print(processed_meal["foods"][0]["usda_candidates"])
+    input_to_gpt = build_choose_candidate_input(processed_meal)
+    print(input_to_gpt)
