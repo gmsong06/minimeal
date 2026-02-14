@@ -123,6 +123,16 @@ def extract_essential_nutrients(processed_meal: str):
 
         food["essential_nutrients"] = essential_nutrients
 
+def determine_significant_exposure(processed_meal: str):
+    for food in processed_meal["foods"]:
+        significant_exposure = [] # A list of nutrient ids of nutrients the user has been exposed to from the meal
+        portion_class = food["portion_class"]
+
+        for nutrient in food["essential_nutrients"]:
+            # Per 100g
+            unit = nutrient["nutrient"]["unitName"]
+            amt = nutrient["amount"]
+
 if __name__ == "__main__":
     user_prompt = "grilled chicken w tomato soup"
 
