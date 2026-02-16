@@ -123,28 +123,35 @@ def extract_essential_nutrients(processed_meal: str):
 
         food["essential_nutrients"] = essential_nutrients
 
-def determine_significant_exposure(processed_meal: str):
-    for food in processed_meal["foods"]:
-        print(f"Food is {food["name"]}")
+def classify_meal_contribution(actual_dv_percent: float) -> str:
+    for threshold, label in config.DV_TO_MEAL_CONTRIBUTION:
+        if actual_dv_percent >= threshold:
+            return label
 
-        significant_exposure = [] # A list of nutrient ids of nutrients the user has been exposed to from the meal
+
+def get_nutrient_exposure(processed_meal: str):
+    nutrient_exposure = {}  # nutrient_id -> total_actual_dv (%DV)
+
+    for food in processed_meal["foods"]:
+
         portion_class = food["portion_class"]
 
-        print(food["essential_nutrients"])
-        
         for nutrient in food["essential_nutrients"]:
-            # Per 100g
-            id = nutrient["nutrient"]["id"]
-            amt = nutrient["amount"]
+            nutrient_id = nutrient["nutrient"]["id"]
+            amt_per_100g = nutrient["amount"]
 
-            percent_dv = amt / config.FDA_DAILY_VALUES[id] * 100
+            dv = config.FDA_DAILY_VALUES.get(nutrient_id)
+            if dv is None or dv == 0:
+                continue 
+
+            percent_dv_per_100g = (amt_per_100g / dv) * 100
             estimated_grams = config.PORTION_CLASS_GRAMS[portion_class]["default"]
 
-            actual_dv = percent_dv * (estimated_grams / 100)
-            print(f"Nutrient is {config.NUTRIENT_ID_TO_NAME[id]}")
-            print(f"Actual DV is {actual_dv}")
-        
-        print()
+            actual_dv = percent_dv_per_100g * (estimated_grams / 100)
+
+            nutrient_exposure[nutrient_id] = nutrient_exposure.get(nutrient_id, 0.0) + actual_dv
+
+    return nutrient_exposure
 
 
 if __name__ == "__main__":
@@ -160,9 +167,8 @@ if __name__ == "__main__":
     remove_other_candidates(processed_meal, chosen_candidates)
     extract_essential_nutrients(processed_meal)
 
-    determine_significant_exposure(processed_meal)
+    nutrient_exposure = get_nutrient_exposure(processed_meal)
 
-    with open("processed_meal.json", "w") as f:
-        json.dump(processed_meal, f)
-
-    # print(processed_meal)
+    print(nutrient_exposure)
+    # with open("processed_meal.json", "w") as f:
+    #     json.dump(processed_meal, f)

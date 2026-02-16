@@ -71,6 +71,14 @@ PORTION_CLASS_GRAMS = {
     "other":                {"default":  65, "min":  30, "max": 120},
 }
 
+DV_TO_MEAL_CONTRIBUTION = [
+    (20, "very_significant"),
+    (10, "significant"),
+    (5,  "moderate"),
+    (2,  "minor"),
+    (0,  "negligible"),
+]
+
 
 # USDA Nutrient IDs (Foundation Foods)
 VITAMIN_IDS = {
