@@ -125,13 +125,27 @@ def extract_essential_nutrients(processed_meal: str):
 
 def determine_significant_exposure(processed_meal: str):
     for food in processed_meal["foods"]:
+        print(f"Food is {food["name"]}")
+
         significant_exposure = [] # A list of nutrient ids of nutrients the user has been exposed to from the meal
         portion_class = food["portion_class"]
 
+        print(food["essential_nutrients"])
+        
         for nutrient in food["essential_nutrients"]:
             # Per 100g
-            unit = nutrient["nutrient"]["unitName"]
+            id = nutrient["nutrient"]["id"]
             amt = nutrient["amount"]
+
+            percent_dv = amt / config.FDA_DAILY_VALUES[id] * 100
+            estimated_grams = config.PORTION_CLASS_GRAMS[portion_class]["default"]
+
+            actual_dv = percent_dv * (estimated_grams / 100)
+            print(f"Nutrient is {config.NUTRIENT_ID_TO_NAME[id]}")
+            print(f"Actual DV is {actual_dv}")
+        
+        print()
+
 
 if __name__ == "__main__":
     user_prompt = "grilled chicken w tomato soup"
@@ -145,6 +159,8 @@ if __name__ == "__main__":
 
     remove_other_candidates(processed_meal, chosen_candidates)
     extract_essential_nutrients(processed_meal)
+
+    determine_significant_exposure(processed_meal)
 
     with open("processed_meal.json", "w") as f:
         json.dump(processed_meal, f)

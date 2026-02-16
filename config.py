@@ -1,5 +1,78 @@
-# USDA Nutrient IDs (Foundation Foods)
+# FDA Daily Values mapped to USDA Nutrient IDs
+# Units match USDA units exactly
 
+FDA_DAILY_VALUES = {
+
+    # FAT-SOLUBLE VITAMINS
+
+    1106: 900,     # Vitamin A (RAE), mcg
+    1114: 20,      # Vitamin D, mcg
+    1109: 15,      # Vitamin E (alpha-tocopherol), mg
+    1185: 120,     # Vitamin K, mcg
+
+
+    # WATER-SOLUBLE VITAMINS
+
+    1162: 90,      # Vitamin C, mg
+    1165: 1.2,     # Thiamin (B1), mg
+    1166: 1.3,     # Riboflavin (B2), mg
+    1167: 16,      # Niacin (B3), mg
+    1170: 5,       # Pantothenic acid (B5), mg
+    1175: 1.7,     # Vitamin B6, mg
+    1177: 400,     # Folate, mcg DFE
+    1178: 2.4,     # Vitamin B12, mcg
+    1180: 550,     # Choline, mg
+
+
+    # MINERALS
+
+    1087: 1300,    # Calcium, mg
+    1089: 18,      # Iron, mg
+    1090: 420,     # Magnesium, mg
+    1091: 1250,    # Phosphorus, mg
+    1092: 4700,    # Potassium, mg
+    1093: 2300,    # Sodium, mg
+    1095: 11,      # Zinc, mg
+    1098: 0.9,     # Copper, mg
+    1101: 2.3,     # Manganese, mg
+    1103: 55,      # Selenium, mcg
+    1094: 150,     # Iodine, mcg
+
+
+    # FIBER
+
+    1079: 28,      # Dietary Fiber, g
+}
+
+PORTION_CLASS_GRAMS = {
+    "primary_protein":      {"default": 160, "min": 120, "max": 220},
+    "secondary_protein":    {"default":  65, "min":  40, "max":  90},
+
+    "primary_starch":       {"default": 225, "min": 150, "max": 300},
+    "secondary_starch":     {"default": 100, "min":  50, "max": 150},
+
+    "primary_veg":          {"default": 150, "min": 100, "max": 220},
+    "secondary_veg":        {"default":  70, "min":  40, "max": 110},
+
+    "legume_component":     {"default": 105, "min":  60, "max": 160},
+
+    "dairy_component":      {"default":  90, "min":  30, "max": 150},
+
+    "sauce_condiment":      {"default":  15, "min":   5, "max":  30},
+    "added_fat":            {"default":  10, "min":   5, "max":  20},
+    "garnish_trace":        {"default":   2, "min":   1, "max":   5},
+
+    "snack_item_single":    {"default":  40, "min":  25, "max":  80},
+    "snack_handful":        {"default":  35, "min":  20, "max":  55},
+
+    "beverage_caloric":     {"default": 350, "min": 240, "max": 500},
+    "beverage_noncaloric":  {"default": 350, "min": 240, "max": 700},
+
+    "other":                {"default":  65, "min":  30, "max": 120},
+}
+
+
+# USDA Nutrient IDs (Foundation Foods)
 VITAMIN_IDS = {
     # Fat-soluble
     1106,  # Vitamin A, RAE
