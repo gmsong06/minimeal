@@ -28,13 +28,18 @@ def get_foundation_foods(food: str):
         if food_lower in foundation_food["description"].lower()
     ]
 
-def get_branded_foods(food: str):
+def get_branded_foods(food: str, max_results: int = 5):
     food_lower = food.lower()
-    return [
-        branded_food
-        for branded_food in BRANDED_FOODS
-        if food_lower in branded_food["description"].lower()
-    ]
+    counter = 0
+    results = []
+    for branded_food in BRANDED_FOODS:
+        if food_lower in branded_food["description"].lower():
+            results.append(branded_food)
+            counter += 1
+            if counter >= max_results:
+                break
+    
+    return results
 
 
 def add_usda_candidates(processed_meal: dict):
@@ -44,7 +49,7 @@ def add_usda_candidates(processed_meal: dict):
         candidates = get_foundation_foods(name)
 
         if len(candidates) == 0:
-            candidates = get_branded_foods(name)
+            candidates = get_branded_foods(name, 20)
 
         food["usda_candidates"] = candidates
         print(f"For {name}, USDA found {len(candidates)} candidates.")
@@ -123,7 +128,10 @@ def get_nutrient_exposure(processed_meal: str):
     # Choose USDA candidate
     add_usda_candidates(processed_meal)
     input_to_choose_candidate = build_choose_candidate_input(processed_meal)
+    print("Input to choose candidate model:")
+    print(input_to_choose_candidate)
     chosen_candidates = get_chosen_candidates(str(input_to_choose_candidate), "gpt-4.1-nano")
+    print("Chosen candidates:", chosen_candidates)
     remove_other_candidates(processed_meal, chosen_candidates)
 
     # Get nutrients from the candidate
