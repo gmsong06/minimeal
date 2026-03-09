@@ -71,6 +71,14 @@ PORTION_CLASS_GRAMS = {
     "other":                {"default":  65, "min":  30, "max": 120},
 }
 
+DV_TO_DAY_STATUS = [
+    (100, "met"),
+    (75, "strong"),
+    (40, "building"),
+    (20, "low"),
+    (0, "none"),
+]
+
 DV_TO_MEAL_CONTRIBUTION = [
     (20, "very_significant"),
     (10, "significant"),

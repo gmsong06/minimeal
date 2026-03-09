@@ -1,16 +1,21 @@
 from utils.model import (
     get_gpt_response, 
     parse_gpt_meal_conversion_response, 
-    parse_gpt_assign_portion_classes_response,
-    parse_gpt_choose_candidates_response
+    parse_gpt_assign_portion_classes_response
+)
+
+from utils.nutrients import (
+    get_nutrient_exposure,
+    classify_meal_contribution
 )
 
 from utils.prompt import get_prompt
 import json
-import copy
-import config
-import datetime
 import ulid
+from collections import defaultdict
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
+import config
 
 def process_input(user_meal: str, meal_conversion_model: str, assign_portion_classes_model: str):
     meal_conversion_system_prompt = get_prompt(
@@ -28,7 +33,7 @@ def process_input(user_meal: str, meal_conversion_model: str, assign_portion_cla
     meal_conversion_response = get_gpt_response(
         meal_conversion_model, 
         meal_conversion_system_prompt, 
-        user_prompt
+        user_meal
     )
     
     ingredients, confidence_score = parse_gpt_meal_conversion_response(meal_conversion_response.output_text).values()
@@ -42,155 +47,88 @@ def process_input(user_meal: str, meal_conversion_model: str, assign_portion_cla
 
     return parse_gpt_assign_portion_classes_response(assign_portion_classes_response.output_text)
 
-def get_foundation_foods(food: str):
-    # print(f"Function received {food}.")
-    candidates = []
 
-    with open("usda/USDA_Foundation_Foods.json", "r") as file:
-        foundation_foods = json.load(file)
-    counter = 1
-    for foundation_food in foundation_foods["FoundationFoods"]:
-        # print(f'{counter}. {foundation_food["description"]}')
-        if food.lower() in foundation_food["description"].lower():
-            candidates.append(foundation_food)
-        counter += 1
-    # print()
-    return candidates
+def get_meal_log(meal_log_path: str):
+    with open(meal_log_path, "r") as f:
+        try:
+            data = json.load(f)
+        except json.JSONDecodeError:
+            data = []
+    return data
 
-def add_usda_candidates(processed_meal: dict):
-    for food in processed_meal["foods"]:
-        name = food["name"]
-        portion_class = food["portion_class"]
-
-        # Search for the name of the food in USDA
-        # Only foundation foods for now
-        candidates = get_foundation_foods(name)
-
-        food["usda_candidates"] = candidates
-
-        print(f"For {name}, USDA found {len(candidates)} candidates.")
-
-def build_choose_candidate_input(processed_meal: dict):
-    """
-    processed_meal should have already gone through add_usda_candidates
-    """
-
-    gpt_input = copy.deepcopy(processed_meal)
-
-    for food in gpt_input["foods"]:
-        simplified = []
-
-        for c in food.get("usda_candidates", []):
-            simplified.append({
-                "description": c.get("description"),
-                "fdcId": c.get("fdcId"),
-            })
-
-        food["usda_candidates"] = simplified
-    
-    return gpt_input
-
-def get_chosen_candidates(choose_candidate_input: str, choose_candidate_model: str):
-    choose_candidate_system_prompt = get_prompt(
-        "prompts/system_prompts/choose_candidate/choose_candidate.txt",
-        "prompts/few_shot_examples/choose_candidate_examples.json",
-        want_reasoning=False
-    )
-
-    choose_candidate_response = get_gpt_response(
-        choose_candidate_model, 
-        choose_candidate_system_prompt, 
-        choose_candidate_input
-    )
-
-    return parse_gpt_choose_candidates_response(choose_candidate_response.output_text)
-
-def remove_other_candidates(processed_meal: str, chosen_candidates: dict):
-    for food in processed_meal["foods"]:
-        chosen_candidate = {}
-        for c in food["usda_candidates"]:
-            if c["fdcId"] == chosen_candidates[food["name"]]:
-                chosen_candidate = c
-                break
-
-        food["usda_match"] = chosen_candidate
-    
-def extract_essential_nutrients(processed_meal: str):
-    for food in processed_meal["foods"]:
-        essential_nutrients = []
-        if food["usda_match"] != {}:
-            for nutrient in food["usda_match"]["foodNutrients"]:
-                if nutrient["nutrient"]["id"] in config.ESSENTIAL_IDS:
-                    essential_nutrients.append(nutrient)
-
-        food["essential_nutrients"] = essential_nutrients
-
-def classify_meal_contribution(actual_dv_percent: float) -> str:
-    for threshold, label in config.DV_TO_MEAL_CONTRIBUTION:
-        if actual_dv_percent >= threshold:
-            return label
+def get_local_day_bounds(target_dt: datetime, tz_name: str):
+    tz = ZoneInfo(tz_name)
+    local_dt = target_dt.astimezone(tz)
+    day_start = local_dt.replace(hour=0, minute=0, second=0, microsecond=0)
+    day_end = day_start + timedelta(days=1)
+    return day_start, day_end
 
 
-def get_nutrient_exposure(processed_meal: str):
-    nutrient_exposure = {}  # nutrient_id -> total_actual_dv (%DV)
+def sum_nutrients_for_day(meal_log, target_dt, tz_name):
+    day_start, day_end = get_local_day_bounds(target_dt, tz_name)
+    totals = defaultdict(float)
 
-    for food in processed_meal["foods"]:
+    for meal in meal_log:
+        eaten_at = datetime.fromisoformat(meal["time_stamp"]).astimezone(ZoneInfo(tz_name))
+        if day_start <= eaten_at < day_end:
+            for nutrient_id, pct_dv in meal["nutrient_exposure"].items():
+                totals[nutrient_id] += pct_dv
 
-        portion_class = food["portion_class"]
+    return dict(totals)
 
-        for nutrient in food["essential_nutrients"]:
-            nutrient_id = nutrient["nutrient"]["id"]
-            amt_per_100g = nutrient["amount"]
+def get_so_far_today(meal_logs, user_id, now, tz_name):
+    return sum_nutrients_for_day(meal_logs, user_id, now, tz_name)
 
-            dv = config.FDA_DAILY_VALUES.get(nutrient_id)
-            if dv is None or dv == 0:
-                continue 
+def format_daily_summary(daily_totals):
+    summary = []
 
-            percent_dv_per_100g = (amt_per_100g / dv) * 100
-            estimated_grams = config.PORTION_CLASS_GRAMS[portion_class]["default"]
+    for nutrient_id, pct in sorted(daily_totals.items(), key=lambda x: x[1], reverse=True):
+        summary.append({
+            "nutrient_id": nutrient_id,
+            "name": config.NUTRIENT_ID_TO_NAME.get(nutrient_id, str(nutrient_id)),
+            "percent_dv_so_far": round(pct, 1),
+            "status": classify_meal_contribution(pct),
+        })
 
-            actual_dv = percent_dv_per_100g * (estimated_grams / 100)
+    return summary
 
-            nutrient_exposure[nutrient_id] = nutrient_exposure.get(nutrient_id, 0.0) + actual_dv
+def log_meal(processed_meal: dict, nutrient_exposure: dict, time_stamp: datetime):
+    log_entry = {
+        "meal_id": str(ulid.ulid()),
+        "time_stamp": time_stamp.isoformat(),
+        "meal_description": processed_meal["meal_description"],
+        "foods": processed_meal["foods"],
+        "nutrient_exposure": nutrient_exposure
+    }
 
-    return nutrient_exposure
+    file_path = "meal_log.json"
 
+    with open(file_path, "r") as f:
+        try:
+            data = json.load(f)
+        except json.JSONDecodeError:
+            data = []
 
-def log_meal(processed_meal: dict, nutrient_exposure: dict, time_stamp: datetime.datetime):
-    with open("meal_log.json", "a") as f:
-        log_entry = {
-            "meal_id": str(ulid.ulid()),
-            "time_stamp": time_stamp.isoformat(),
-            "meal_description": processed_meal["meal_description"],
-            "foods": processed_meal["foods"],
-            "nutrient_exposure": nutrient_exposure
-        }
+    # Append new entry
+    data.append(log_entry)
 
-        f.write(json.dumps(log_entry) + "\n")
+    # Write back to file
+    with open(file_path, "w") as f:
+        json.dump(data, f, indent=2)
 
 
 if __name__ == "__main__":
-    user_prompt = "grilled chicken w tomato soup"
+    user_prompt = "almonds and sunflower seeds"
 
     processed_meal = process_input(user_prompt, "gpt-4.1-nano", "gpt-4.1-nano")
-
-    print(processed_meal)
-    print()
-
-    # Choose USDA candidate
-    add_usda_candidates(processed_meal)
-    input_to_choose_candidate = build_choose_candidate_input(processed_meal)
-    chosen_candidates = get_chosen_candidates(str(input_to_choose_candidate), "gpt-4.1-nano")
-    remove_other_candidates(processed_meal, chosen_candidates)
-
-    # Get nutrients from the candidate
-    extract_essential_nutrients(processed_meal)
 
     # Calculate nutrient exposure
     nutrient_exposure = get_nutrient_exposure(processed_meal)
 
     print(nutrient_exposure)
-    log_meal(processed_meal, nutrient_exposure, datetime.datetime.now())
+    log_meal(processed_meal, nutrient_exposure, datetime.now())
 
-    # with open("processed_meal.json", "w") as f:
-    #     json.dump(processed_meal, f)
+    print(get_meal_log("meal_log.json"))
+    print()
+    print(sum_nutrients_for_day(get_meal_log("meal_log.json"), datetime.now(), "America/New_York"))
+
