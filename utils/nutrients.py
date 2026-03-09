@@ -7,33 +7,48 @@ from utils.model import (
 )
 from utils.prompt import get_prompt
 
-def get_foundation_foods(food: str):
-    # print(f"Function received {food}.")
-    candidates = []
+FOUNDATION_FOODS = []
+BRANDED_FOODS = []
 
+def load_usda_foods():
+    global FOUNDATION_FOODS
+    global BRANDED_FOODS
+    
     with open("usda/USDA_Foundation_Foods.json", "r") as file:
-        foundation_foods = json.load(file)
-    counter = 1
-    for foundation_food in foundation_foods["FoundationFoods"]:
-        # print(f'{counter}. {foundation_food["description"]}')
-        if food.lower() in foundation_food["description"].lower():
-            candidates.append(foundation_food)
-        counter += 1
-    # print()
-    return candidates
+        FOUNDATION_FOODS = json.load(file)["FoundationFoods"]
+
+    with open("usda/USDA_Branded_Foods.json", "r") as file:
+        BRANDED_FOODS = json.load(file)["BrandedFoods"]
+
+def get_foundation_foods(food: str):
+    food_lower = food.lower()
+    return [
+        foundation_food
+        for foundation_food in FOUNDATION_FOODS
+        if food_lower in foundation_food["description"].lower()
+    ]
+
+def get_branded_foods(food: str):
+    food_lower = food.lower()
+    return [
+        branded_food
+        for branded_food in BRANDED_FOODS
+        if food_lower in branded_food["description"].lower()
+    ]
+
 
 def add_usda_candidates(processed_meal: dict):
     for food in processed_meal["foods"]:
         name = food["name"]
-        portion_class = food["portion_class"]
 
-        # Search for the name of the food in USDA
-        # Only foundation foods for now
         candidates = get_foundation_foods(name)
 
-        food["usda_candidates"] = candidates
+        if len(candidates) == 0:
+            candidates = get_branded_foods(name)
 
+        food["usda_candidates"] = candidates
         print(f"For {name}, USDA found {len(candidates)} candidates.")
+        
 
 def build_choose_candidate_input(processed_meal: dict):
     """
@@ -72,6 +87,8 @@ def get_chosen_candidates(choose_candidate_input: str, choose_candidate_model: s
 
 
 def remove_other_candidates(processed_meal: str, chosen_candidates: dict):
+    print("Chosen candidates from GPT:")
+    print(chosen_candidates)
     for food in processed_meal["foods"]:
         chosen_candidate = {}
         for c in food["usda_candidates"]:
@@ -96,7 +113,11 @@ def classify_meal_contribution(actual_dv_percent: float) -> str:
     for threshold, label in config.DV_TO_MEAL_CONTRIBUTION:
         if actual_dv_percent >= threshold:
             return label
-
+        
+def classify_day_contribution(actual_dv_percent: float) -> str:
+    for threshold, label in config.DV_TO_DAY_STATUS:
+        if actual_dv_percent >= threshold:
+            return label
 
 def get_nutrient_exposure(processed_meal: str):
     # Choose USDA candidate

@@ -6,7 +6,9 @@ from utils.model import (
 
 from utils.nutrients import (
     get_nutrient_exposure,
-    classify_meal_contribution
+    classify_meal_contribution,
+    classify_day_contribution,
+    load_usda_foods
 )
 
 from utils.prompt import get_prompt
@@ -85,9 +87,9 @@ def format_daily_summary(daily_totals):
     for nutrient_id, pct in sorted(daily_totals.items(), key=lambda x: x[1], reverse=True):
         summary.append({
             "nutrient_id": nutrient_id,
-            "name": config.NUTRIENT_ID_TO_NAME.get(nutrient_id, str(nutrient_id)),
+            "name": config.NUTRIENT_ID_TO_NAME.get(int(nutrient_id), str(nutrient_id)),
             "percent_dv_so_far": round(pct, 1),
-            "status": classify_meal_contribution(pct),
+            "status": classify_day_contribution(pct),
         })
 
     return summary
@@ -118,17 +120,21 @@ def log_meal(processed_meal: dict, nutrient_exposure: dict, time_stamp: datetime
 
 
 if __name__ == "__main__":
-    user_prompt = "almonds and sunflower seeds"
+    user_prompt = "lasagna"
 
+    print("Getting foods and portion classes from GPT...")
     processed_meal = process_input(user_prompt, "gpt-4.1-nano", "gpt-4.1-nano")
 
     # Calculate nutrient exposure
+    print("Getting nutrient exposure...")
+    load_usda_foods()
     nutrient_exposure = get_nutrient_exposure(processed_meal)
 
     print(nutrient_exposure)
     log_meal(processed_meal, nutrient_exposure, datetime.now())
 
-    print(get_meal_log("meal_log.json"))
-    print()
-    print(sum_nutrients_for_day(get_meal_log("meal_log.json"), datetime.now(), "America/New_York"))
+    # print(get_meal_log("meal_log.json"))
+    # print()
+    # print(sum_nutrients_for_day(get_meal_log("meal_log.json"), datetime.now(), "America/New_York"))
+    # print(format_daily_summary(sum_nutrients_for_day(get_meal_log("meal_log.json"), datetime.now(), "America/New_York")))
 
