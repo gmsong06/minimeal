@@ -9,6 +9,8 @@ from utils.prompt import get_prompt
 import json
 import copy
 import config
+import datetime
+import ulid
 
 def process_input(user_meal: str, meal_conversion_model: str, assign_portion_classes_model: str):
     meal_conversion_system_prompt = get_prompt(
@@ -154,21 +156,41 @@ def get_nutrient_exposure(processed_meal: str):
     return nutrient_exposure
 
 
+def log_meal(processed_meal: dict, nutrient_exposure: dict, time_stamp: datetime.datetime):
+    with open("meal_log.json", "a") as f:
+        log_entry = {
+            "meal_id": str(ulid.ulid()),
+            "time_stamp": time_stamp.isoformat(),
+            "meal_description": processed_meal["meal_description"],
+            "foods": processed_meal["foods"],
+            "nutrient_exposure": nutrient_exposure
+        }
+
+        f.write(json.dumps(log_entry) + "\n")
+
+
 if __name__ == "__main__":
     user_prompt = "grilled chicken w tomato soup"
 
     processed_meal = process_input(user_prompt, "gpt-4.1-nano", "gpt-4.1-nano")
 
+    print(processed_meal)
+    print()
+
+    # Choose USDA candidate
     add_usda_candidates(processed_meal)
     input_to_choose_candidate = build_choose_candidate_input(processed_meal)
-    
     chosen_candidates = get_chosen_candidates(str(input_to_choose_candidate), "gpt-4.1-nano")
-
     remove_other_candidates(processed_meal, chosen_candidates)
+
+    # Get nutrients from the candidate
     extract_essential_nutrients(processed_meal)
 
+    # Calculate nutrient exposure
     nutrient_exposure = get_nutrient_exposure(processed_meal)
 
     print(nutrient_exposure)
+    log_meal(processed_meal, nutrient_exposure, datetime.datetime.now())
+
     # with open("processed_meal.json", "w") as f:
     #     json.dump(processed_meal, f)
