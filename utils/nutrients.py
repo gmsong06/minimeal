@@ -6,27 +6,58 @@ from utils.model import (
     parse_gpt_choose_candidates_response
 )
 from utils.prompt import get_prompt
+from rapidfuzz import fuzz
+from utils.FoodSearcher import FoodSearcher
 
 FOUNDATION_FOODS = []
+LEGACY_FOODS = []
 BRANDED_FOODS = []
 
 def load_usda_foods():
     global FOUNDATION_FOODS
+    global LEGACY_FOODS
     global BRANDED_FOODS
     
     with open("usda/USDA_Foundation_Foods.json", "r") as file:
         FOUNDATION_FOODS = json.load(file)["FoundationFoods"]
 
-    with open("usda/USDA_Branded_Foods.json", "r") as file:
-        BRANDED_FOODS = json.load(file)["BrandedFoods"]
+    with open("usda/USDA_SR_Legacy_Foods.json", "r") as file:
+        LEGACY_FOODS = json.load(file)["SRLegacyFoods"]
 
-def get_foundation_foods(food: str):
-    food_lower = food.lower()
-    return [
-        foundation_food
-        for foundation_food in FOUNDATION_FOODS
-        if food_lower in foundation_food["description"].lower()
-    ]
+    # with open("usda/USDA_Branded_Foods.json", "r") as file:
+    #     BRANDED_FOODS = json.load(file)["BrandedFoods"]
+
+def get_foundation_foods(food: str, threshold=70):
+
+    # matches = []
+
+    # for foundation_food in FOUNDATION_FOODS:
+    #     desc = foundation_food["description"]
+    #     score = fuzz.partial_ratio(food.lower(), desc.lower())
+
+    #     if score >= threshold:
+    #         matches.append((score, foundation_food))
+
+    # matches.sort(reverse=True, key=lambda x: x[0])
+    # return [m[1] for m in matches]
+    searcher = FoodSearcher(FOUNDATION_FOODS)
+    return searcher.get_foundation_foods(food, k=5, semantic_k=20)
+
+
+def get_legacy_foods(food: str, threshold=70):
+    # matches = []
+
+    # for legacy_food in LEGACY_FOODS:
+    #     desc = legacy_food["description"]
+    #     score = fuzz.partial_ratio(food.lower(), desc.lower())
+
+    #     if score >= threshold:
+    #         matches.append((score, legacy_food))
+
+    # matches.sort(reverse=True, key=lambda x: x[0])
+    # return [m[1] for m in matches]
+    
+    pass
 
 def get_branded_foods(food: str, max_results: int = 5):
     food_lower = food.lower()
@@ -43,13 +74,15 @@ def get_branded_foods(food: str, max_results: int = 5):
 
 
 def add_usda_candidates(processed_meal: dict):
+    searcher = FoodSearcher(FOUNDATION_FOODS, LEGACY_FOODS, BRANDED_FOODS)
+
     for food in processed_meal["foods"]:
         name = food["name"]
 
-        candidates = get_foundation_foods(name)
+        candidates = searcher.get_foundation_foods(name, k=5, semantic_k=20) + searcher.get_legacy_foods(name, k=5, semantic_k=20)
 
-        if len(candidates) == 0:
-            candidates = get_branded_foods(name, 20)
+        # if len(candidates) == 0:
+        #     candidates = get_legacy_foods(name)
 
         food["usda_candidates"] = candidates
         print(f"For {name}, USDA found {len(candidates)} candidates.")

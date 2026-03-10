@@ -120,7 +120,8 @@ def log_meal(processed_meal: dict, nutrient_exposure: dict, time_stamp: datetime
 
 
 if __name__ == "__main__":
-    user_prompt = "lasagna"
+    user_prompt = "i had pork ribs with sweet potato and broccoli for lunch"
+    # user_prompt = "lasagna for lunch"
 
     print("Getting foods and portion classes from GPT...")
     processed_meal = process_input(user_prompt, "gpt-4.1-nano", "gpt-4.1-nano")
