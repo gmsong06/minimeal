@@ -1,160 +1,181 @@
-import { useState } from 'react';
-import { Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Animated,
+  PanResponder,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { API_BASE_URL } from '@/constants/api';
-
-type LoggedFood = {
-  name: string;
-  portion_class?: string | null;
-};
-
-type MealCreateResponse = {
-  processed_meal: {
-    meal_description?: string | null;
-    foods?: LoggedFood[];
-    notes?: string[];
-  };
-  nutrient_exposure: Record<string, number>;
-  log_entry: {
-    meal_id: string;
-    meal_description?: string | null;
-    time_stamp: string;
-    foods: LoggedFood[];
-  };
-};
+const REVEAL_HEIGHT = 50;
+const OPEN_THRESHOLD = 40;
 
 export default function LogScreen() {
+  const pullY = useRef(new Animated.Value(0)).current;
+  const inputRef = useRef<TextInput>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [mealText, setMealText] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [savedMeal, setSavedMeal] = useState<MealCreateResponse | null>(null);
 
-  async function submitMeal() {
-    const trimmedMeal = mealText.trim();
+  useEffect(() => {
+    console.log('LogScreen mounted');
+  }, []);
 
-    if (!trimmedMeal) {
-      setErrorMessage('Add a short meal description before saving.');
+  useEffect(() => {
+    if (!isOpen) {
       return;
     }
 
-    setIsSaving(true);
-    setErrorMessage(null);
+    const id = setTimeout(() => {
+      inputRef.current?.focus();
+    }, 120);
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/meals`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_meal: trimmedMeal,
-          tz_name: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        }),
-      });
+    return () => clearTimeout(id);
+  }, [isOpen]);
 
-      if (!response.ok) {
-        const detail = await response.text();
-        throw new Error(detail || `Request failed with ${response.status}`);
-      }
-
-      const data: MealCreateResponse = await response.json();
-      setSavedMeal(data);
-      setMealText('');
-    } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : 'Something went wrong while saving this meal.'
-      );
-    } finally {
-      setIsSaving(false);
-    }
+  function clampPull(distance: number) {
+    return Math.max(0, Math.min(REVEAL_HEIGHT, distance));
   }
+
+  const animateOpen = useCallback(() => {
+    Animated.spring(pullY, {
+      toValue: REVEAL_HEIGHT,
+      useNativeDriver: false,
+      tension: 90,
+      friction: 12,
+      overshootClamping: true,
+    }).start();
+  }, [pullY]);
+
+  const animateClosed = useCallback((onComplete?: () => void) => {
+    Animated.timing(pullY, {
+      toValue: 0,
+      duration: 140,
+      useNativeDriver: false,
+    }).start(() => {
+      onComplete?.();
+    });
+  }, [pullY]);
+
+  const openInput = useCallback(() => {
+    console.log('log input opened');
+    setIsOpen(true);
+    setIsClosing(false);
+    animateOpen();
+  }, [animateOpen]);
+
+  const closeInput = useCallback(() => {
+    console.log('log input closed');
+    setIsOpen(false);
+    setIsClosing(true);
+    animateClosed(() => {
+      setIsClosing(false);
+    });
+  }, [animateClosed]);
+
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_, gestureState) =>
+          !isOpen && gestureState.dy > 8 && Math.abs(gestureState.dx) < 20,
+        onPanResponderGrant: () => {
+          console.log('log drag started');
+        },
+        onPanResponderMove: (_, gestureState) => {
+          if (isOpen) {
+            return;
+          }
+
+          const nextPull = clampPull(gestureState.dy);
+          console.log('log pull move', {
+            dy: gestureState.dy,
+            pullDistance: nextPull,
+          });
+          pullY.setValue(nextPull);
+        },
+        onPanResponderRelease: (_, gestureState) => {
+          const releasedPull = clampPull(gestureState.dy);
+          console.log('log pull release', {
+            dy: gestureState.dy,
+            releasedPull,
+            threshold: OPEN_THRESHOLD,
+          });
+
+          if (releasedPull >= OPEN_THRESHOLD) {
+            console.log("Opening input")
+            openInput();
+            return;
+          }
+
+          console.log('log input reset');
+          animateClosed();
+        },
+        onPanResponderTerminate: () => {
+          console.log('log gesture terminated');
+          if (!isOpen) {
+            animateClosed();
+          }
+        },
+      }),
+    [animateClosed, isOpen, openInput, pullY]
+  );
+
+  const revealedMessageOpacity = pullY.interpolate({
+    inputRange: [0, OPEN_THRESHOLD, REVEAL_HEIGHT],
+    outputRange: [0, 0.5, 1],
+    extrapolate: 'clamp',
+  });
 
   return (
     <SafeAreaView className="flex-1 bg-canvas" edges={['top']}>
-      <ScrollView className="flex-1 bg-canvas" contentContainerClassName="px-6 pb-28 pt-8">
-        <View className="mb-10 gap-4">
-          <Text className="text-[42px] font-medium tracking-[-1.2px] text-ink">Log meal</Text>
-          <Text className="max-w-[315px] text-[18px] leading-7 text-muted">
-            Capture what you ate in natural language. Keep it fast, low-pressure, and close to how
-            you would actually describe a meal.
-          </Text>
-        </View>
+      <View className="flex-1 bg-canvas" {...(!isOpen && !isClosing ? panResponder.panHandlers : {})}>
+        {isOpen ? (
+          <Pressable className="absolute inset-0 z-10 bg-transparent" onPress={closeInput} />
+        ) : null}
 
-        <View className="mb-6 rounded-card border border-line bg-card px-5 py-5 shadow-float">
-          <Text className="mb-4 text-[14px] uppercase tracking-[2px] text-muted">
-            Today&apos;s entry
-          </Text>
-          <TextInput
-            multiline
-            placeholder="Try: salmon bowl with rice, avocado, cucumber, and miso sauce"
-            placeholderTextColor="#b3aea6"
-            textAlignVertical="top"
-            value={mealText}
-            onChangeText={setMealText}
-            className="min-h-[180px] rounded-[24px] bg-[#f3f1ec] px-5 py-5 text-[20px] leading-8 text-ink"
-          />
-
-          <View className="mt-5 flex-row items-center justify-between">
-            <Text className="max-w-[190px] text-[15px] leading-6 text-muted">
-              No macros, no pressure. Just enough detail to be useful.
-            </Text>
-            <Pressable
-              className="rounded-full border border-line bg-white px-5 py-3"
-              disabled={isSaving}
-              onPress={submitMeal}>
-              <Text className="text-[16px] font-medium text-ink">
-                {isSaving ? 'Saving...' : 'Save meal'}
-              </Text>
-            </Pressable>
+        <Animated.View
+          className="overflow-hidden px-6"
+          style={{
+            height: pullY,
+          }}>
+          <View
+            className="border-b border-line bg-canvas"
+            style={{
+              height: REVEAL_HEIGHT,
+              justifyContent: 'flex-end',
+              paddingBottom: 6,
+            }}>
+            <TextInput
+              ref={inputRef}
+              value={mealText}
+              onChangeText={setMealText}
+              placeholder="I ate..."
+              placeholderTextColor="#b8b4ad"
+              className="text-[16px] leading-[22px] tracking-[-0.6px] text-ink"
+            />
           </View>
+        </Animated.View>
 
-          {errorMessage ? (
-            <Text className="mt-4 text-[15px] leading-6 text-[#b26545]">{errorMessage}</Text>
-          ) : null}
-        </View>
+        {/* <View className="flex-1 justify-between px-6 pb-20 pt-3">
+          <Animated.View style={{ opacity: revealedMessageOpacity }}>
+            {isOpen ? (
+              <Text className="text-[16px] text-muted">Input fully revealed</Text>
+            ) : (
+              <Text className="text-[16px] text-[#b8b4ad]">Pull down to reveal the input</Text>
+            )}
+          </Animated.View>
 
-        {savedMeal ? (
-          <View className="mb-6 rounded-card border border-line bg-card px-5 py-5">
-            <Text className="mb-4 text-[14px] uppercase tracking-[2px] text-muted">
-              Saved just now
-            </Text>
-            <Text className="text-[28px] tracking-[-0.6px] text-ink">
-              {savedMeal.log_entry.meal_description || 'Meal logged'}
-            </Text>
-            <Text className="mt-2 text-[15px] leading-6 text-muted">
-              {savedMeal.log_entry.foods.length} foods recognized
-            </Text>
-
-            <View className="mt-4 gap-3">
-              {savedMeal.log_entry.foods.map((food) => (
-                <View
-                  key={`${savedMeal.log_entry.meal_id}-${food.name}`}
-                  className="rounded-[22px] bg-[#f3f1ec] px-4 py-4">
-                  <Text className="text-[18px] text-ink">{food.name}</Text>
-                  {food.portion_class ? (
-                    <Text className="mt-1 text-[14px] uppercase tracking-[1.6px] text-muted">
-                      {food.portion_class}
-                    </Text>
-                  ) : null}
-                </View>
-              ))}
-            </View>
-
-            {savedMeal.processed_meal.notes && savedMeal.processed_meal.notes.length > 0 ? (
-              <View className="mt-4 rounded-[22px] bg-accentSoft px-4 py-4">
-                <Text className="mb-2 text-[14px] uppercase tracking-[1.6px] text-muted">Notes</Text>
-                {savedMeal.processed_meal.notes.map((note) => (
-                  <Text key={note} className="text-[15px] leading-6 text-ink">
-                    {note}
-                  </Text>
-                ))}
+          <View className="pb-6">
+            {mealText ? (
+              <View className="self-start rounded-full bg-[#efede8] px-4 py-3">
+                <Text className="text-[15px] text-muted">{mealText}</Text>
               </View>
             ) : null}
           </View>
-        ) : null}
-
-      </ScrollView>
+        </View> */}
+      </View>
     </SafeAreaView>
   );
 }
