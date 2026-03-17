@@ -1,4 +1,4 @@
-# Nutrition Notes
+# Minimeal
 Natural-language meal logging with time-aware nutrition reasoning
 
 ## Problem Statement
