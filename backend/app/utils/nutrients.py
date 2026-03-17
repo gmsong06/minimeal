@@ -164,9 +164,40 @@ def extract_essential_nutrients(processed_meal: str):
     for food in processed_meal["foods"]:
         essential_nutrients = []
         if food["usda_match"] != {}:
+            food_nutrients = food["usda_match"]["foodNutrients"]
+
+            nutrients_by_id = {
+                nutrient["nutrient"]["id"]: nutrient for nutrient in food_nutrients
+            }
+
             for nutrient in food["usda_match"]["foodNutrients"]:
                 if nutrient["nutrient"]["id"] in config.ESSENTIAL_IDS:
                     essential_nutrients.append(nutrient)
+
+            if config.FOLATE_DFE_ID not in nutrients_by_id:
+                food_folate = nutrients_by_id.get(config.FOLATE_FOOD_ID, {}).get("amount")
+                folic_acid = nutrients_by_id.get(config.FOLIC_ACID_ID, {}).get("amount")
+                total_folate = nutrients_by_id.get(config.FOLATE_TOTAL_ID, {}).get("amount")
+
+                derived_folate_dfe = None
+                if food_folate is not None or folic_acid is not None:
+                    derived_folate_dfe = float(food_folate or 0.0) + (
+                        1.7 * float(folic_acid or 0.0)
+                    )
+                elif total_folate is not None:
+                    # Conservative fallback when DFE-specific fields are missing.
+                    derived_folate_dfe = float(total_folate)
+
+                if derived_folate_dfe is not None:
+                    essential_nutrients.append(
+                        {
+                            "amount": derived_folate_dfe,
+                            "nutrient": {
+                                "id": config.FOLATE_DFE_ID,
+                                "name": "Folate, DFE",
+                            },
+                        }
+                    )
 
         food["essential_nutrients"] = essential_nutrients
 
@@ -175,8 +206,14 @@ def classify_meal_contribution(actual_dv_percent: float) -> str:
         if actual_dv_percent >= threshold:
             return label
         
-def classify_day_contribution(actual_dv_percent: float) -> str:
-    for threshold, label in config.DV_TO_DAY_STATUS:
+def classify_day_contribution(actual_dv_percent: float, nutrient_id: int | None = None) -> str:
+    thresholds = (
+        config.DV_TO_LIMIT_STATUS
+        if nutrient_id in config.LIMITED_NUTRIENT_IDS
+        else config.DV_TO_DAY_STATUS
+    )
+
+    for threshold, label in thresholds:
         if actual_dv_percent >= threshold:
             return label
 
@@ -196,8 +233,10 @@ def get_nutrient_exposure(processed_meal: str):
     nutrient_exposure = {}  # nutrient_id -> total_actual_dv (%DV)
 
     for food in processed_meal["foods"]:
-
-        portion_class = food["portion_class"]
+        portion_class = food.get("portion_class") or "other"
+        portion_bucket = config.PORTION_CLASS_GRAMS.get(
+            portion_class, config.PORTION_CLASS_GRAMS["other"]
+        )
 
         for nutrient in food["essential_nutrients"]:
             nutrient_id = nutrient["nutrient"]["id"]
@@ -208,7 +247,7 @@ def get_nutrient_exposure(processed_meal: str):
                 continue 
 
             percent_dv_per_100g = (amt_per_100g / dv) * 100
-            estimated_grams = config.PORTION_CLASS_GRAMS[portion_class]["default"]
+            estimated_grams = portion_bucket["default"]
 
             actual_dv = percent_dv_per_100g * (estimated_grams / 100)
 

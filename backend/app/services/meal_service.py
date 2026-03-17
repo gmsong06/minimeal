@@ -154,7 +154,7 @@ def format_daily_summary(daily_totals):
                     nutrient_id_int, str(nutrient_id_int)
                 ),
                 "percent_dv_so_far": round(pct, 1),
-                "status": classify_day_contribution(pct),
+                "status": classify_day_contribution(pct, nutrient_id_int),
             }
         )
 

@@ -19,7 +19,7 @@ FDA_DAILY_VALUES = {
     1167: 16,      # Niacin (B3), mg
     1170: 5,       # Pantothenic acid (B5), mg
     1175: 1.7,     # Vitamin B6, mg
-    1177: 400,     # Folate, mcg DFE
+    1190: 400,     # Folate, mcg DFE
     1178: 2.4,     # Vitamin B12, mcg
     1180: 550,     # Choline, mg
 
@@ -79,6 +79,14 @@ DV_TO_DAY_STATUS = [
     (0, "none"),
 ]
 
+DV_TO_LIMIT_STATUS = [
+    (100, "high"),
+    (75, "elevated"),
+    (40, "moderate"),
+    (20, "low"),
+    (0, "minimal"),
+]
+
 DV_TO_MEAL_CONTRIBUTION = [
     (20, "very_significant"),
     (10, "significant"),
@@ -103,7 +111,7 @@ VITAMIN_IDS = {
     1167,  # Niacin (B3)
     1170,  # Pantothenic acid (B5)
     1175,  # Vitamin B-6
-    1177,  # Folate, total
+    1190,  # Folate, DFE
     1178,  # Vitamin B-12
     1180,  # Choline, total
 }
@@ -128,6 +136,16 @@ FIBER_IDS = {
 
 ESSENTIAL_IDS = VITAMIN_IDS | MINERAL_IDS | FIBER_IDS
 
+# Nutrients that should be interpreted as "less is better" against a daily cap.
+LIMITED_NUTRIENT_IDS = {
+    1093,  # Sodium
+}
+
+FOLIC_ACID_ID = 1186
+FOLATE_TOTAL_ID = 1177
+FOLATE_FOOD_ID = 1187
+FOLATE_DFE_ID = 1190
+
 # USDA Nutrient ID → Canonical Name (Foundation Foods)
 
 NUTRIENT_ID_TO_NAME = {
@@ -143,6 +161,7 @@ NUTRIENT_ID_TO_NAME = {
     1167: "Niacin (B3)",
     1170: "Pantothenic acid (B5)",
     1175: "Vitamin B6",
+    1190: "Folate",
     1177: "Folate",
     1178: "Vitamin B12",
     1180: "Choline",
