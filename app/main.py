@@ -1,26 +1,7 @@
-from datetime import datetime
-from zoneinfo import ZoneInfo
+from fastapi import FastAPI
 
-from fastapi import FastAPI, HTTPException
-
-from schemas.meal import (
-    DailySummaryResponse,
-    HealthResponse,
-    MealCreateRequest,
-    MealCreateResponse,
-)
-from services.meal_service import (
-    DEFAULT_TIMEZONE,
-    MEAL_LOG_PATH,
-    format_daily_summary,
-    get_meal_log,
-    get_so_far_today,
-    initialize_app_data,
-    log_meal,
-    normalize_nutrient_exposure,
-    process_input,
-)
-from utils.nutrients import get_nutrient_exposure
+from routers.meals import router as meals_router
+from services.meal_service import initialize_app_data
 
 app = FastAPI(title="Minimeal")
 
@@ -30,58 +11,4 @@ def startup_event():
     initialize_app_data()
 
 
-@app.get("/", response_model=HealthResponse)
-def root():
-    return {"status": "Minimeal is running"}
-
-
-@app.post("/meals", response_model=MealCreateResponse)
-def create_meal(request: MealCreateRequest):
-    try:
-        processed_meal = process_input(
-            request.user_meal,
-            request.meal_conversion_model,
-            request.assign_portion_classes_model,
-        )
-
-        raw_nutrient_exposure = get_nutrient_exposure(processed_meal)
-        nutrient_exposure = normalize_nutrient_exposure(raw_nutrient_exposure)
-
-        now = datetime.now(ZoneInfo(request.tz_name))
-        log_entry = log_meal(processed_meal, nutrient_exposure, now)
-
-        return {
-            "processed_meal": processed_meal,
-            "nutrient_exposure": nutrient_exposure,
-            "log_entry": log_entry,
-        }
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/meals")
-def read_meals():
-    try:
-        return get_meal_log(MEAL_LOG_PATH)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/summary/today", response_model=DailySummaryResponse)
-def get_today_summary(tz_name: str = DEFAULT_TIMEZONE):
-    try:
-        now = datetime.now(ZoneInfo(tz_name))
-        meal_log = get_meal_log(MEAL_LOG_PATH)
-        totals = get_so_far_today(meal_log, now, tz_name)
-        formatted_summary = format_daily_summary(totals)
-
-        return {
-            "date": now.date().isoformat(),
-            "timezone": tz_name,
-            "nutrient_totals": totals,
-            "formatted_summary": formatted_summary,
-        }
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+app.include_router(meals_router)
