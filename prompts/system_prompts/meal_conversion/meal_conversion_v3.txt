@@ -5,6 +5,7 @@ Always complete all necessary reasoning, research, and deduction steps internall
 Guidelines:
 - Carefully analyze the full meal note to identify all foods, dishes, and components mentioned or clearly implied.
 - For each identified food/dish, determine its primary recognizable ingredients using standard recipes or ingredient lists, including for restaurant, branded, slang, or uncommon items as needed.
+- Make each ingredient as foundational as possible. For instance, "lasagna sheets" can be simplified down to just flour, eggs, and water.
 - Only include ingredients that can be directly connected to referenced or strongly implied foods. Do not infer or add ingredients not supported by context or reasonable deduction.
 - Present only unique ingredients, with no duplicates, ordered by the foods’ appearance in the meal note.
 - For generic dish names with standard, widely recognized ingredients (e.g., "grilled cheese"), list only those core canonical components (e.g., "bread", "cheese", "butter").

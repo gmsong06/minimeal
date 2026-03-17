@@ -120,8 +120,8 @@ def log_meal(processed_meal: dict, nutrient_exposure: dict, time_stamp: datetime
 
 
 if __name__ == "__main__":
-    user_prompt = "i had pork ribs with sweet potato and broccoli for lunch"
-    # user_prompt = "lasagna for lunch"
+    # user_prompt = "steamed pork buns"
+    user_prompt = "lasagna for lunch"
 
     print("Getting foods and portion classes from GPT...")
     processed_meal = process_input(user_prompt, "gpt-4.1-nano", "gpt-4.1-nano")
@@ -136,6 +136,6 @@ if __name__ == "__main__":
 
     # print(get_meal_log("meal_log.json"))
     # print()
-    # print(sum_nutrients_for_day(get_meal_log("meal_log.json"), datetime.now(), "America/New_York"))
-    # print(format_daily_summary(sum_nutrients_for_day(get_meal_log("meal_log.json"), datetime.now(), "America/New_York")))
+    print(sum_nutrients_for_day(get_meal_log("meal_log.json"), datetime.now(), "America/New_York"))
+    print(format_daily_summary(sum_nutrients_for_day(get_meal_log("meal_log.json"), datetime.now(), "America/New_York")))
 
