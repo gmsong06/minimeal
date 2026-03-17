@@ -1,31 +1,38 @@
 import json
 import copy
-import config
-from utils.model import (
+from pathlib import Path
+
+from .. import config
+from .model import (
     get_gpt_response,
     parse_gpt_choose_candidates_response
 )
-from utils.prompt import get_prompt
+from .prompt import get_prompt
 from rapidfuzz import fuzz
-from utils.FoodSearcher import FoodSearcher
+from .FoodSearcher import FoodSearcher
 
 FOUNDATION_FOODS = []
 LEGACY_FOODS = []
 BRANDED_FOODS = []
+USDA_SEARCHER = None
+APP_DIR = Path(__file__).resolve().parents[1]
+USDA_DIR = APP_DIR / "usda"
 
 def load_usda_foods():
     global FOUNDATION_FOODS
     global LEGACY_FOODS
     global BRANDED_FOODS
+    global USDA_SEARCHER
     
-    with open("usda/USDA_Foundation_Foods.json", "r") as file:
+    with (USDA_DIR / "USDA_Foundation_Foods.json").open("r", encoding="utf-8") as file:
         FOUNDATION_FOODS = json.load(file)["FoundationFoods"]
 
-    with open("usda/USDA_SR_Legacy_Foods.json", "r") as file:
+    with (USDA_DIR / "USDA_SR_Legacy_Foods.json").open("r", encoding="utf-8") as file:
         LEGACY_FOODS = json.load(file)["SRLegacyFoods"]
 
-    # with open("usda/USDA_Branded_Foods.json", "r") as file:
+    # with (USDA_DIR / "USDA_Branded_Foods.json").open("r", encoding="utf-8") as file:
     #     BRANDED_FOODS = json.load(file)["BrandedFoods"]
+    USDA_SEARCHER = FoodSearcher(FOUNDATION_FOODS, LEGACY_FOODS, BRANDED_FOODS)
 
 def get_foundation_foods(food: str, threshold=70):
 
@@ -40,8 +47,10 @@ def get_foundation_foods(food: str, threshold=70):
 
     # matches.sort(reverse=True, key=lambda x: x[0])
     # return [m[1] for m in matches]
-    searcher = FoodSearcher(FOUNDATION_FOODS)
-    return searcher.get_foundation_foods(food, k=5, semantic_k=20)
+    if USDA_SEARCHER is None:
+        load_usda_foods()
+
+    return USDA_SEARCHER.get_foundation_foods(food, k=5, semantic_k=20)
 
 
 def get_legacy_foods(food: str, threshold=70):
@@ -74,18 +83,32 @@ def get_branded_foods(food: str, max_results: int = 5):
 
 
 def add_usda_candidates(processed_meal: dict):
-    searcher = FoodSearcher(FOUNDATION_FOODS, LEGACY_FOODS, BRANDED_FOODS)
+    if USDA_SEARCHER is None:
+        load_usda_foods()
 
     for food in processed_meal["foods"]:
         name = food["name"]
 
-        candidates = searcher.get_foundation_foods(name, k=5, semantic_k=20) + searcher.get_legacy_foods(name, k=5, semantic_k=20)
+        foundation_candidates = USDA_SEARCHER.get_foundation_foods(
+            name, k=5, semantic_k=20
+        )
+        legacy_candidates = USDA_SEARCHER.get_legacy_foods(
+            name, k=5, semantic_k=20
+        )
+        deduped_candidates = []
+        seen_fdc_ids = set()
+        for candidate in foundation_candidates + legacy_candidates:
+            fdc_id = candidate.get("fdcId")
+            if fdc_id in seen_fdc_ids:
+                continue
+            seen_fdc_ids.add(fdc_id)
+            deduped_candidates.append(candidate)
 
         # if len(candidates) == 0:
         #     candidates = get_legacy_foods(name)
 
-        food["usda_candidates"] = candidates
-        print(f"For {name}, USDA found {len(candidates)} candidates.")
+        food["usda_candidates"] = deduped_candidates
+        print(f"For {name}, USDA found {len(deduped_candidates)} candidates.")
         
 
 def build_choose_candidate_input(processed_meal: dict):

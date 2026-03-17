@@ -3,14 +3,14 @@ from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, HTTPException
 
-from schemas.meal import (
+from ..schemas.meal import (
     DailySummaryResponse,
     HealthResponse,
     MealCreateRequest,
     MealCreateResponse,
     MealLogEntry,
 )
-from services.meal_service import (
+from ..services.meal_service import (
     DEFAULT_TIMEZONE,
     MEAL_LOG_PATH,
     format_daily_summary,
@@ -20,7 +20,7 @@ from services.meal_service import (
     normalize_nutrient_exposure,
     process_input,
 )
-from utils.nutrients import get_nutrient_exposure
+from ..utils.nutrients import get_nutrient_exposure
 
 router = APIRouter()
 

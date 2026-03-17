@@ -6,14 +6,14 @@ from zoneinfo import ZoneInfo
 
 import ulid
 
-import config
-from utils.model import (
+from .. import config
+from ..utils.model import (
     get_gpt_response,
     parse_gpt_assign_portion_classes_response,
     parse_gpt_meal_conversion_response,
 )
-from utils.nutrients import classify_day_contribution, load_usda_foods
-from utils.prompt import get_prompt
+from ..utils.nutrients import classify_day_contribution, load_usda_foods
+from ..utils.prompt import get_prompt
 
 MEAL_LOG_PATH = Path("meal_log.json")
 DEFAULT_TIMEZONE = "America/New_York"
