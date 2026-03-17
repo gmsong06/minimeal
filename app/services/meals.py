@@ -1,24 +1,3 @@
-from utils.model import (
-    get_gpt_response, 
-    parse_gpt_meal_conversion_response, 
-    parse_gpt_assign_portion_classes_response
-)
-
-from utils.nutrients import (
-    get_nutrient_exposure,
-    classify_meal_contribution,
-    classify_day_contribution,
-    load_usda_foods
-)
-
-from utils.prompt import get_prompt
-import json
-import ulid
-from collections import defaultdict
-from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
-import config
-
 def process_input(user_meal: str, meal_conversion_model: str, assign_portion_classes_model: str):
     meal_conversion_system_prompt = get_prompt(
         "prompts/system_prompts/meal_conversion/meal_conversion_v3.txt",
@@ -117,25 +96,3 @@ def log_meal(processed_meal: dict, nutrient_exposure: dict, time_stamp: datetime
     # Write back to file
     with open(file_path, "w") as f:
         json.dump(data, f, indent=2)
-
-
-if __name__ == "__main__":
-    # user_prompt = "steamed pork buns"
-    user_prompt = "lasagna for lunch"
-
-    print("Getting foods and portion classes from GPT...")
-    processed_meal = process_input(user_prompt, "gpt-4.1-nano", "gpt-4.1-nano")
-
-    # Calculate nutrient exposure
-    print("Getting nutrient exposure...")
-    load_usda_foods()
-    nutrient_exposure = get_nutrient_exposure(processed_meal)
-
-    print(nutrient_exposure)
-    log_meal(processed_meal, nutrient_exposure, datetime.now())
-
-    # print(get_meal_log("meal_log.json"))
-    # print()
-    print(sum_nutrients_for_day(get_meal_log("meal_log.json"), datetime.now(), "America/New_York"))
-    print(format_daily_summary(sum_nutrients_for_day(get_meal_log("meal_log.json"), datetime.now(), "America/New_York")))
-
