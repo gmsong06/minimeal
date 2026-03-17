@@ -80,8 +80,8 @@ export default function HomeScreen() {
   }, [isFocused]);
 
   return (
-    <SafeAreaView className="flex-1 bg-canvas" edges={['top']}>
-      <ScrollView className="flex-1 bg-canvas" contentContainerClassName="px-6 pb-32 pt-8">
+    <SafeAreaView className="flex-1 bg-white" edges={['top']}>
+      <ScrollView className="flex-1 bg-white" contentContainerClassName="px-6 pb-32 pt-3">
         <View className="mb-10 gap-4">
           <Text className="text-[42px] font-medium tracking-[-1.2px] text-ink">Home</Text>
           <Text className="max-w-[300px] text-[18px] leading-7 text-muted">
