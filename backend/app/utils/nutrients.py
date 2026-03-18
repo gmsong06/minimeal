@@ -1,5 +1,5 @@
-import json
 import copy
+import json
 from pathlib import Path
 
 from .. import config
@@ -9,7 +9,6 @@ from .model import (
 )
 from .prompt import get_prompt
 from rapidfuzz import fuzz
-from .FoodSearcher import FoodSearcher
 
 FOUNDATION_FOODS = []
 LEGACY_FOODS = []
@@ -23,6 +22,8 @@ def load_usda_foods():
     global LEGACY_FOODS
     global BRANDED_FOODS
     global USDA_SEARCHER
+
+    from .FoodSearcher import FoodSearcher
     
     with (USDA_DIR / "USDA_Foundation_Foods.json").open("r", encoding="utf-8") as file:
         FOUNDATION_FOODS = json.load(file)["FoundationFoods"]
