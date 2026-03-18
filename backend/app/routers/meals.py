@@ -32,6 +32,11 @@ def root():
     return HealthResponse(status="Minimeal is running")
 
 
+@router.get("/healthz", response_model=HealthResponse)
+def healthcheck():
+    return HealthResponse(status="ok")
+
+
 @router.post("/meals", response_model=MealCreateResponse)
 def create_meal(request: MealCreateRequest, http_request: Request):
     try:
