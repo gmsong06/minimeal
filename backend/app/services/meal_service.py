@@ -23,8 +23,6 @@ def initialize_app_data():
     if not MEAL_LOG_PATH.exists():
         MEAL_LOG_PATH.write_text("[]", encoding="utf-8")
 
-    load_usda_foods()
-
 
 def normalize_nutrient_exposure(nutrient_exposure: dict) -> dict[str, float]:
     return {str(k): float(v) for k, v in nutrient_exposure.items()}
