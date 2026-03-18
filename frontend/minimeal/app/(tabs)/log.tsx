@@ -33,6 +33,11 @@ type MealCreateResponse = {
   log_entry: MealLogEntry;
 };
 
+type MealGroup = {
+  dateLabel: string;
+  items: MealLogEntry[];
+};
+
 export default function LogScreen() {
   const isFocused = useIsFocused();
   const pullY = useRef(new Animated.Value(0)).current;
@@ -44,6 +49,33 @@ export default function LogScreen() {
   const [isLoadingMeals, setIsLoadingMeals] = useState(false);
   const [isSavingMeal, setIsSavingMeal] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const groupedMeals = useMemo<MealGroup[]>(() => {
+    const groups: MealGroup[] = [];
+    let lastDateLabel: string | null = null;
+
+    for (const meal of meals) {
+      const date = new Date(meal.time_stamp);
+      const dateLabel = date.toLocaleDateString([], {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      });
+
+      if (dateLabel !== lastDateLabel) {
+        groups.push({
+          dateLabel,
+          items: [meal],
+        });
+        lastDateLabel = dateLabel;
+        continue;
+      }
+
+      groups[groups.length - 1].items.push(meal);
+    }
+
+    return groups;
+  }, [meals]);
 
   useEffect(() => {
     console.log('LogScreen mounted');
@@ -222,7 +254,11 @@ export default function LogScreen() {
         className="flex-1 bg-white"
         {...(!isOpen && !isClosing ? panResponder.panHandlers : {})}>
         {isOpen ? (
-          <Pressable className="absolute inset-0 z-10 bg-transparent" onPress={closeInput} />
+          <Pressable
+            className="absolute bottom-0 left-0 right-0 z-10 bg-transparent"
+            style={{ top: REVEAL_HEIGHT }}
+            onPress={closeInput}
+          />
         ) : null}
 
         <Animated.View
@@ -259,7 +295,7 @@ export default function LogScreen() {
 
         <ScrollView
           className="flex-1 bg-white"
-          contentContainerClassName="px-6 pb-20 pt-1"
+          contentContainerClassName="px-6 pb-20 pt-5"
           keyboardShouldPersistTaps="handled">
           {errorMessage ? (
             <View className="mb-4 rounded-[18px] bg-[#f7ece7] px-4 py-3">
@@ -280,23 +316,25 @@ export default function LogScreen() {
             </Text>
           ) : null}
 
-          <View className="gap-4">
-            {meals.map((meal) => (
-              <View key={meal.meal_id} className="py-2">
-                <Text className="text-[18px] leading-[22px] tracking-[0.1px] text-ink">
-                  {meal.meal_description || 'Meal log'}
-                </Text>
-                <Text className="mt-1 text-[15px] text-muted">
-                  {new Date(meal.time_stamp).toLocaleString([], {
-                    month: 'short',
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: '2-digit',
-                  })}
-                </Text>
-                <Text className="mt-2 text-[14px] text-[#9a948b]">
-                  {Object.keys(meal.nutrient_exposure || {}).length} nutrient signals logged
-                </Text>
+          <View className="gap-6">
+            {groupedMeals.map((group) => (
+              <View key={group.dateLabel}>
+                <Text className="mb-3 text-[16px] text-muted">{group.dateLabel}</Text>
+                <View className="gap-4">
+                  {group.items.map((meal) => (
+                    <View key={meal.meal_id}>
+                      <Text className="text-[18px] leading-[22px] tracking-[0.1px] text-ink">
+                        {meal.meal_description || 'Meal log'}
+                      </Text>
+                      <Text className="mt-1 text-[15px] text-muted">
+                        {new Date(meal.time_stamp).toLocaleTimeString([], {
+                          hour: 'numeric',
+                          minute: '2-digit',
+                        })}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
               </View>
             ))}
           </View>
