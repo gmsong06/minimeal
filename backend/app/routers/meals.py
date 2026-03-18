@@ -1,8 +1,9 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Request
 
+from ..config import AI_RATE_LIMIT_MAX_REQUESTS, AI_RATE_LIMIT_WINDOW_SECONDS
 from ..schemas.meal import (
     DailySummaryResponse,
     HealthResponse,
@@ -21,6 +22,7 @@ from ..services.meal_service import (
     process_input,
 )
 from ..utils.nutrients import get_nutrient_exposure
+from ..utils.rate_limit import get_client_rate_limit_key, rate_limiter
 
 router = APIRouter()
 
@@ -31,8 +33,14 @@ def root():
 
 
 @router.post("/meals", response_model=MealCreateResponse)
-def create_meal(request: MealCreateRequest):
+def create_meal(request: MealCreateRequest, http_request: Request):
     try:
+        rate_limiter.check(
+            key=get_client_rate_limit_key(http_request, scope="post_meals"),
+            max_requests=AI_RATE_LIMIT_MAX_REQUESTS,
+            window_seconds=AI_RATE_LIMIT_WINDOW_SECONDS,
+        )
+
         processed_meal = process_input(
             request.user_meal,
             request.meal_conversion_model,

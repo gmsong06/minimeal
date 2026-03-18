@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as Haptics from 'expo-haptics';
+import { Ionicons } from '@expo/vector-icons';
 import {
   ActivityIndicator,
   Animated,
@@ -17,6 +18,7 @@ import { API_BASE_URL } from '@/constants/api';
 
 const REVEAL_HEIGHT = 50;
 const OPEN_THRESHOLD = 40;
+const ACTIONS_WIDTH = 168;
 
 type MealLogEntry = {
   meal_id: string;
@@ -38,6 +40,138 @@ type MealGroup = {
   items: MealLogEntry[];
 };
 
+function MealRow({
+  meal,
+  isAnotherRowOpen,
+  isOpen,
+  onOpen,
+}: {
+  meal: MealLogEntry;
+  isAnotherRowOpen: boolean;
+  isOpen: boolean;
+  onOpen: (mealId: string | null) => void;
+}) {
+  const swipeX = useRef(new Animated.Value(0)).current;
+
+  const closeRow = useCallback(() => {
+    Animated.spring(swipeX, {
+      toValue: 0,
+      useNativeDriver: true,
+      tension: 180,
+      friction: 18,
+      overshootClamping: false,
+    }).start();
+  }, [swipeX]);
+
+  const openRow = useCallback(() => {
+    Animated.spring(swipeX, {
+      toValue: -ACTIONS_WIDTH,
+      useNativeDriver: true,
+      tension: 170,
+      friction: 20,
+      overshootClamping: false,
+    }).start();
+  }, [swipeX]);
+
+  useEffect(() => {
+    if (isOpen) {
+      openRow();
+      return;
+    }
+
+    if (isAnotherRowOpen || !isOpen) {
+      closeRow();
+    }
+  }, [closeRow, isAnotherRowOpen, isOpen, openRow]);
+
+  const panResponder = useMemo(
+    () =>
+      PanResponder.create({
+        onMoveShouldSetPanResponder: (_, gestureState) => {
+          const isHorizontal = Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
+          return isHorizontal && Math.abs(gestureState.dx) > 12;
+        },
+        onPanResponderMove: (_, gestureState) => {
+          const nextX = Math.max(-ACTIONS_WIDTH, Math.min(0, gestureState.dx));
+          swipeX.setValue(nextX);
+        },
+        onPanResponderRelease: (_, gestureState) => {
+          const shouldOpen = gestureState.dx <= -ACTIONS_WIDTH / 3;
+
+          if (shouldOpen) {
+            onOpen(meal.meal_id);
+            openRow();
+            return;
+          }
+
+          onOpen(null);
+          closeRow();
+        },
+        onPanResponderTerminate: () => {
+          closeRow();
+        },
+      }),
+    [closeRow, meal.meal_id, onOpen, openRow, swipeX]
+  );
+
+  const handleRowPress = useCallback(() => {
+    if (!isOpen) {
+      return;
+    }
+
+    onOpen(null);
+    closeRow();
+  }, [closeRow, isOpen, onOpen]);
+
+  const handleActionPress = useCallback(
+    (action: 'exclude' | 'edit' | 'delete') => {
+      console.log(`meal ${action}`, meal);
+      onOpen(null);
+      closeRow();
+    },
+    [closeRow, meal, onOpen]
+  );
+
+  return (
+    <View className="relative overflow-hidden">
+      <View className="absolute bottom-0 right-0 top-0 flex-row items-center">
+        <Pressable
+          className="h-full w-14 items-center justify-center"
+          onPress={() => handleActionPress('exclude')}>
+          <Ionicons name="remove-circle-outline" size={20} color="#8A847C" />
+        </Pressable>
+        <Pressable
+          className="h-full w-14 items-center justify-center"
+          onPress={() => handleActionPress('edit')}>
+          <Ionicons name="create-outline" size={20} color="#8A847C" />
+        </Pressable>
+        <Pressable
+          className="h-full w-14 items-center justify-center"
+          onPress={() => handleActionPress('delete')}>
+          <Ionicons name="trash-outline" size={20} color="#a1583d" />
+        </Pressable>
+      </View>
+
+      <Animated.View
+        className="bg-white"
+        style={{ transform: [{ translateX: swipeX }] }}
+        {...panResponder.panHandlers}>
+        <Pressable onPress={handleRowPress}>
+          <Text className="text-[18px] leading-[22px] tracking-[0.1px] text-ink">
+            {meal.meal_description || 'Meal log'}
+          </Text>
+          <Text className="mt-1 text-[15px] text-muted">
+            {new Date(meal.time_stamp).toLocaleTimeString([], {
+              hour: 'numeric',
+              minute: '2-digit',
+            })}
+          </Text>
+        </Pressable>
+      </Animated.View>
+    </View>
+  );
+}
+
 export default function LogScreen() {
   const isFocused = useIsFocused();
   const pullY = useRef(new Animated.Value(0)).current;
@@ -49,6 +183,7 @@ export default function LogScreen() {
   const [isLoadingMeals, setIsLoadingMeals] = useState(false);
   const [isSavingMeal, setIsSavingMeal] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [openMealId, setOpenMealId] = useState<string | null>(null);
 
   const groupedMeals = useMemo<MealGroup[]>(() => {
     const groups: MealGroup[] = [];
@@ -296,7 +431,8 @@ export default function LogScreen() {
         <ScrollView
           className="flex-1 bg-white"
           contentContainerClassName="px-6 pb-20 pt-5"
-          keyboardShouldPersistTaps="handled">
+          keyboardShouldPersistTaps="handled"
+          onScrollBeginDrag={() => setOpenMealId(null)}>
           {errorMessage ? (
             <View className="mb-4 rounded-[18px] bg-[#f7ece7] px-4 py-3">
               <Text className="text-[14px] leading-5 text-[#a1583d]">{errorMessage}</Text>
@@ -322,17 +458,13 @@ export default function LogScreen() {
                 <Text className="mb-3 text-[16px] text-muted">{group.dateLabel}</Text>
                 <View className="gap-4">
                   {group.items.map((meal) => (
-                    <View key={meal.meal_id}>
-                      <Text className="text-[18px] leading-[22px] tracking-[0.1px] text-ink">
-                        {meal.meal_description || 'Meal log'}
-                      </Text>
-                      <Text className="mt-1 text-[15px] text-muted">
-                        {new Date(meal.time_stamp).toLocaleTimeString([], {
-                          hour: 'numeric',
-                          minute: '2-digit',
-                        })}
-                      </Text>
-                    </View>
+                    <MealRow
+                      key={meal.meal_id}
+                      meal={meal}
+                      isAnotherRowOpen={openMealId !== null && openMealId !== meal.meal_id}
+                      isOpen={openMealId === meal.meal_id}
+                      onOpen={setOpenMealId}
+                    />
                   ))}
                 </View>
               </View>

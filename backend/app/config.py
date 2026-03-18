@@ -182,3 +182,8 @@ NUTRIENT_ID_TO_NAME = {
     # FIBER
     1079: "Dietary Fiber",
 }
+
+
+# AI-backed endpoint protection
+AI_RATE_LIMIT_MAX_REQUESTS = 10
+AI_RATE_LIMIT_WINDOW_SECONDS = 60
