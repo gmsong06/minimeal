@@ -1,6 +1,87 @@
 # Minimeal
 Natural-language meal logging with time-aware nutrition reasoning
 
+## Repository Structure
+- `backend/`: FastAPI backend for meal processing, USDA lookup, and nutrient reasoning
+- `frontend/minimeal/`: Expo / React Native frontend
+
+## Installation
+
+### Backend
+1. Create and activate a virtual environment from the repo root:
+
+```bash
+cd minimeal
+python3 -m venv backend/.venv
+source backend/.venv/bin/activate
+```
+
+2. Install backend dependencies:
+
+```bash
+cd backend
+pip install -r requirements.txt
+```
+
+### Frontend
+1. Install frontend dependencies:
+
+```bash
+cd minimeal/frontend/minimeal
+npm install
+```
+
+## Environment Variables
+
+### Backend
+Set these before running the API:
+
+- `OPENAI_API_KEY`: required for meal parsing and AI-backed nutrient selection
+- `HF_TOKEN`: optional, but recommended for higher Hugging Face rate limits and faster model downloads
+- `PORT`: optional for local development; defaults to `8000`. Render provides this automatically.
+
+You can export them in your shell:
+
+```bash
+export OPENAI_API_KEY="your_openai_api_key"
+export HF_TOKEN="your_huggingface_token"
+```
+
+Or place them in `backend/.env`.
+
+### Frontend
+The frontend currently uses the default API base URL from [`frontend/minimeal/constants/api.ts`](/Users/annsong/Desktop/Projects/minimeal/frontend/minimeal/constants/api.ts):
+
+- iOS simulator: `http://127.0.0.1:8000`
+- Android emulator: `http://10.0.2.2:8000`
+
+If you run the backend elsewhere, update that file to point to your deployed or LAN API URL.
+
+## Running The App
+
+### Run the backend
+From `backend/` with your virtual environment active:
+
+```bash
+cd minimeal/backend
+python -m uvicorn app.main:app --reload
+```
+
+The API will be available at `http://127.0.0.1:8000`.
+
+### Run the frontend
+
+```bash
+cd minimeal/frontend/minimeal
+npm start
+```
+
+Useful variants:
+
+- `npm run ios`
+- `npm run android`
+- `npm run web`
+
 ## Problem Statement
 Most nutrition apps over-optimize for calorie tracking and precision, which increases friction and discourages use. At the same time, micronutrient intake, which strongly affects daily wellbeing, is underrepresented and poorly understood in media, often giving preference to macronutrients.
 
