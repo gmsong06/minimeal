@@ -14,6 +14,7 @@ from ..schemas.meal import (
 from ..services.meal_service import (
     DEFAULT_TIMEZONE,
     MEAL_LOG_PATH,
+    delete_meal,
     format_daily_summary,
     get_meal_log,
     get_so_far_today,
@@ -73,6 +74,21 @@ def read_meals():
     try:
         meal_log = get_meal_log(MEAL_LOG_PATH)
         return [MealLogEntry(**entry) for entry in meal_log]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/meals/{meal_id}")
+def remove_meal(meal_id: str):
+    try:
+        deleted = delete_meal(MEAL_LOG_PATH, meal_id)
+
+        if not deleted:
+            raise HTTPException(status_code=404, detail="Meal not found")
+
+        return {"status": "deleted", "meal_id": meal_id}
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

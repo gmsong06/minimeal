@@ -103,6 +103,20 @@ def save_meal_log(meal_log_path: str | Path, data: list):
         json.dump(data, f, indent=2)
 
 
+def delete_meal(meal_log_path: str | Path, meal_id: str) -> bool:
+    meal_log_path = Path(meal_log_path)
+    meal_log = get_meal_log(meal_log_path)
+    filtered_meals = [
+        meal for meal in meal_log if str(meal.get("meal_id")) != meal_id
+    ]
+
+    if len(filtered_meals) == len(meal_log):
+        return False
+
+    save_meal_log(meal_log_path, filtered_meals)
+    return True
+
+
 def get_local_day_bounds(target_dt: datetime, tz_name: str):
     tz = ZoneInfo(tz_name)
 

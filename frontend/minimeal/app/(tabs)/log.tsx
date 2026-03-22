@@ -44,11 +44,15 @@ function MealRow({
   meal,
   isAnotherRowOpen,
   isOpen,
+  isDeleting,
+  onDelete,
   onOpen,
 }: {
   meal: MealLogEntry;
   isAnotherRowOpen: boolean;
   isOpen: boolean;
+  isDeleting: boolean;
+  onDelete: (mealId: string) => void;
   onOpen: (mealId: string | null) => void;
 }) {
   const swipeX = useRef(new Animated.Value(0)).current;
@@ -125,11 +129,16 @@ function MealRow({
 
   const handleActionPress = useCallback(
     (action: 'exclude' | 'edit' | 'delete') => {
+      if (action === 'delete') {
+        onDelete(meal.meal_id);
+        return;
+      }
+
       console.log(`meal ${action}`, meal);
       onOpen(null);
       closeRow();
     },
-    [closeRow, meal, onOpen]
+    [closeRow, meal, onDelete, onOpen]
   );
 
   return (
@@ -147,8 +156,9 @@ function MealRow({
         </Pressable>
         <Pressable
           className="h-full w-14 items-center justify-center"
+          disabled={isDeleting}
           onPress={() => handleActionPress('delete')}>
-          <Ionicons name="trash-outline" size={20} color="#a1583d" />
+          <Ionicons name="trash-outline" size={20} color={isDeleting ? '#c9beb7' : '#a1583d'} />
         </Pressable>
       </View>
 
@@ -182,6 +192,7 @@ export default function LogScreen() {
   const [meals, setMeals] = useState<MealLogEntry[]>([]);
   const [isLoadingMeals, setIsLoadingMeals] = useState(false);
   const [isSavingMeal, setIsSavingMeal] = useState(false);
+  const [deletingMealId, setDeletingMealId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [openMealId, setOpenMealId] = useState<string | null>(null);
 
@@ -383,6 +394,29 @@ export default function LogScreen() {
     }
   }, [closeInput, mealText]);
 
+  const deleteMeal = useCallback(async (mealId: string) => {
+    setDeletingMealId(mealId);
+    setErrorMessage(null);
+    setOpenMealId(null);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/meals/${mealId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const detail = await response.text();
+        throw new Error(detail || `Failed to delete meal (${response.status})`);
+      }
+
+      setMeals((current) => current.filter((meal) => meal.meal_id !== mealId));
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to delete meal.');
+    } finally {
+      setDeletingMealId((current) => (current === mealId ? null : current));
+    }
+  }, []);
+
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
       <View
@@ -461,6 +495,8 @@ export default function LogScreen() {
                     <MealRow
                       key={meal.meal_id}
                       meal={meal}
+                      isDeleting={deletingMealId === meal.meal_id}
+                      onDelete={deleteMeal}
                       isAnotherRowOpen={openMealId !== null && openMealId !== meal.meal_id}
                       isOpen={openMealId === meal.meal_id}
                       onOpen={setOpenMealId}
