@@ -1,298 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as Haptics from 'expo-haptics';
-import { Ionicons } from '@expo/vector-icons';
-import {
-  ActivityIndicator,
-  Animated,
-  PanResponder,
-  Pressable,
-  ScrollView,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { ActivityIndicator, Animated, PanResponder, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useIsFocused } from '@react-navigation/native';
 
+import { MealComposer } from '@/components/log/meal-composer';
+import { buildDraftMeal, clampPull, groupMealsByDate, OPEN_THRESHOLD, REVEAL_HEIGHT } from '@/components/log/helpers';
+import { MealRow } from '@/components/log/meal-row';
+import { SyncControls } from '@/components/log/sync-controls';
+import { EditingMealState, MealCreateResponse, MealListItem, MealLogEntry } from '@/components/log/types';
 import { API_BASE_URL } from '@/constants/api';
-
-const REVEAL_HEIGHT = 50;
-const OPEN_THRESHOLD = 40;
-const ACTIONS_WIDTH = 168;
-
-type MealLogEntry = {
-  meal_id: string;
-  time_stamp: string;
-  meal_description?: string | null;
-  nutrient_exposure: Record<string, number>;
-  excluded_from_daily_summary: boolean;
-};
-
-type MealListItem = MealLogEntry & {
-  source: 'synced' | 'draft';
-  draftText?: string;
-  isSelected?: boolean;
-  isSyncing?: boolean;
-};
-
-type MealCreateResponse = {
-  processed_meal: {
-    meal_description?: string | null;
-  };
-  nutrient_exposure: Record<string, number>;
-  log_entry: MealLogEntry;
-};
-
-type MealGroup = {
-  dateLabel: string;
-  items: MealListItem[];
-};
-
-type EditingMealState = {
-  mealId: string;
-  originalDescription: string;
-  originalTimestamp: string;
-  source: MealListItem['source'];
-};
-
-function buildDraftMeal(mealText: string): MealListItem {
-  return {
-    meal_id: `draft-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-    time_stamp: new Date().toISOString(),
-    meal_description: mealText,
-    nutrient_exposure: {},
-    excluded_from_daily_summary: false,
-    source: 'draft',
-    draftText: mealText,
-    isSelected: false,
-    isSyncing: false,
-  };
-}
-
-function MealRow({
-  meal,
-  isAnotherRowOpen,
-  isOpen,
-  isDeleting,
-  isSelectionMode,
-  isTogglingExclude,
-  onEdit,
-  onToggleExcluded,
-  onDelete,
-  onOpen,
-  onToggleSelected,
-}: {
-  meal: MealListItem;
-  isAnotherRowOpen: boolean;
-  isOpen: boolean;
-  isDeleting: boolean;
-  isSelectionMode: boolean;
-  isTogglingExclude: boolean;
-  onEdit: (mealId: string) => void;
-  onToggleExcluded: (mealId: string) => void;
-  onDelete: (mealId: string) => void;
-  onOpen: (mealId: string | null) => void;
-  onToggleSelected: (mealId: string) => void;
-}) {
-  const swipeX = useRef(new Animated.Value(0)).current;
-
-  const closeRow = useCallback(() => {
-    Animated.spring(swipeX, {
-      toValue: 0,
-      useNativeDriver: true,
-      tension: 180,
-      friction: 18,
-      overshootClamping: false,
-    }).start();
-  }, [swipeX]);
-
-  const openRow = useCallback(() => {
-    Animated.spring(swipeX, {
-      toValue: -ACTIONS_WIDTH,
-      useNativeDriver: true,
-      tension: 170,
-      friction: 20,
-      overshootClamping: false,
-    }).start();
-  }, [swipeX]);
-
-  useEffect(() => {
-    if (isOpen) {
-      openRow();
-      return;
-    }
-
-    closeRow();
-  }, [closeRow, isAnotherRowOpen, isOpen, openRow]);
-
-  const panResponder = useMemo(
-    () =>
-      PanResponder.create({
-        onMoveShouldSetPanResponder: (_, gestureState) => {
-          const isHorizontal = Math.abs(gestureState.dx) > Math.abs(gestureState.dy);
-          return isHorizontal && Math.abs(gestureState.dx) > 12;
-        },
-        onPanResponderMove: (_, gestureState) => {
-          const baseX = isOpen ? -ACTIONS_WIDTH : 0;
-          const nextX = Math.max(-ACTIONS_WIDTH, Math.min(0, baseX + gestureState.dx));
-          swipeX.setValue(nextX);
-        },
-        onPanResponderRelease: (_, gestureState) => {
-          const finalX = (isOpen ? -ACTIONS_WIDTH : 0) + gestureState.dx;
-          const shouldOpen = finalX <= -ACTIONS_WIDTH / 2;
-
-          if (shouldOpen) {
-            onOpen(meal.meal_id);
-            openRow();
-            return;
-          }
-
-          onOpen(null);
-          closeRow();
-        },
-        onPanResponderTerminate: () => {
-          if (isOpen) {
-            openRow();
-            return;
-          }
-
-          closeRow();
-        },
-      }),
-    [closeRow, isOpen, meal.meal_id, onOpen, openRow, swipeX]
-  );
-
-  const handleRowPress = useCallback(() => {
-    if (!isOpen) {
-      return;
-    }
-
-    onOpen(null);
-    closeRow();
-  }, [closeRow, isOpen, onOpen]);
-
-  const handleActionPress = useCallback(
-    (action: 'exclude' | 'edit' | 'delete') => {
-      if (action === 'exclude') {
-        onToggleExcluded(meal.meal_id);
-        onOpen(null);
-        closeRow();
-        return;
-      }
-
-      if (action === 'edit') {
-        onEdit(meal.meal_id);
-        onOpen(null);
-        closeRow();
-        return;
-      }
-
-      if (action === 'delete') {
-        onDelete(meal.meal_id);
-        return;
-      }
-
-      onOpen(null);
-      closeRow();
-    },
-    [closeRow, meal.meal_id, onDelete, onEdit, onOpen, onToggleExcluded]
-  );
-
-  return (
-    <View className="relative w-full overflow-hidden">
-      <View
-        className="absolute bottom-0 right-0 top-0 flex-row items-center justify-end"
-        style={{ width: ACTIONS_WIDTH }}>
-        <Pressable
-          className="h-full w-14 items-center justify-center"
-          disabled={isTogglingExclude || meal.isSyncing}
-          onPress={() => handleActionPress('exclude')}>
-          <Ionicons
-            name="remove-circle-outline"
-            size={20}
-            color={
-              isTogglingExclude || meal.isSyncing
-                ? '#c9beb7'
-                : meal.excluded_from_daily_summary
-                  ? '#a1583d'
-                  : '#8A847C'
-            }
-          />
-        </Pressable>
-        <Pressable
-          className="h-full w-14 items-center justify-center"
-          onPress={() => handleActionPress('edit')}>
-          <Ionicons name="create-outline" size={20} color="#8A847C" />
-        </Pressable>
-        <Pressable
-          className="h-full w-14 items-center justify-center"
-          disabled={isDeleting || meal.isSyncing}
-          onPress={() => handleActionPress('delete')}>
-          <Ionicons
-            name="trash-outline"
-            size={20}
-            color={isDeleting || meal.isSyncing ? '#c9beb7' : '#a1583d'}
-          />
-        </Pressable>
-      </View>
-
-      <Animated.View
-        className="w-full bg-white"
-        style={{ transform: [{ translateX: swipeX }] }}
-        {...panResponder.panHandlers}>
-        <Pressable className="w-full" onPress={handleRowPress}>
-          <View className="flex-row items-start gap-3">
-            {meal.source === 'draft' && isSelectionMode ? (
-              <Pressable
-                className="mt-1"
-                disabled={meal.isSyncing}
-                onPress={() => onToggleSelected(meal.meal_id)}>
-                <Ionicons
-                  name={meal.isSelected ? 'checkmark-circle' : 'ellipse-outline'}
-                  size={22}
-                  color={meal.isSelected ? '#a1583d' : '#b8b4ad'}
-                />
-              </Pressable>
-            ) : null}
-
-            <View className="flex-1">
-              <View className="flex-row items-center justify-between gap-3">
-                <Text className="flex-1 text-[18px] leading-[22px] tracking-[0.1px] text-ink">
-                  {meal.meal_description || 'Meal log'}
-                </Text>
-
-                <View
-                  className={`rounded-full px-3 py-1 ${
-                    meal.source === 'draft' ? 'bg-[#f7ece7]' : 'bg-[#f3f1ec]'
-                  }`}>
-                  <Text
-                    className={`text-[12px] font-medium uppercase tracking-[1.2px] ${
-                      meal.source === 'draft' ? 'text-[#a1583d]' : 'text-muted'
-                    }`}>
-                    {meal.isSyncing
-                      ? 'Syncing'
-                      : meal.excluded_from_daily_summary
-                        ? 'Excluded'
-                        : meal.source === 'draft'
-                          ? 'Unsynced'
-                          : 'Synced'}
-                  </Text>
-                </View>
-              </View>
-
-              <Text className="mt-1 text-[15px] text-muted">
-                {new Date(meal.time_stamp).toLocaleTimeString([], {
-                  hour: 'numeric',
-                  minute: '2-digit',
-                })}
-              </Text>
-            </View>
-          </View>
-        </Pressable>
-      </Animated.View>
-    </View>
-  );
-}
 
 export default function LogScreen() {
   const isFocused = useIsFocused();
@@ -314,43 +31,12 @@ export default function LogScreen() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [openMealId, setOpenMealId] = useState<string | null>(null);
 
-  const groupedMeals = useMemo<MealGroup[]>(() => {
-    const groups: MealGroup[] = [];
-    let lastDateLabel: string | null = null;
-
-    for (const meal of meals) {
-      const date = new Date(meal.time_stamp);
-      const dateLabel = date.toLocaleDateString([], {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-      });
-
-      if (dateLabel !== lastDateLabel) {
-        groups.push({
-          dateLabel,
-          items: [meal],
-        });
-        lastDateLabel = dateLabel;
-        continue;
-      }
-
-      groups[groups.length - 1].items.push(meal);
-    }
-
-    return groups;
-  }, [meals]);
-
-  const draftMeals = useMemo(
-    () => meals.filter((meal) => meal.source === 'draft'),
-    [meals]
-  );
-
+  const groupedMeals = useMemo(() => groupMealsByDate(meals), [meals]);
+  const draftMeals = useMemo(() => meals.filter((meal) => meal.source === 'draft'), [meals]);
   const selectedDraftCount = useMemo(
     () => draftMeals.filter((meal) => meal.isSelected).length,
     [draftMeals]
   );
-
   const hasDraftMeals = draftMeals.length > 0;
 
   useEffect(() => {
@@ -404,10 +90,6 @@ export default function LogScreen() {
       fetchMeals();
     }
   }, [fetchMeals, isFocused]);
-
-  function clampPull(distance: number) {
-    return Math.max(0, Math.min(REVEAL_HEIGHT, distance));
-  }
 
   const animateOpen = useCallback(() => {
     Animated.spring(pullY, {
@@ -789,43 +471,17 @@ export default function LogScreen() {
           />
         ) : null}
 
-        <Animated.View
-          className="overflow-hidden px-6"
-          style={{
-            height: pullY,
-          }}>
-          <View
-            className="border-b border-line bg-white"
-            style={{
-              height: REVEAL_HEIGHT,
-              justifyContent: 'flex-end',
-              paddingBottom: 6,
-            }}>
-            <View className="flex-row items-center justify-between gap-3">
-              <TextInput
-                ref={inputRef}
-                value={mealText}
-                onChangeText={setMealText}
-                placeholder={editingMeal ? 'Update meal...' : 'I ate...'}
-                placeholderTextColor="#b8b4ad"
-                className="flex-1 text-[18px] leading-[22px] tracking-[0.1px] text-ink"
-                onSubmitEditing={() => {
-                  void submitMeal();
-                }}
-                returnKeyType="done"
-              />
-              <Pressable
-                disabled={isAddingMeal}
-                onPress={() => {
-                  void submitMeal();
-                }}>
-                <Text className="text-[14px] font-medium text-muted">
-                  {isAddingMeal ? (editingMeal ? 'Saving' : 'Adding') : editingMeal ? 'Save' : 'Add'}
-                </Text>
-              </Pressable>
-            </View>
-          </View>
-        </Animated.View>
+        <MealComposer
+          inputRef={inputRef}
+          mealText={mealText}
+          setMealText={setMealText}
+          editingMeal={editingMeal}
+          isAddingMeal={isAddingMeal}
+          pullY={pullY}
+          onSubmit={() => {
+            void submitMeal();
+          }}
+        />
 
         <ScrollView
           className="flex-1 bg-white"
@@ -888,73 +544,22 @@ export default function LogScreen() {
           </View>
         </ScrollView>
 
-        <View className="border-t border-line bg-white px-6 pb-1 pt-2">
-          <View className="flex-row items-center justify-between gap-3">
-            <Pressable
-              className="h-9 w-9 items-center justify-center rounded-full border border-line bg-white"
-              disabled={isSyncingSelection}
-              onPress={() => setIsSyncControlsOpen((current) => !current)}>
-              <Ionicons
-                name={isSyncControlsOpen ? 'close-outline' : 'sync-outline'}
-                size={16}
-                color="#8A847C"
-              />
-            </Pressable>
-
-            {isSyncControlsOpen ? (
-              <View className="flex-1 flex-row items-center justify-end gap-3">
-                {isSelectionMode ? (
-                  <>
-                    <Text className="mr-auto text-[14px] text-muted">
-                      {selectedDraftCount} selected
-                    </Text>
-                    <Pressable
-                      className="rounded-full border border-line bg-white px-4 py-2.5"
-                      disabled={isSyncingSelection}
-                      onPress={exitSelectionMode}>
-                      <Text className="text-[14px] font-medium text-ink">Done</Text>
-                    </Pressable>
-                    <Pressable
-                      className={`rounded-full px-4 py-2.5 ${
-                        selectedDraftCount > 0 && !isSyncingSelection
-                          ? 'bg-ink'
-                          : 'bg-[#d9d4cc]'
-                      }`}
-                      disabled={selectedDraftCount === 0 || isSyncingSelection}
-                      onPress={() => syncSelectedMeals('selected')}>
-                      <Text className="text-[14px] font-medium text-white">
-                        {isSyncingSelection ? 'Syncing...' : 'Sync selected'}
-                      </Text>
-                    </Pressable>
-                  </>
-                ) : (
-                  <>
-                    <Pressable
-                      className={`rounded-full border px-4 py-2.5 ${
-                        hasDraftMeals ? 'border-line bg-white' : 'border-[#d9d4cc] bg-[#f3f1ec]'
-                      }`}
-                      disabled={isSyncingSelection || !hasDraftMeals}
-                      onPress={enterSelectionMode}>
-                      <Text className="text-[14px] font-medium text-ink">Select</Text>
-                    </Pressable>
-                    <Pressable
-                      className={`rounded-full px-4 py-2.5 ${
-                        hasDraftMeals && !isSyncingSelection ? 'bg-ink' : 'bg-[#d9d4cc]'
-                      }`}
-                      disabled={isSyncingSelection || !hasDraftMeals}
-                      onPress={() => syncSelectedMeals('all')}>
-                      <Text className="text-[14px] font-medium text-white">
-                        {isSyncingSelection ? 'Syncing...' : 'Sync all'}
-                      </Text>
-                    </Pressable>
-                  </>
-                )}
-              </View>
-            ) : (
-              <View />
-            )}
-          </View>
-        </View>
+        <SyncControls
+          hasDraftMeals={hasDraftMeals}
+          isSyncControlsOpen={isSyncControlsOpen}
+          isSelectionMode={isSelectionMode}
+          isSyncingSelection={isSyncingSelection}
+          selectedDraftCount={selectedDraftCount}
+          onToggleOpen={() => setIsSyncControlsOpen((current) => !current)}
+          onEnterSelectionMode={enterSelectionMode}
+          onExitSelectionMode={exitSelectionMode}
+          onSyncAll={() => {
+            void syncSelectedMeals('all');
+          }}
+          onSyncSelected={() => {
+            void syncSelectedMeals('selected');
+          }}
+        />
       </View>
     </SafeAreaView>
   );
