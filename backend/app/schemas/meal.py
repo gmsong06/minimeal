@@ -34,6 +34,7 @@ class MealLogEntry(BaseModel):
     meal_description: str | None = None
     foods: list[FoodItem] = Field(default_factory=list)
     nutrient_exposure: dict[str, float]
+    excluded_from_daily_summary: bool = False
 
 
 class DailySummaryItem(BaseModel):
@@ -48,6 +49,7 @@ class MealCreateRequest(BaseModel):
     meal_conversion_model: str = "gpt-4.1-nano"
     assign_portion_classes_model: str = "gpt-4.1-nano"
     tz_name: str = DEFAULT_TIMEZONE
+    excluded_from_daily_summary: bool = False
 
 
 class MealCreateResponse(BaseModel):

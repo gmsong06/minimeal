@@ -15,7 +15,8 @@ from ..utils.model import (
 from ..utils.nutrients import classify_day_contribution, load_usda_foods
 from ..utils.prompt import get_prompt
 
-MEAL_LOG_PATH = Path("meal_log.json")
+BACKEND_ROOT = Path(__file__).resolve().parents[2]
+MEAL_LOG_PATH = BACKEND_ROOT / "meal_log.json"
 DEFAULT_TIMEZONE = "America/New_York"
 
 
@@ -117,6 +118,23 @@ def delete_meal(meal_log_path: str | Path, meal_id: str) -> bool:
     return True
 
 
+def set_meal_excluded_status(
+    meal_log_path: str | Path, meal_id: str, excluded_from_daily_summary: bool
+):
+    meal_log_path = Path(meal_log_path)
+    meal_log = get_meal_log(meal_log_path)
+
+    for meal in meal_log:
+        if str(meal.get("meal_id")) != meal_id:
+            continue
+
+        meal["excluded_from_daily_summary"] = excluded_from_daily_summary
+        save_meal_log(meal_log_path, meal_log)
+        return meal
+
+    return None
+
+
 def get_local_day_bounds(target_dt: datetime, tz_name: str):
     tz = ZoneInfo(tz_name)
 
@@ -134,6 +152,9 @@ def sum_nutrients_for_day(meal_log, target_dt, tz_name):
     totals = defaultdict(float)
 
     for meal in meal_log:
+        if meal.get("excluded_from_daily_summary", False):
+            continue
+
         try:
             eaten_at = datetime.fromisoformat(meal["time_stamp"]).astimezone(
                 ZoneInfo(tz_name)
@@ -173,7 +194,12 @@ def format_daily_summary(daily_totals):
     return summary
 
 
-def log_meal(processed_meal: dict, nutrient_exposure: dict, time_stamp: datetime):
+def log_meal(
+    processed_meal: dict,
+    nutrient_exposure: dict,
+    time_stamp: datetime,
+    excluded_from_daily_summary: bool = False,
+):
     if time_stamp.tzinfo is None:
         time_stamp = time_stamp.replace(tzinfo=ZoneInfo("UTC"))
 
@@ -185,6 +211,7 @@ def log_meal(processed_meal: dict, nutrient_exposure: dict, time_stamp: datetime
         "meal_description": processed_meal.get("meal_description"),
         "foods": processed_meal.get("foods", []),
         "nutrient_exposure": nutrient_exposure,
+        "excluded_from_daily_summary": excluded_from_daily_summary,
     }
 
     data = get_meal_log(MEAL_LOG_PATH)

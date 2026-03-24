@@ -25,6 +25,7 @@ type MealLogEntry = {
   time_stamp: string;
   meal_description?: string | null;
   nutrient_exposure: Record<string, number>;
+  excluded_from_daily_summary: boolean;
 };
 
 type MealListItem = MealLogEntry & {
@@ -53,6 +54,7 @@ function buildDraftMeal(mealText: string): MealListItem {
     time_stamp: new Date().toISOString(),
     meal_description: mealText,
     nutrient_exposure: {},
+    excluded_from_daily_summary: false,
     source: 'draft',
     draftText: mealText,
     isSelected: false,
@@ -66,6 +68,8 @@ function MealRow({
   isOpen,
   isDeleting,
   isSelectionMode,
+  isTogglingExclude,
+  onToggleExcluded,
   onDelete,
   onOpen,
   onToggleSelected,
@@ -75,6 +79,8 @@ function MealRow({
   isOpen: boolean;
   isDeleting: boolean;
   isSelectionMode: boolean;
+  isTogglingExclude: boolean;
+  onToggleExcluded: (mealId: string) => void;
   onDelete: (mealId: string) => void;
   onOpen: (mealId: string | null) => void;
   onToggleSelected: (mealId: string) => void;
@@ -158,6 +164,13 @@ function MealRow({
 
   const handleActionPress = useCallback(
     (action: 'exclude' | 'edit' | 'delete') => {
+      if (action === 'exclude') {
+        onToggleExcluded(meal.meal_id);
+        onOpen(null);
+        closeRow();
+        return;
+      }
+
       if (action === 'delete') {
         onDelete(meal.meal_id);
         return;
@@ -166,7 +179,7 @@ function MealRow({
       onOpen(null);
       closeRow();
     },
-    [closeRow, meal.meal_id, onDelete, onOpen]
+    [closeRow, meal.meal_id, onDelete, onOpen, onToggleExcluded]
   );
 
   return (
@@ -176,8 +189,19 @@ function MealRow({
         style={{ width: ACTIONS_WIDTH }}>
         <Pressable
           className="h-full w-14 items-center justify-center"
+          disabled={isTogglingExclude || meal.isSyncing}
           onPress={() => handleActionPress('exclude')}>
-          <Ionicons name="remove-circle-outline" size={20} color="#8A847C" />
+          <Ionicons
+            name="remove-circle-outline"
+            size={20}
+            color={
+              isTogglingExclude || meal.isSyncing
+                ? '#c9beb7'
+                : meal.excluded_from_daily_summary
+                  ? '#a1583d'
+                  : '#8A847C'
+            }
+          />
         </Pressable>
         <Pressable
           className="h-full w-14 items-center justify-center"
@@ -229,7 +253,13 @@ function MealRow({
                     className={`text-[12px] font-medium uppercase tracking-[1.2px] ${
                       meal.source === 'draft' ? 'text-[#a1583d]' : 'text-muted'
                     }`}>
-                    {meal.isSyncing ? 'Syncing' : meal.source === 'draft' ? 'Unsynced' : 'Synced'}
+                    {meal.isSyncing
+                      ? 'Syncing'
+                      : meal.excluded_from_daily_summary
+                        ? 'Excluded'
+                        : meal.source === 'draft'
+                          ? 'Unsynced'
+                          : 'Synced'}
                   </Text>
                 </View>
               </View>
@@ -260,6 +290,7 @@ export default function LogScreen() {
   const [isLoadingMeals, setIsLoadingMeals] = useState(false);
   const [isAddingMeal, setIsAddingMeal] = useState(false);
   const [deletingMealId, setDeletingMealId] = useState<string | null>(null);
+  const [togglingExcludeMealId, setTogglingExcludeMealId] = useState<string | null>(null);
   const [isSyncingSelection, setIsSyncingSelection] = useState(false);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [isSyncControlsOpen, setIsSyncControlsOpen] = useState(false);
@@ -334,6 +365,7 @@ export default function LogScreen() {
         .reverse()
         .map((meal) => ({
           ...meal,
+          excluded_from_daily_summary: meal.excluded_from_daily_summary ?? false,
           source: 'synced',
           isSelected: false,
           isSyncing: false,
@@ -505,6 +537,7 @@ export default function LogScreen() {
         body: JSON.stringify({
           user_meal: mealToSync.draftText,
           tz_name: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          excluded_from_daily_summary: mealToSync.excluded_from_daily_summary,
         }),
       });
 
@@ -605,6 +638,63 @@ export default function LogScreen() {
     }
   }, [meals]);
 
+  const toggleMealExcluded = useCallback(async (mealId: string) => {
+    const mealToToggle = meals.find((meal) => meal.meal_id === mealId);
+
+    if (!mealToToggle) {
+      return;
+    }
+
+    const nextExcludedState = !mealToToggle.excluded_from_daily_summary;
+
+    if (mealToToggle.source === 'draft') {
+      setMeals((current) =>
+        current.map((meal) =>
+          meal.meal_id === mealId
+            ? { ...meal, excluded_from_daily_summary: nextExcludedState }
+            : meal
+        )
+      );
+      return;
+    }
+
+    setTogglingExcludeMealId(mealId);
+    setErrorMessage(null);
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/meals/${mealId}/exclude?excluded_from_daily_summary=${nextExcludedState}`,
+        {
+          method: 'PATCH',
+        }
+      );
+
+      if (!response.ok) {
+        const detail = await response.text();
+        throw new Error(detail || `Failed to update meal (${response.status})`);
+      }
+
+      const updatedMeal: MealLogEntry = await response.json();
+      setMeals((current) =>
+        current.map((meal) =>
+          meal.meal_id === mealId
+            ? {
+                ...meal,
+                ...updatedMeal,
+                source: 'synced',
+                isSelected: false,
+                isSyncing: false,
+              }
+            : meal
+        )
+      );
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to update meal.');
+    } finally {
+      setTogglingExcludeMealId((current) => (current === mealId ? null : current));
+    }
+  }, [meals]);
+
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
       <View className="flex-1 bg-white" {...pullResponder.panHandlers}>
@@ -695,8 +785,10 @@ export default function LogScreen() {
                       isAnotherRowOpen={openMealId !== null && openMealId !== meal.meal_id}
                       isOpen={openMealId === meal.meal_id}
                       isSelectionMode={isSelectionMode}
+                      isTogglingExclude={togglingExcludeMealId === meal.meal_id}
                       onDelete={deleteMeal}
                       onOpen={setOpenMealId}
+                      onToggleExcluded={toggleMealExcluded}
                       onToggleSelected={toggleMealSelected}
                     />
                   ))}

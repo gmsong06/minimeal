@@ -21,6 +21,7 @@ from ..services.meal_service import (
     log_meal,
     normalize_nutrient_exposure,
     process_input,
+    set_meal_excluded_status,
 )
 from ..utils.nutrients import get_nutrient_exposure
 from ..utils.rate_limit import get_client_rate_limit_key, rate_limiter
@@ -57,7 +58,12 @@ def create_meal(request: MealCreateRequest, http_request: Request):
         nutrient_exposure = normalize_nutrient_exposure(raw_nutrient_exposure)
 
         now = datetime.now(ZoneInfo(request.tz_name))
-        log_entry = log_meal(processed_meal, nutrient_exposure, now)
+        log_entry = log_meal(
+            processed_meal,
+            nutrient_exposure,
+            now,
+            excluded_from_daily_summary=request.excluded_from_daily_summary,
+        )
 
         return MealCreateResponse(
             processed_meal=processed_meal,
@@ -87,6 +93,23 @@ def remove_meal(meal_id: str):
             raise HTTPException(status_code=404, detail="Meal not found")
 
         return {"status": "deleted", "meal_id": meal_id}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.patch("/meals/{meal_id}/exclude", response_model=MealLogEntry)
+def update_meal_exclusion(meal_id: str, excluded_from_daily_summary: bool):
+    try:
+        updated_meal = set_meal_excluded_status(
+            MEAL_LOG_PATH, meal_id, excluded_from_daily_summary
+        )
+
+        if updated_meal is None:
+            raise HTTPException(status_code=404, detail="Meal not found")
+
+        return MealLogEntry(**updated_meal)
     except HTTPException:
         raise
     except Exception as e:
