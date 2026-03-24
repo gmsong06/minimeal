@@ -48,6 +48,13 @@ type MealGroup = {
   items: MealListItem[];
 };
 
+type EditingMealState = {
+  mealId: string;
+  originalDescription: string;
+  originalTimestamp: string;
+  source: MealListItem['source'];
+};
+
 function buildDraftMeal(mealText: string): MealListItem {
   return {
     meal_id: `draft-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
@@ -69,6 +76,7 @@ function MealRow({
   isDeleting,
   isSelectionMode,
   isTogglingExclude,
+  onEdit,
   onToggleExcluded,
   onDelete,
   onOpen,
@@ -80,6 +88,7 @@ function MealRow({
   isDeleting: boolean;
   isSelectionMode: boolean;
   isTogglingExclude: boolean;
+  onEdit: (mealId: string) => void;
   onToggleExcluded: (mealId: string) => void;
   onDelete: (mealId: string) => void;
   onOpen: (mealId: string | null) => void;
@@ -171,6 +180,13 @@ function MealRow({
         return;
       }
 
+      if (action === 'edit') {
+        onEdit(meal.meal_id);
+        onOpen(null);
+        closeRow();
+        return;
+      }
+
       if (action === 'delete') {
         onDelete(meal.meal_id);
         return;
@@ -179,7 +195,7 @@ function MealRow({
       onOpen(null);
       closeRow();
     },
-    [closeRow, meal.meal_id, onDelete, onOpen, onToggleExcluded]
+    [closeRow, meal.meal_id, onDelete, onEdit, onOpen, onToggleExcluded]
   );
 
   return (
@@ -289,6 +305,7 @@ export default function LogScreen() {
   const [meals, setMeals] = useState<MealListItem[]>([]);
   const [isLoadingMeals, setIsLoadingMeals] = useState(false);
   const [isAddingMeal, setIsAddingMeal] = useState(false);
+  const [editingMeal, setEditingMeal] = useState<EditingMealState | null>(null);
   const [deletingMealId, setDeletingMealId] = useState<string | null>(null);
   const [togglingExcludeMealId, setTogglingExcludeMealId] = useState<string | null>(null);
   const [isSyncingSelection, setIsSyncingSelection] = useState(false);
@@ -422,6 +439,8 @@ export default function LogScreen() {
   }, [animateOpen]);
 
   const closeInput = useCallback(() => {
+    setEditingMeal(null);
+    setMealText('');
     setIsOpen(false);
     setIsClosing(true);
     animateClosed(() => {
@@ -470,21 +489,67 @@ export default function LogScreen() {
     [animateClosed, isClosing, isOpen, openInput, pullY]
   );
 
-  const addMeal = useCallback(() => {
+  const submitMeal = useCallback(async () => {
     const trimmedMeal = mealText.trim();
 
     if (!trimmedMeal) {
-      setErrorMessage('Type a meal before adding it.');
+      setErrorMessage(editingMeal ? 'Type a new meal before saving it.' : 'Type a meal before adding it.');
+      return;
+    }
+
+    if (
+      editingMeal &&
+      trimmedMeal.toLocaleLowerCase() === editingMeal.originalDescription.trim().toLocaleLowerCase()
+    ) {
+      setErrorMessage('Enter a meal that is different from the original.');
       return;
     }
 
     setIsAddingMeal(true);
     setErrorMessage(null);
-    setMeals((current) => [buildDraftMeal(trimmedMeal), ...current]);
-    setMealText('');
-    closeInput();
-    setIsAddingMeal(false);
-  }, [closeInput, mealText]);
+
+    try {
+      if (!editingMeal) {
+        setMeals((current) => [buildDraftMeal(trimmedMeal), ...current]);
+        closeInput();
+        return;
+      }
+
+      if (editingMeal.source === 'synced') {
+        const response = await fetch(`${API_BASE_URL}/meals/${editingMeal.mealId}`, {
+          method: 'DELETE',
+        });
+
+        if (!response.ok) {
+          const detail = await response.text();
+          throw new Error(detail || `Failed to prepare meal edit (${response.status})`);
+        }
+      }
+
+      setMeals((current) =>
+        current.map((meal) =>
+          meal.meal_id === editingMeal.mealId
+            ? {
+                ...meal,
+                meal_description: trimmedMeal,
+                time_stamp: editingMeal.originalTimestamp,
+                nutrient_exposure: {},
+                excluded_from_daily_summary: false,
+                source: 'draft',
+                draftText: trimmedMeal,
+                isSelected: false,
+                isSyncing: false,
+              }
+            : meal
+        )
+      );
+      closeInput();
+    } catch (error) {
+      setErrorMessage(error instanceof Error ? error.message : 'Failed to update meal.');
+    } finally {
+      setIsAddingMeal(false);
+    }
+  }, [closeInput, editingMeal, mealText]);
 
   const toggleMealSelected = useCallback((mealId: string) => {
     setMeals((current) =>
@@ -495,6 +560,24 @@ export default function LogScreen() {
       )
     );
   }, []);
+
+  const startEditingMeal = useCallback((mealId: string) => {
+    const mealToEdit = meals.find((meal) => meal.meal_id === mealId);
+
+    if (!mealToEdit) {
+      return;
+    }
+
+    setErrorMessage(null);
+    setEditingMeal({
+      mealId,
+      originalDescription: mealToEdit.meal_description ?? '',
+      originalTimestamp: mealToEdit.time_stamp,
+      source: mealToEdit.source,
+    });
+    setMealText(mealToEdit.meal_description ?? '');
+    openInput();
+  }, [meals, openInput]);
 
   const enterSelectionMode = useCallback(() => {
     setIsSyncControlsOpen(true);
@@ -723,15 +806,21 @@ export default function LogScreen() {
                 ref={inputRef}
                 value={mealText}
                 onChangeText={setMealText}
-                placeholder="I ate..."
+                placeholder={editingMeal ? 'Update meal...' : 'I ate...'}
                 placeholderTextColor="#b8b4ad"
                 className="flex-1 text-[18px] leading-[22px] tracking-[0.1px] text-ink"
-                onSubmitEditing={addMeal}
+                onSubmitEditing={() => {
+                  void submitMeal();
+                }}
                 returnKeyType="done"
               />
-              <Pressable disabled={isAddingMeal} onPress={addMeal}>
+              <Pressable
+                disabled={isAddingMeal}
+                onPress={() => {
+                  void submitMeal();
+                }}>
                 <Text className="text-[14px] font-medium text-muted">
-                  {isAddingMeal ? 'Adding' : 'Add'}
+                  {isAddingMeal ? (editingMeal ? 'Saving' : 'Adding') : editingMeal ? 'Save' : 'Add'}
                 </Text>
               </Pressable>
             </View>
@@ -786,6 +875,7 @@ export default function LogScreen() {
                       isOpen={openMealId === meal.meal_id}
                       isSelectionMode={isSelectionMode}
                       isTogglingExclude={togglingExcludeMealId === meal.meal_id}
+                      onEdit={startEditingMeal}
                       onDelete={deleteMeal}
                       onOpen={setOpenMealId}
                       onToggleExcluded={toggleMealExcluded}
