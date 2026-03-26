@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Ionicons } from '@expo/vector-icons';
 
 import { API_BASE_URL } from '@/constants/api';
 
@@ -29,6 +30,88 @@ type MealLogEntry = {
   meal_description?: string | null;
 };
 
+type NutrientProgressState = 'done' | 'progress' | 'empty';
+
+function getVitaminBadgeLabel(name: string) {
+  const normalized = name.trim().toLowerCase();
+  const vitaminMap: Record<string, string> = {
+    'thiamin': 'B1',
+    'riboflavin': 'B2',
+    'niacin': 'B3',
+    'choline': 'B4',
+    'pantothenic acid': 'B5',
+    'vitamin b6': 'B6',
+    'biotin': 'B7',
+    'folate': 'B9',
+    'vitamin b12': 'B12',
+  };
+
+  const directMatch = vitaminMap[normalized];
+  if (directMatch) {
+    return directMatch;
+  }
+
+  const vitaminMatch = normalized.match(/vitamin\s+([a-z0-9]+)/i);
+  if (vitaminMatch) {
+    return vitaminMatch[1].toUpperCase();
+  }
+
+  return name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part.charAt(0).toUpperCase())
+    .join('');
+}
+
+function getProgressState(item: DailySummaryItem): NutrientProgressState {
+  const normalizedStatus = item.status.trim().toLowerCase();
+
+  if (
+    item.percent_dv_so_far >= 100 ||
+    normalizedStatus.includes('met') ||
+    normalizedStatus.includes('adequate') ||
+    normalizedStatus.includes('complete')
+  ) {
+    return 'done';
+  }
+
+  if (item.percent_dv_so_far > 0) {
+    return 'progress';
+  }
+
+  return 'empty';
+}
+
+function getProgressCopy(state: NutrientProgressState) {
+  if (state === 'done') {
+    return {
+      label: 'Covered',
+      detail: 'Check',
+      icon: 'checkmark',
+      iconColor: '#3a7d44',
+      badgeClassName: 'bg-[#e6f3e8]',
+    } as const;
+  }
+
+  if (state === 'progress') {
+    return {
+      label: 'In progress',
+      detail: 'Building',
+      icon: 'time-outline',
+      iconColor: '#9b6b2f',
+      badgeClassName: 'bg-[#f6ead8]',
+    } as const;
+  }
+
+  return {
+    label: 'Not exposed',
+    detail: 'None yet',
+    icon: 'remove',
+    iconColor: '#8f8a83',
+    badgeClassName: 'bg-[#ece8e1]',
+  } as const;
+}
+
 export default function HomeScreen() {
   const isFocused = useIsFocused();
   const [healthStatus, setHealthStatus] = useState('Checking backend...');
@@ -36,6 +119,19 @@ export default function HomeScreen() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [dailySummary, setDailySummary] = useState<DailySummaryItem[]>([]);
   const [recentMeals, setRecentMeals] = useState<MealLogEntry[]>([]);
+  const micronutrientCards = useMemo(
+    () =>
+      dailySummary.slice(0, 8).map((item) => {
+        const state = getProgressState(item);
+        return {
+          ...item,
+          badgeLabel: getVitaminBadgeLabel(item.name),
+          progress: getProgressCopy(state),
+          state,
+        };
+      }),
+    [dailySummary]
+  );
 
   async function refreshHome() {
     setErrorMessage(null);
@@ -84,9 +180,6 @@ export default function HomeScreen() {
       <ScrollView className="flex-1 bg-white" contentContainerClassName="px-6 pb-32 pt-3">
         <View className="mb-10 gap-4">
           <Text className="text-[42px] font-medium tracking-[-1.2px] text-ink">Home</Text>
-          <Text className="max-w-[300px] text-[18px] leading-7 text-muted">
-            Daily summaries, soft signals, and a quick view of how your eating rhythm is going today.
-          </Text>
         </View>
 
         <View className="mb-6 rounded-card border border-line bg-card px-5 py-5 shadow-float">
@@ -114,15 +207,6 @@ export default function HomeScreen() {
               <Text className="text-[15px] text-muted">Last checked at {lastUpdated}</Text>
             ) : null}
 
-            {errorMessage ? (
-              <Text className="text-[15px] leading-6 text-[#b26545]">
-                FastAPI didn&apos;t answer cleanly: {errorMessage}
-              </Text>
-            ) : (
-              <Text className="text-[15px] leading-6 text-muted">
-                Home now pulls your backend health, today&apos;s summary, and your latest meals.
-              </Text>
-            )}
           </View>
 
           <Pressable
@@ -133,21 +217,44 @@ export default function HomeScreen() {
         </View>
 
         <View className="mb-6 rounded-card border border-line bg-card px-5 py-5">
-          <Text className="mb-5 text-[14px] uppercase tracking-[2px] text-muted">Daily summary</Text>
+          <Text className="mb-2 text-[14px] uppercase tracking-[2px] text-muted">
+            Daily summary
+          </Text>
 
-          {dailySummary.length > 0 ? (
-            dailySummary.map((item) => (
-              <View key={item.nutrient_id} className="border-b border-line py-4 last:border-b-0">
-                <Text className="mb-1 text-[24px] tracking-[-0.4px] text-ink">{item.name}</Text>
-                <Text className="mb-2 text-[16px] leading-6 text-muted">
-                  {item.percent_dv_so_far.toFixed(1)}% of daily value so far
-                </Text>
-                <Text className="text-[15px] capitalize text-[#8f8a83]">{item.status}</Text>
-              </View>
-            ))
+          {micronutrientCards.length > 0 ? (
+            <View className="flex-row flex-wrap gap-3">
+              {micronutrientCards.map((item) => (
+                <View
+                  key={item.nutrient_id}
+                  className="w-[47%] rounded-[22px] border border-line bg-white px-4 py-4">
+                  <View className="mb-4 flex-row items-center justify-between">
+                    <View className="h-11 w-11 items-center justify-center rounded-full bg-[#f3ede6]">
+                      <Text className="text-[14px] font-semibold tracking-[0.3px] text-ink">
+                        {item.badgeLabel}
+                      </Text>
+                    </View>
+                    <View className={`rounded-full px-2.5 py-1 ${item.progress.badgeClassName}`}>
+                      <Ionicons
+                        name={item.progress.icon}
+                        size={14}
+                        color={item.progress.iconColor}
+                      />
+                    </View>
+                  </View>
+
+                  <Text className="mb-1 text-[18px] tracking-[-0.3px] text-ink">{item.name}</Text>
+                  <Text className="mb-3 text-[14px] text-muted">
+                    {item.percent_dv_so_far.toFixed(0)}% of daily value
+                  </Text>
+
+                  <Text className="text-[14px] font-medium text-ink">{item.progress.label}</Text>
+                  <Text className="text-[13px] text-muted">{item.progress.detail}</Text>
+                </View>
+              ))}
+            </View>
           ) : (
             <Text className="text-[16px] leading-7 text-muted">
-              Log a meal to start building today&apos;s summary.
+              Log a meal to start building today&apos;s micronutrient snapshot.
             </Text>
           )}
         </View>
@@ -176,11 +283,6 @@ export default function HomeScreen() {
                 Your latest meals will show up here after you log them.
               </Text>
             )}
-          </View>
-          <View className="w-[108px] rounded-card border border-line bg-accentSoft px-4 py-5">
-            <Text className="mb-2 text-[14px] uppercase tracking-[1.8px] text-muted">Meals</Text>
-            <Text className="text-[34px] tracking-[-0.8px] text-ink">{recentMeals.length}</Text>
-            <Text className="text-[15px] text-muted">recent</Text>
           </View>
         </View>
       </ScrollView>
