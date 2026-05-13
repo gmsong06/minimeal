@@ -34,6 +34,31 @@ export default function LogScreen() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [openMealId, setOpenMealId] = useState<string | null>(null);
 
+  const autoSyncTimers = useRef<Map<string, ReturnType<typeof setTimeout>>>(new Map());
+
+  useEffect(() => {
+    const pendingDraftIds = new Set(
+      meals.filter((m) => m.source === 'draft' && !m.isSyncing).map((m) => m.meal_id)
+    );
+
+    for (const [id, timer] of autoSyncTimers.current) {
+      if (!pendingDraftIds.has(id)) {
+        clearTimeout(timer);
+        autoSyncTimers.current.delete(id);
+      }
+    }
+
+    for (const id of pendingDraftIds) {
+      if (!autoSyncTimers.current.has(id)) {
+        const timer = setTimeout(() => {
+          autoSyncTimers.current.delete(id);
+          void syncMeal(id).catch(() => {});
+        }, 3000);
+        autoSyncTimers.current.set(id, timer);
+      }
+    }
+  }, [meals, syncMeal]);
+
   const groupedMeals = useMemo(() => groupMealsByDate(meals), [meals]);
   const draftMeals = useMemo(() => meals.filter((meal) => meal.source === 'draft'), [meals]);
   const selectedDraftCount = useMemo(
