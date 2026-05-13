@@ -1,6 +1,8 @@
 annotated-doc==0.0.4
 annotated-types==0.7.0
 anyio==4.12.1
+boto3==1.42.84
+botocore==1.42.84
 certifi==2026.1.4
 charset-normalizer==3.4.4
 click==8.3.1
@@ -17,6 +19,7 @@ huggingface-hub==1.7.1
 idna==3.11
 jinja2==3.1.6
 jiter==0.13.0
+jmespath==1.1.0
 joblib==1.5.3
 markdown-it-py==4.0.0
 markupsafe==3.0.3
@@ -42,6 +45,7 @@ safetensors==0.7.0
 scikit-learn==1.8.0
 scipy==1.17.1
 sentence-transformers==5.2.3
+s3transfer==0.16.0
 setuptools==82.0.1
 shellingham==1.5.4
 six==1.17.0

@@ -2,11 +2,24 @@ from dotenv import load_dotenv
 from openai import OpenAI
 import json
 import re
+import os
 from typing import Any, Dict, List, Optional
 
 load_dotenv()
 
-client = OpenAI()
+_client: OpenAI | None = None
+
+
+def _get_openai_client() -> OpenAI:
+    global _client
+    if _client is None:
+        api_key = os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            raise RuntimeError(
+                "OPENAI_API_KEY is not set. Set it in backend/.env or shell environment."
+            )
+        _client = OpenAI(api_key=api_key)
+    return _client
 
 _FENCED_JSON_RE = re.compile(
     r"(?is)```(?:json)?\s*({.*?})\s*```"
@@ -100,6 +113,7 @@ def parse_gpt_choose_candidates_response(text: str):
         return {}
 
 def get_gpt_response(model: str, system_prompt: str, user_prompt: str) -> str:
+    client = _get_openai_client()
     response = client.responses.create(
         model=model,
         input=[

@@ -4,15 +4,18 @@ import { ActivityIndicator, Animated, PanResponder, Pressable, ScrollView, Text,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useIsFocused } from '@react-navigation/native';
 
+import { AccountGate } from '@/components/auth/account-gate';
 import { MealComposer } from '@/components/log/meal-composer';
 import { buildDraftMeal, clampPull, groupMealsByDate, OPEN_THRESHOLD, REVEAL_HEIGHT } from '@/components/log/helpers';
 import { MealRow } from '@/components/log/meal-row';
 import { SyncControls } from '@/components/log/sync-controls';
 import { EditingMealState, MealCreateResponse, MealListItem, MealLogEntry } from '@/components/log/types';
 import { API_BASE_URL } from '@/constants/api';
+import { useAuth } from '@/context/auth-context';
 
 export default function LogScreen() {
   const isFocused = useIsFocused();
+  const { session, authHeaders } = useAuth();
   const pullY = useRef(new Animated.Value(0)).current;
   const inputRef = useRef<TextInput>(null);
   const isAtTopRef = useRef(true);
@@ -56,7 +59,9 @@ export default function LogScreen() {
     setErrorMessage(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/meals`);
+      const response = await fetch(`${API_BASE_URL}/meals`, {
+        headers: authHeaders,
+      });
 
       if (!response.ok) {
         throw new Error(`Failed to load meals (${response.status})`);
@@ -83,13 +88,13 @@ export default function LogScreen() {
     } finally {
       setIsLoadingMeals(false);
     }
-  }, []);
+  }, [authHeaders]);
 
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && session) {
       fetchMeals();
     }
-  }, [fetchMeals, isFocused]);
+  }, [fetchMeals, isFocused, session]);
 
   const animateOpen = useCallback(() => {
     Animated.spring(pullY, {
@@ -200,6 +205,7 @@ export default function LogScreen() {
       if (editingMeal.source === 'synced') {
         const response = await fetch(`${API_BASE_URL}/meals/${editingMeal.mealId}`, {
           method: 'DELETE',
+          headers: authHeaders,
         });
 
         if (!response.ok) {
@@ -231,7 +237,7 @@ export default function LogScreen() {
     } finally {
       setIsAddingMeal(false);
     }
-  }, [closeInput, editingMeal, mealText]);
+  }, [authHeaders, closeInput, editingMeal, mealText]);
 
   const toggleMealSelected = useCallback((mealId: string) => {
     setMeals((current) =>
@@ -298,11 +304,13 @@ export default function LogScreen() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...authHeaders,
         },
         body: JSON.stringify({
           user_meal: mealToSync.draftText,
           tz_name: Intl.DateTimeFormat().resolvedOptions().timeZone,
           excluded_from_daily_summary: mealToSync.excluded_from_daily_summary,
+          time_stamp: mealToSync.time_stamp,
         }),
       });
 
@@ -331,7 +339,7 @@ export default function LogScreen() {
 
       throw error;
     }
-  }, [meals]);
+  }, [authHeaders, meals]);
 
   const syncSelectedMeals = useCallback(async (mode: 'selected' | 'all') => {
     const targetMeals = meals.filter(
@@ -388,6 +396,7 @@ export default function LogScreen() {
     try {
       const response = await fetch(`${API_BASE_URL}/meals/${mealId}`, {
         method: 'DELETE',
+        headers: authHeaders,
       });
 
       if (!response.ok) {
@@ -401,7 +410,7 @@ export default function LogScreen() {
     } finally {
       setDeletingMealId((current) => (current === mealId ? null : current));
     }
-  }, [meals]);
+  }, [authHeaders, meals]);
 
   const toggleMealExcluded = useCallback(async (mealId: string) => {
     const mealToToggle = meals.find((meal) => meal.meal_id === mealId);
@@ -431,6 +440,7 @@ export default function LogScreen() {
         `${API_BASE_URL}/meals/${mealId}/exclude?excluded_from_daily_summary=${nextExcludedState}`,
         {
           method: 'PATCH',
+          headers: authHeaders,
         }
       );
 
@@ -458,7 +468,11 @@ export default function LogScreen() {
     } finally {
       setTogglingExcludeMealId((current) => (current === mealId ? null : current));
     }
-  }, [meals]);
+  }, [authHeaders, meals]);
+
+  if (!session) {
+    return <AccountGate />;
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>

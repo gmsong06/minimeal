@@ -2,3 +2,6 @@
 __pycache__
 usda/
 meal_log.json
+users.json
+.venv-backup-*
+.venv-py39-backup-*

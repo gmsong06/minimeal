@@ -1,4 +1,5 @@
 import json
+import re
 from collections import defaultdict
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -46,41 +47,73 @@ def process_input(
         want_reasoning=False,
     )
 
-    meal_conversion_response = get_gpt_response(
-        meal_conversion_model,
-        meal_conversion_system_prompt,
-        user_meal,
-    )
+    try:
+        meal_conversion_response = get_gpt_response(
+            meal_conversion_model,
+            meal_conversion_system_prompt,
+            user_meal,
+        )
 
-    parsed_meal = parse_gpt_meal_conversion_response(
-        meal_conversion_response.output_text
-    )
+        parsed_meal = parse_gpt_meal_conversion_response(
+            meal_conversion_response.output_text
+        )
 
-    ingredients = parsed_meal.get("ingredients")
-    confidence_score = parsed_meal.get("confidence_score")
+        ingredients = parsed_meal.get("ingredients")
+        confidence_score = parsed_meal.get("confidence_score")
 
-    if ingredients is None:
-        raise ValueError("Could not parse ingredients from meal conversion response.")
+        if ingredients is None:
+            raise ValueError("Could not parse ingredients from meal conversion response.")
 
-    portion_classes_input = {
-        "meal_desc": user_meal,
-        "foods": ingredients,
+        portion_classes_input = {
+            "meal_desc": user_meal,
+            "foods": ingredients,
+        }
+
+        assign_portion_classes_response = get_gpt_response(
+            assign_portion_classes_model,
+            assign_portion_classes_system_prompt,
+            str(portion_classes_input),
+        )
+
+        processed_meal = parse_gpt_assign_portion_classes_response(
+            assign_portion_classes_response.output_text
+        )
+
+        if isinstance(processed_meal, dict) and confidence_score is not None:
+            processed_meal["confidence_score"] = confidence_score
+
+        return processed_meal
+    except Exception as exc:
+        return _fallback_processed_meal(user_meal, f"llm_pipeline_failed: {exc}")
+
+
+def _fallback_processed_meal(user_meal: str, note: str | None = None) -> dict:
+    parts = [
+        chunk.strip().lower()
+        for chunk in re.split(r",| and |\+|&|/", user_meal)
+        if chunk.strip()
+    ]
+    if not parts:
+        parts = [user_meal.strip().lower()]
+
+    foods = [
+        {
+            "name": part,
+            "portion_class": "other",
+            "confidence": 0.25,
+        }
+        for part in parts
+    ]
+
+    notes = ["fallback_parser_used"]
+    if note:
+        notes.append(note)
+
+    return {
+        "meal_description": user_meal,
+        "foods": foods,
+        "notes": notes,
     }
-
-    assign_portion_classes_response = get_gpt_response(
-        assign_portion_classes_model,
-        assign_portion_classes_system_prompt,
-        str(portion_classes_input),
-    )
-
-    processed_meal = parse_gpt_assign_portion_classes_response(
-        assign_portion_classes_response.output_text
-    )
-
-    if isinstance(processed_meal, dict) and confidence_score is not None:
-        processed_meal["confidence_score"] = confidence_score
-
-    return processed_meal
 
 
 def get_meal_log(meal_log_path: str | Path):
@@ -200,22 +233,61 @@ def log_meal(
     time_stamp: datetime,
     excluded_from_daily_summary: bool = False,
 ):
-    if time_stamp.tzinfo is None:
-        time_stamp = time_stamp.replace(tzinfo=ZoneInfo("UTC"))
-
-    nutrient_exposure = normalize_nutrient_exposure(nutrient_exposure)
-
-    log_entry = {
-        "meal_id": str(ulid.ulid()),
-        "time_stamp": time_stamp.isoformat(),
-        "meal_description": processed_meal.get("meal_description"),
-        "foods": processed_meal.get("foods", []),
-        "nutrient_exposure": nutrient_exposure,
-        "excluded_from_daily_summary": excluded_from_daily_summary,
-    }
+    log_entry = build_log_entry(
+        processed_meal=processed_meal,
+        nutrient_exposure=nutrient_exposure,
+        time_stamp=time_stamp,
+        excluded_from_daily_summary=excluded_from_daily_summary,
+    )
 
     data = get_meal_log(MEAL_LOG_PATH)
     data.append(log_entry)
     save_meal_log(MEAL_LOG_PATH, data)
 
     return log_entry
+
+
+def build_log_entry(
+    processed_meal: dict,
+    nutrient_exposure: dict,
+    time_stamp: datetime,
+    excluded_from_daily_summary: bool = False,
+    meal_id: str | None = None,
+):
+    if time_stamp.tzinfo is None:
+        time_stamp = time_stamp.replace(tzinfo=ZoneInfo("UTC"))
+
+    nutrient_exposure = normalize_nutrient_exposure(nutrient_exposure)
+    compact_foods = _compact_foods(processed_meal.get("foods", []))
+
+    log_entry = {
+        "meal_id": meal_id or str(ulid.ulid()),
+        "time_stamp": time_stamp.isoformat(),
+        "meal_description": processed_meal.get("meal_description"),
+        "foods": compact_foods,
+        "nutrient_exposure": nutrient_exposure,
+        "excluded_from_daily_summary": excluded_from_daily_summary,
+    }
+    return log_entry
+
+
+def compact_processed_meal(processed_meal: dict) -> dict:
+    return {
+        "meal_description": processed_meal.get("meal_description"),
+        "foods": _compact_foods(processed_meal.get("foods", [])),
+        "notes": processed_meal.get("notes", []),
+        "confidence_score": processed_meal.get("confidence_score"),
+    }
+
+
+def _compact_foods(raw_foods: list[dict]) -> list[dict]:
+    compacted = []
+    for food in raw_foods:
+        compacted.append(
+            {
+                "name": food.get("name", ""),
+                "portion_class": food.get("portion_class"),
+                "confidence": food.get("confidence"),
+            }
+        )
+    return compacted

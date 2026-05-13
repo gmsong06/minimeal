@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
+import { AccountGate } from '@/components/auth/account-gate';
 import { API_BASE_URL } from '@/constants/api';
+import { useAuth } from '@/context/auth-context';
 
 type HealthResponse = {
   status: string;
@@ -114,6 +116,7 @@ function getProgressCopy(state: NutrientProgressState) {
 
 export default function HomeScreen() {
   const isFocused = useIsFocused();
+  const { session, authHeaders, logout } = useAuth();
   const [healthStatus, setHealthStatus] = useState('Checking backend...');
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -133,16 +136,18 @@ export default function HomeScreen() {
     [dailySummary]
   );
 
-  async function refreshHome() {
+  const refreshHome = useCallback(async () => {
     setErrorMessage(null);
     setHealthStatus('Checking backend...');
 
     try {
       const tzName = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const [healthResponse, summaryResponse, mealsResponse] = await Promise.all([
-        fetch(`${API_BASE_URL}/`),
-        fetch(`${API_BASE_URL}/summary/today?tz_name=${encodeURIComponent(tzName)}`),
-        fetch(`${API_BASE_URL}/meals`),
+        fetch(`${API_BASE_URL}/`, { headers: authHeaders }),
+        fetch(`${API_BASE_URL}/summary/today?tz_name=${encodeURIComponent(tzName)}`, {
+          headers: authHeaders,
+        }),
+        fetch(`${API_BASE_URL}/meals`, { headers: authHeaders }),
       ]);
 
       if (!healthResponse.ok || !summaryResponse.ok || !mealsResponse.ok) {
@@ -167,19 +172,31 @@ export default function HomeScreen() {
           : 'Unknown error while contacting the backend.'
       );
     }
-  }
+  }, [authHeaders]);
 
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && session) {
       refreshHome();
     }
-  }, [isFocused]);
+  }, [isFocused, refreshHome, session]);
+
+  if (!session) {
+    return <AccountGate />;
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
       <ScrollView className="flex-1 bg-white" contentContainerClassName="px-6 pb-32 pt-3">
         <View className="mb-10 gap-4">
           <Text className="text-[42px] font-medium tracking-[-1.2px] text-ink">Home</Text>
+          <View className="flex-row items-center justify-between">
+            <Text className="text-[14px] text-muted">Signed in as {session.display_name}</Text>
+            <Pressable
+              className="rounded-full border border-line bg-white px-4 py-2"
+              onPress={logout}>
+              <Text className="text-[13px] text-ink">Sign out</Text>
+            </Pressable>
+          </View>
         </View>
 
         <View className="mb-6 rounded-card border border-line bg-card px-5 py-5 shadow-float">

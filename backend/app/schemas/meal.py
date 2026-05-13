@@ -50,6 +50,7 @@ class MealCreateRequest(BaseModel):
     assign_portion_classes_model: str = "gpt-4.1-nano"
     tz_name: str = DEFAULT_TIMEZONE
     excluded_from_daily_summary: bool = False
+    time_stamp: str | None = None
 
 
 class MealCreateResponse(BaseModel):
@@ -63,3 +64,19 @@ class DailySummaryResponse(BaseModel):
     timezone: str
     nutrient_totals: dict[str, float]
     formatted_summary: list[DailySummaryItem]
+
+
+class SeededAccount(BaseModel):
+    username: str
+    password: str
+    display_name: str
+
+
+class AuthLoginRequest(BaseModel):
+    username: str
+    password: str
+
+
+class AuthLoginResponse(BaseModel):
+    username: str
+    display_name: str

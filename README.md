@@ -8,19 +8,32 @@ Natural-language meal logging with time-aware nutrition reasoning
 ## Installation
 
 ### Backend
-1. Create and activate a virtual environment from the repo root:
+1. Ensure Python 3.11 is installed (matches `backend/runtime.txt`):
+
+```bash
+python3.11 --version
+```
+
+If you already created `backend/.venv` with another Python version, replace it first:
+
+```bash
+mv backend/.venv backend/.venv-backup-$(date +%Y%m%d%H%M%S)
+```
+
+2. Create and activate a virtual environment from the repo root:
 
 ```bash
 cd minimeal
-python3 -m venv backend/.venv
+python3.11 -m venv backend/.venv
 source backend/.venv/bin/activate
+python --version
 ```
 
-2. Install backend dependencies:
+3. Install backend dependencies:
 
 ```bash
 cd backend
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
 ### Frontend
@@ -36,26 +49,58 @@ npm install
 ### Backend
 Set these before running the API:
 
-- `OPENAI_API_KEY`: required for meal parsing and AI-backed nutrient selection
+- `OPENAI_API_KEY`: recommended for full AI meal parsing and nutrient selection.
+  - If missing, the backend falls back to a simpler parser so meal sync still completes.
 - `HF_TOKEN`: optional, but recommended for higher Hugging Face rate limits and faster model downloads
 - `PORT`: optional for local development; defaults to `8000`. Render provides this automatically.
+- `AWS_REGION`: defaults to `us-east-1`
+- `MINIMEAL_STORAGE_MODE`: `dynamodb` or `auto` (default `auto`)
+- `MINIMEAL_USERS_TABLE`: defaults to `minimeal-users`
+- `MINIMEAL_MEALS_TABLE`: defaults to `minimeal-meals`
 
 You can export them in your shell:
 
 ```bash
 export OPENAI_API_KEY="your_openai_api_key"
 export HF_TOKEN="your_huggingface_token"
+export AWS_REGION="us-east-1"
+export MINIMEAL_STORAGE_MODE="dynamodb"
+export MINIMEAL_USERS_TABLE="minimeal-users"
+export MINIMEAL_MEALS_TABLE="minimeal-meals"
 ```
 
 Or place them in `backend/.env`.
 
+### AWS setup (DynamoDB + seeded fake accounts)
+
+Run this once from `backend/`:
+
+```bash
+cd minimeal/backend
+source .venv/bin/activate
+MINIMEAL_STORAGE_MODE=dynamodb python scripts/setup_minimeal_aws.py
+```
+
+This script creates/tags these tables if missing:
+- `minimeal-users`
+- `minimeal-meals`
+
+It also seeds demo credentials:
+- `minimeal_alex / minimeal123`
+- `minimeal_riley / minimeal123`
+- `minimeal_jordan / minimeal123`
+
 ### Frontend
-The frontend currently uses the default API base URL from [`frontend/minimeal/constants/api.ts`](/Users/annsong/Desktop/Projects/minimeal/frontend/minimeal/constants/api.ts):
+The frontend currently uses the default API base URL from [`frontend/minimeal/constants/api.ts`](frontend/minimeal/constants/api.ts):
 
 - iOS simulator: `http://127.0.0.1:8000`
 - Android emulator: `http://10.0.2.2:8000`
 
-If you run the backend elsewhere, update that file to point to your deployed or LAN API URL.
+To point at another backend, set:
+
+```bash
+export EXPO_PUBLIC_MINIMEAL_API_BASE_URL="https://your-api-url"
+```
 
 ## Running The App
 
@@ -68,6 +113,8 @@ python -m uvicorn app.main:app --reload
 ```
 
 The API will be available at `http://127.0.0.1:8000`.
+
+After backend startup, sign in from the app with one of the seeded fake accounts.
 
 ### Run the frontend
 

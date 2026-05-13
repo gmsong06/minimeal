@@ -25,7 +25,18 @@ In the output, you'll find options to open the app in a
 
 You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-For local backend testing on iOS Simulator, the frontend currently expects the API at `http://127.0.0.1:8000`.
+For local backend testing:
+
+- iOS simulator defaults to `http://127.0.0.1:8000`
+- Android emulator defaults to `http://10.0.2.2:8000`
+
+To override backend URL:
+
+```bash
+export EXPO_PUBLIC_MINIMEAL_API_BASE_URL="https://your-api-url"
+```
+
+The app now requires login via seeded demo accounts from the backend (`/auth/accounts`).
 
 ## Learn more
 

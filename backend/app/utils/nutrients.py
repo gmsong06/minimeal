@@ -1,5 +1,6 @@
 import copy
 import json
+import ast
 from pathlib import Path
 
 from .. import config
@@ -139,13 +140,37 @@ def get_chosen_candidates(choose_candidate_input: str, choose_candidate_model: s
         want_reasoning=False
     )
 
-    choose_candidate_response = get_gpt_response(
-        choose_candidate_model, 
-        choose_candidate_system_prompt, 
-        choose_candidate_input
-    )
+    try:
+        choose_candidate_response = get_gpt_response(
+            choose_candidate_model,
+            choose_candidate_system_prompt,
+            choose_candidate_input,
+        )
 
-    return parse_gpt_choose_candidates_response(choose_candidate_response.output_text)
+        parsed = parse_gpt_choose_candidates_response(
+            choose_candidate_response.output_text
+        )
+        if parsed:
+            return parsed
+    except Exception:
+        pass
+
+    return _fallback_chosen_candidates(choose_candidate_input)
+
+
+def _fallback_chosen_candidates(choose_candidate_input: str) -> dict:
+    try:
+        payload = ast.literal_eval(choose_candidate_input)
+    except Exception:
+        return {}
+
+    fallback: dict[str, int] = {}
+    for food in payload.get("foods", []):
+        candidates = food.get("usda_candidates", [])
+        if not candidates:
+            continue
+        fallback[str(food.get("name", ""))] = candidates[0].get("fdcId")
+    return fallback
 
 
 def remove_other_candidates(processed_meal: str, chosen_candidates: dict):
@@ -154,7 +179,11 @@ def remove_other_candidates(processed_meal: str, chosen_candidates: dict):
     for food in processed_meal["foods"]:
         chosen_candidate = {}
         for c in food["usda_candidates"]:
-            if c["fdcId"] == chosen_candidates[food["name"]]:
+            chosen_fdc_id = chosen_candidates.get(food["name"])
+            if chosen_fdc_id is None and food["usda_candidates"]:
+                chosen_fdc_id = food["usda_candidates"][0].get("fdcId")
+
+            if c["fdcId"] == chosen_fdc_id:
                 chosen_candidate = c
                 break
 
